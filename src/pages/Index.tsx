@@ -19,6 +19,7 @@ const fetchRecipes = async () => {
       image,
       cuisine,
       instructions,
+      allergens,
       recipe_ingredients (
         amount,
         unit,
@@ -35,7 +36,6 @@ const fetchRecipes = async () => {
       unit: ing.unit || '',
       item: ing.item,
     })),
-    allergens: [], // You might want to add an allergens table in the future
   }));
 };
 
@@ -74,7 +74,9 @@ const Index = () => {
 
     if (allergens.length > 0) {
       filtered = filtered.filter(
-        (recipe) => !allergens.some(allergen => recipe.allergens.includes(allergen))
+        (recipe) => !allergens.some(allergen => 
+          recipe.allergens && recipe.allergens.includes(allergen)
+        )
       );
     }
 
