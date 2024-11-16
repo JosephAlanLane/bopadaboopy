@@ -198,6 +198,10 @@ export type Database = {
         }
         Returns: string
       }
+      update_recipe_images: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
