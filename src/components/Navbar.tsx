@@ -1,8 +1,16 @@
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   return (
     <nav className="w-full bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm">
@@ -15,8 +23,14 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <Button variant="ghost">Sign In</Button>
-          <Button>Sign Up</Button>
+          {user ? (
+            <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={() => navigate("/login")}>Sign In</Button>
+              <Button onClick={() => navigate("/login")}>Sign Up</Button>
+            </>
+          )}
         </div>
       </div>
     </nav>

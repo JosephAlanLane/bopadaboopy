@@ -30,7 +30,7 @@ const Login = () => {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             theme="light"
-            providers={[]}
+            providers={["google"]}
           />
         </div>
       </div>
