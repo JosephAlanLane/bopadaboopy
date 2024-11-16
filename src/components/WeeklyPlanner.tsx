@@ -36,24 +36,25 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
 
     switch (method) {
       case "sms":
-        // Using both sms: and whatsapp: protocols for better mobile compatibility
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const isMac = /Mac/i.test(navigator.userAgent);
         const smsUrl = `sms:?body=${encodeURIComponent(text)}`;
         const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
-        
-        // Try to detect if we're on a mobile device
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const messagesUrl = `messages://compose?body=${encodeURIComponent(text)}`;
         
         if (isMobile) {
-          // Try SMS first, then WhatsApp as fallback
+          // Try SMS first, then WhatsApp as fallback on mobile
           window.location.href = smsUrl;
           setTimeout(() => {
-            // If SMS didn't work, try WhatsApp
             window.location.href = whatsappUrl;
           }, 300);
+        } else if (isMac) {
+          // Use Messages app on macOS
+          window.location.href = messagesUrl;
         } else {
           toast({
-            title: "Mobile Device Required",
-            description: "Please use a mobile device to send SMS messages.",
+            title: "Device Not Supported",
+            description: "Please use a mobile device or a Mac with Messages app to send SMS messages.",
             className: "bg-white",
           });
         }
