@@ -28,6 +28,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
     });
   }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4">
       <div className="flex gap-4">
@@ -95,7 +99,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                   }}
                   className="border-red-400 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
                 />
-                <label htmlFor={`allergen-${allergen}`} className="text-sm uppercase">{allergen}</label>
+                <label htmlFor={`allergen-${allergen}`} className="text-sm">{capitalizeFirstLetter(allergen)}</label>
               </div>
             ))}
           </div>

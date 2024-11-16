@@ -73,7 +73,11 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                     <p className="text-sm text-gray-500 dark:text-gray-400">{recipe.cuisine}</p>
                   </button>
                 </HoverCardTrigger>
-                <HoverCardContent className="w-96 bg-white dark:bg-gray-800 border shadow-lg">
+                <HoverCardContent 
+                  className="w-[450px] bg-white dark:bg-gray-800 border shadow-lg"
+                  align="start"
+                  sideOffset={5}
+                >
                   <div className="space-y-4">
                     <h4 className="font-semibold dark:text-white">{recipe.title}</h4>
                     <div>

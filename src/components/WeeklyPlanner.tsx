@@ -146,7 +146,7 @@ END:VCALENDAR`;
             </Button>
             <Button
               variant="outline"
-              className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-gray-700"
               onClick={() => handleShare("email")}
             >
               Email
