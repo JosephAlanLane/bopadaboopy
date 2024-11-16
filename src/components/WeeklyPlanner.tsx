@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { X } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { Slider } from "./ui/slider";
 
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
@@ -27,6 +28,7 @@ const DAYS: DayOfWeek[] = [
 
 export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) => {
   const { toast } = useToast();
+  const [servings, setServings] = React.useState(1);
 
   const handleShare = (method: "sms" | "email" | "copy") => {
     const list = generateGroceryList();
@@ -108,27 +110,27 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
           {DAYS.map((day) => (
             <div
               key={day}
-              className="p-2 bg-gray-50 rounded border flex items-center justify-between"
+              className="p-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600"
             >
               <div className="flex items-center gap-4">
                 <p className="font-medium w-16 text-sm">{day}</p>
                 {mealPlan[day] ? (
-                  <p className="text-sm text-gray-600 truncate">{mealPlan[day]?.title}</p>
+                  <p className="text-sm text-gray-600 truncate dark:text-gray-300">{mealPlan[day]?.title}</p>
                 ) : (
-                  <p className="text-sm text-gray-400 pl-8">No meal planned</p>
+                  <p className="text-sm text-gray-400 pl-8 dark:text-gray-500">No meal planned</p>
                 )}
               </div>
               {mealPlan[day] && (
                 <button
                   onClick={() => onRemoveMeal(day)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -139,13 +141,27 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       </div>
 
       <div className="mt-4 px-4 pb-4">
-        <h2 className="font-semibold mb-2">Grocery List</h2>
-        <ScrollArea className="h-40 rounded border bg-gray-50 p-4">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-semibold">Grocery List</h2>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500 dark:text-gray-400">Servings:</span>
+            <Slider
+              value={[servings]}
+              onValueChange={(value) => setServings(value[0])}
+              min={1}
+              max={10}
+              step={1}
+              className="w-24"
+            />
+            <span className="text-sm text-gray-500 min-w-[20px] dark:text-gray-400">{servings}x</span>
+          </div>
+        </div>
+        <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
           {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
             <div key={item} className="flex justify-between py-1 text-sm">
-              <span>{item}</span>
-              <span className="text-gray-600">
-                {amount}{unit ? ` ${unit}` : ''}
+              <span className="dark:text-gray-200">{item}</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                {(parseFloat(amount.toString()) * servings).toFixed(1)}{unit ? ` ${unit}` : ''}
               </span>
             </div>
           ))}
@@ -160,7 +176,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300"
+            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             onClick={() => handleShare("email")}
           >
             Email
