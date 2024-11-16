@@ -90,14 +90,14 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm sticky top-4">
       <div className="flex-1">
         <h2 className="font-semibold mb-4 px-4 pt-4">Weekly Meal Plan</h2>
-        <div className="space-y-2 px-4">
+        <div className="space-y-1 px-4">
           {DAYS.map((day) => (
             <div
               key={day}
               className="p-2 bg-gray-50 rounded border flex items-center justify-between"
             >
-              <div>
-                <p className="font-medium">{day}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-medium w-20">{day}</p>
                 {mealPlan[day] ? (
                   <p className="text-sm text-gray-600">{mealPlan[day]?.title}</p>
                 ) : (
@@ -132,14 +132,14 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 bg-blue-500 text-white hover:bg-blue-600"
+            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-green-500 text-white hover:bg-green-600"
+            className="flex-1 bg-primary text-white hover:bg-secondary"
             onClick={() => handleShare("email")}
           >
             Email
