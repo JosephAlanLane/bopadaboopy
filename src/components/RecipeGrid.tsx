@@ -17,16 +17,15 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>([]);
   const [page, setPage] = useState(1);
-  const recipesPerPage = 12;
+  const recipesPerPage = 8; // Changed from 12 to 8
   
   const { ref, inView } = useInView({
     threshold: 0,
   });
 
   useEffect(() => {
-    const start = 0;
-    const end = recipesPerPage;
-    setDisplayedRecipes(recipes.slice(start, end));
+    // Initial load of 8 recipes
+    setDisplayedRecipes(recipes.slice(0, recipesPerPage));
   }, [recipes]);
 
   useEffect(() => {
