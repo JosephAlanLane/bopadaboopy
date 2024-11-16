@@ -23,7 +23,6 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
     threshold: 0,
   });
 
-  // Update displayed recipes when the main recipes prop changes
   useEffect(() => {
     setDisplayedRecipes(recipes);
   }, [recipes]);
@@ -76,7 +75,8 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                 <HoverCardContent 
                   className="w-[450px] bg-white dark:bg-gray-800 border shadow-lg"
                   align="start"
-                  sideOffset={5}
+                  side="right"
+                  sideOffset={15}
                 >
                   <div className="space-y-4">
                     <h4 className="font-semibold dark:text-white">{recipe.title}</h4>

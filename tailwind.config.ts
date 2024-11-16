@@ -43,7 +43,7 @@ export default {
       },
       borderRadius: {
         'recipe': '1rem',
-        'nonna': '0.75rem',
+        'nonna': '1.5rem',
       },
       keyframes: {
         "fade-in": {
