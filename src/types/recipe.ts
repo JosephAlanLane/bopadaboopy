@@ -3,13 +3,16 @@ export interface Recipe {
   title: string;
   image: string;
   recipeUrl: string;
-  ingredients: {
-    amount: string;
-    item: string;
-  }[];
+  ingredients: Ingredient[];
   instructions: string[];
   cuisine: string;
   allergens: string[];
+}
+
+export interface Ingredient {
+  amount: string;
+  item: string;
+  unit?: string;
 }
 
 export interface MealPlan {

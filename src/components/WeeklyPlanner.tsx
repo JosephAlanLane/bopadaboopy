@@ -1,4 +1,4 @@
-import { Recipe, DayOfWeek, MealPlan } from "@/types/recipe";
+import { Recipe, DayOfWeek, MealPlan, Ingredient } from "@/types/recipe";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { X } from "lucide-react";
@@ -25,7 +25,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   const handleShare = (method: "sms" | "email" | "copy") => {
     const list = generateGroceryList();
     const text = Object.entries(list)
-      .map(([item, amount]) => `${amount} ${item}`)
+      .map(([item, { amount, unit }]) => `${amount}${unit ? ` ${unit}` : ''} ${item}`)
       .join("\n");
 
     switch (method) {
@@ -48,16 +48,16 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   const generateGroceryList = () => {
-    const groceries: { [key: string]: string } = {};
+    const groceries: { [key: string]: { amount: number; unit?: string } } = {};
     
     Object.values(mealPlan).forEach((recipe) => {
       if (!recipe) return;
-      recipe.ingredients.forEach(({ amount, item }) => {
+      recipe.ingredients.forEach(({ amount, item, unit }) => {
+        const numericAmount = parseFloat(amount) || 0;
         if (groceries[item]) {
-          // For this example, we'll just keep the larger amount
-          groceries[item] = amount;
+          groceries[item].amount += numericAmount;
         } else {
-          groceries[item] = amount;
+          groceries[item] = { amount: numericAmount, unit };
         }
       });
     });
@@ -99,31 +99,34 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       <div className="mt-4">
         <h2 className="font-semibold mb-4">Grocery List</h2>
         <ScrollArea className="h-48 rounded border p-4">
-          {Object.entries(generateGroceryList()).map(([item, amount]) => (
+          {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
             <div key={item} className="flex justify-between py-1">
               <span>{item}</span>
-              <span className="text-gray-600">{amount}</span>
+              <span className="text-gray-600">
+                {amount}
+                {unit ? ` ${unit}` : ''}
+              </span>
             </div>
           ))}
         </ScrollArea>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1"
+            className="flex-1 text-blue-500 hover:text-blue-600"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1"
+            className="flex-1 text-green-500 hover:text-green-600"
             onClick={() => handleShare("email")}
           >
             Email
           </Button>
           <Button
             variant="outline"
-            className="flex-1"
+            className="flex-1 text-gray-500 hover:text-gray-600"
             onClick={() => handleShare("copy")}
           >
             Copy
