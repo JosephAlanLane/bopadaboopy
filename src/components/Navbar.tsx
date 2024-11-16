@@ -18,9 +18,9 @@ export const Navbar = () => {
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-4">
             <img 
-              src="https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?w=800&auto=format&fit=crop" 
+              src="/nonna-logo.png"
               alt="Italian Nonna" 
-              className="w-16 h-16 rounded-full object-cover"
+              className="w-16 h-16 object-contain"
             />
             <div className="flex flex-col">
               <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
