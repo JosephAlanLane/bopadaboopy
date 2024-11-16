@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Button } from "./ui/button";
+import { useState, useEffect } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -20,14 +19,14 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
 
-  const handleApply = () => {
+  useEffect(() => {
     onApplyFilters({
       search,
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
       maxIngredients,
     });
-  };
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm space-y-4">
@@ -50,12 +49,11 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={handleApply}>Apply Filters</Button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <h3 className="font-medium text-sm">Cuisine Types</h3>
+        <div className="space-y-2 bg-accent/20 p-3 rounded-lg">
+          <h3 className="font-medium text-sm text-primary">Cuisine Types</h3>
           <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
               <div key={cuisine} className="flex items-center space-x-2">
@@ -76,8 +74,8 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="font-medium text-sm">Allergens</h3>
+        <div className="space-y-2 bg-muted p-3 rounded-lg">
+          <h3 className="font-medium text-sm text-primary">Allergens</h3>
           <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (
               <div key={allergen} className="flex items-center space-x-2">

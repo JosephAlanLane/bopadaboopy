@@ -17,11 +17,20 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>([]);
   const [page, setPage] = useState(1);
-  const recipesPerPage = 8; // Changed from 12 to 8
+  const recipesPerPage = 8;
   
   const { ref, inView } = useInView({
     threshold: 0,
   });
+
+  const handleImageError = (recipe: Recipe) => {
+    // Fallback image URL based on recipe title
+    const fallbackUrl = `https://source.unsplash.com/800x800/?${encodeURIComponent(recipe.title.toLowerCase())}`;
+    const img = document.getElementById(`recipe-img-${recipe.id}`) as HTMLImageElement;
+    if (img) {
+      img.src = fallbackUrl;
+    }
+  };
 
   useEffect(() => {
     // Initial load of 8 recipes
@@ -53,9 +62,11 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
               onMouseLeave={() => setHoveredId(null)}
             >
               <img
+                id={`recipe-img-${recipe.id}`}
                 src={recipe.image}
                 alt={recipe.title}
                 className="w-full aspect-square object-cover"
+                onError={() => handleImageError(recipe)}
               />
               {hoveredId === recipe.id && (
                 <div
