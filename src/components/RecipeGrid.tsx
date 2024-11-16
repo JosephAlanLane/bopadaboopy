@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/recipe";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import {
   HoverCard,
@@ -24,7 +24,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
   });
 
   // Update displayed recipes when the main recipes prop changes
-  useState(() => {
+  useEffect(() => {
     setDisplayedRecipes(recipes);
   }, [recipes]);
 
