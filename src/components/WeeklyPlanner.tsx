@@ -48,6 +48,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         toast({
           title: "Copied to clipboard",
           description: "Your grocery list has been copied to your clipboard.",
+          className: "bg-white",
         });
         break;
     }
@@ -74,11 +75,10 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       });
     });
 
-    // Convert back to display format
     const displayList: { [key: string]: GroceryItem } = {};
     Object.entries(groceries).forEach(([_key, value]) => {
       displayList[value.itemName] = {
-        amount: Math.round(value.amount * 100) / 100, // Round to 2 decimal places
+        amount: Math.round(value.amount * 100) / 100,
         unit: value.unit
       };
     });
@@ -87,14 +87,14 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm">
       <div className="flex-1">
-        <h2 className="font-semibold mb-4">Weekly Meal Plan</h2>
-        <div className="space-y-2">
+        <h2 className="font-semibold mb-4 px-4 pt-4">Weekly Meal Plan</h2>
+        <div className="space-y-2 px-4">
           {DAYS.map((day) => (
             <div
               key={day}
-              className="p-2 bg-white rounded border flex items-center justify-between"
+              className="p-2 bg-gray-50 rounded border flex items-center justify-between"
             >
               <div>
                 <p className="font-medium">{day}</p>
@@ -117,15 +117,14 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 px-4 pb-4">
         <h2 className="font-semibold mb-4">Grocery List</h2>
-        <ScrollArea className="h-48 rounded border p-4">
+        <ScrollArea className="h-48 rounded border bg-gray-50 p-4">
           {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
             <div key={item} className="flex justify-between py-1">
               <span>{item}</span>
               <span className="text-gray-600">
-                {amount}
-                {unit ? ` ${unit}` : ''}
+                {amount}{unit ? ` ${unit}` : ''}
               </span>
             </div>
           ))}

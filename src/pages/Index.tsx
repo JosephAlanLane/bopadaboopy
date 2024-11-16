@@ -82,19 +82,35 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Navbar />
-      <main className="max-w-[1800px] mx-auto p-4 flex gap-4">
-        <aside className="w-80 shrink-0 bg-white rounded-lg p-4 shadow-sm">
-          <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
-        </aside>
-        <div className="flex-1 space-y-4">
-          <RecipeFilters onApplyFilters={handleApplyFilters} />
-          <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-            <RecipeGrid recipes={filteredRecipes} onAddRecipe={handleAddRecipe} />
+      <main className="flex-1">
+        <div className="max-w-[1800px] mx-auto p-4 flex gap-6">
+          <aside className="w-80 shrink-0">
+            <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
+          </aside>
+          <div className="flex-1 space-y-4">
+            <RecipeFilters onApplyFilters={handleApplyFilters} />
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <RecipeGrid recipes={filteredRecipes} onAddRecipe={handleAddRecipe} />
+            </div>
           </div>
         </div>
       </main>
+      <footer className="bg-white border-t mt-8">
+        <div className="max-w-[1800px] mx-auto py-6 px-4">
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-600">
+              © {new Date().getFullYear()} Meal Planner. All rights reserved.
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Terms of Service</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
