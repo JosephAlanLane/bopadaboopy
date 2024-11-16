@@ -82,11 +82,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-200">
       <Navbar />
       <main className="flex-1">
         <div className="max-w-[1800px] mx-auto p-4 flex gap-6">
-          <aside className="w-80 shrink-0">
+          <aside className="w-80 shrink-0 sticky top-4">
             <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
           </aside>
           <div className="flex-1 space-y-4">
