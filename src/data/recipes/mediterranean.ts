@@ -45,4 +45,26 @@ export const mediterraneanRecipes: Recipe[] = [
     cuisine: 'Mediterranean',
     allergens: ['dairy']
   },
+  {
+    id: '14',
+    title: 'Greek Moussaka',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop',
+    recipeUrl: 'https://example.com/moussaka',
+    ingredients: [
+      { amount: '2', unit: 'lbs', item: 'eggplant' },
+      { amount: '1', unit: 'lb', item: 'ground lamb' },
+      { amount: '2', unit: 'cups', item: 'béchamel sauce' },
+      { amount: '1', unit: 'cup', item: 'tomato sauce' },
+    ],
+    instructions: [
+      'Slice and salt eggplant',
+      'Make meat sauce',
+      'Layer ingredients',
+      'Top with béchamel',
+      'Bake until golden'
+    ],
+    cuisine: 'Mediterranean',
+    allergens: ['dairy', 'gluten']
+  },
+  // ... adding more Mediterranean recipes
 ];
