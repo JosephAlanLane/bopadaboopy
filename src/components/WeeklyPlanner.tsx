@@ -87,7 +87,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm sticky top-4">
       <div className="flex-1">
         <h2 className="font-semibold mb-4 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-2 px-4">
@@ -132,21 +132,21 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+            className="flex-1 bg-blue-500 text-white hover:bg-blue-600"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1 text-green-500 hover:text-green-600 hover:bg-green-50"
+            className="flex-1 bg-green-500 text-white hover:bg-green-600"
             onClick={() => handleShare("email")}
           >
             Email
           </Button>
           <Button
             variant="outline"
-            className="flex-1 text-gray-500 hover:text-gray-600 hover:bg-gray-50"
+            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
             onClick={() => handleShare("copy")}
           >
             Copy

@@ -25,20 +25,20 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#9b87f5",
+          DEFAULT: "#B91C1C", // dark red (marinara sauce color)
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#7E69AB",
+          DEFAULT: "#991B1B",
           foreground: "#ffffff",
         },
         muted: {
-          DEFAULT: "#F1F0FB",
-          foreground: "#6E59A5",
+          DEFAULT: "#FEF2F2",
+          foreground: "#7F1D1D",
         },
         accent: {
-          DEFAULT: "#D6BCFA",
-          foreground: "#1A1F2C",
+          DEFAULT: "#FEE2E2",
+          foreground: "#991B1B",
         },
       },
       keyframes: {
