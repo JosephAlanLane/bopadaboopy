@@ -35,7 +35,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           placeholder="Search recipes..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1"
+          className="flex-1 placeholder:text-gray-400"
         />
         <Select 
           value={maxIngredients.toString()} 
@@ -55,7 +55,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2 p-4 bg-[#E8F5E9] rounded-lg border border-white">
+        <div className="space-y-2 p-4 bg-white rounded-lg border border-gray-100">
           <h3 className="font-medium text-sm text-green-900">Cuisine Types</h3>
           <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
@@ -77,7 +77,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           </div>
         </div>
 
-        <div className="space-y-2 p-4 bg-red-50 rounded-lg border border-white">
+        <div className="space-y-2 p-4 bg-red-50 rounded-lg border border-gray-100">
           <h3 className="font-medium text-sm text-red-900">Allergens</h3>
           <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (

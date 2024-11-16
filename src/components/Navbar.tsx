@@ -16,9 +16,16 @@ export const Navbar = () => {
     <nav className="w-full bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center space-x-8">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
-            <p className="text-sm text-gray-600">Your own personal Nonna</p>
+          <div className="flex items-center space-x-4">
+            <img 
+              src="https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?w=800&auto=format&fit=crop" 
+              alt="Italian Nonna" 
+              className="w-16 h-16 rounded-full object-cover"
+            />
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
+              <p className="text-sm text-gray-600">Your own personal Nonna</p>
+            </div>
           </div>
           <div className="hidden md:flex space-x-4">
             <Button variant="ghost" onClick={() => navigate("/")}>Home</Button>
