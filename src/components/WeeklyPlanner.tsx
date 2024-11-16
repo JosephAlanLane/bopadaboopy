@@ -2,14 +2,11 @@ import React from "react";
 import { Recipe, DayOfWeek, MealPlan } from "@/types/recipe";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
-import { X, Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { Slider } from "./ui/slider";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { MealPlanDay } from "./MealPlanDay";
+import { generateGroceryList, getNextDate } from "@/utils/groceryUtils";
 
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
@@ -26,7 +23,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   const [servings, setServings] = React.useState(1);
 
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
-    const list = generateGroceryList();
+    const list = generateGroceryList(mealPlan);
     const text = Object.entries(list)
       .map(([item, { amount, unit }]) => {
         const adjustedAmount = (amount * servings).toFixed(1);
@@ -96,105 +93,18 @@ END:VCALENDAR`;
     }
   };
 
-  const getNextDate = (dayName: string) => {
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const today = new Date();
-    const todayDay = today.getDay();
-    const targetDay = days.indexOf(dayName.toLowerCase());
-    let daysUntilTarget = targetDay - todayDay;
-    if (daysUntilTarget <= 0) daysUntilTarget += 7;
-    
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + daysUntilTarget);
-    return targetDate.toISOString().split('T')[0].replace(/-/g, '');
-  };
-
-  const generateGroceryList = () => {
-    const groceries: { [key: string]: GroceryItem & { itemName: string } } = {};
-    
-    Object.values(mealPlan).forEach((recipe) => {
-      if (!recipe) return;
-      recipe.ingredients.forEach(({ amount, item, unit }) => {
-        const key = `${item.toLowerCase()}_${unit || ''}`;
-        const numericAmount = parseFloat(amount) || 0;
-        
-        if (groceries[key]) {
-          groceries[key].amount += numericAmount;
-        } else {
-          groceries[key] = { 
-            amount: numericAmount, 
-            unit,
-            itemName: item 
-          };
-        }
-      });
-    });
-
-    const displayList: { [key: string]: GroceryItem } = {};
-    Object.entries(groceries).forEach(([_key, value]) => {
-      displayList[value.itemName] = {
-        amount: Math.round(value.amount * 100) / 100,
-        unit: value.unit
-      };
-    });
-
-    return displayList;
-  };
-
   return (
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[355px] mt-4 md:mt-0">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
           {DAYS.map((day) => (
-            <div
+            <MealPlanDay
               key={day}
-              className="p-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600"
-            >
-              <div className="flex items-center gap-4">
-                <p className="font-medium w-16 text-sm">{day}</p>
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <p className="text-sm text-gray-600 truncate dark:text-gray-300 cursor-pointer">
-                      {mealPlan[day] ? mealPlan[day]?.title : "No meal planned"}
-                    </p>
-                  </HoverCardTrigger>
-                  {mealPlan[day] && (
-                    <HoverCardContent className="w-80 p-4">
-                      <h3 className="font-semibold mb-2">{mealPlan[day]?.title}</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium mb-1">Ingredients:</h4>
-                          <ul className="text-sm space-y-1">
-                            {mealPlan[day]?.ingredients.map((ing, idx) => (
-                              <li key={idx}>
-                                {ing.amount} {ing.unit} {ing.item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-medium mb-1">Instructions:</h4>
-                          <ol className="text-sm space-y-1 list-decimal list-inside">
-                            {mealPlan[day]?.instructions.map((step, idx) => (
-                              <li key={idx}>{step}</li>
-                            ))}
-                          </ol>
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  )}
-                </HoverCard>
-              </div>
-              {mealPlan[day] && (
-                <button
-                  onClick={() => onRemoveMeal(day)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
+              day={day}
+              recipe={mealPlan[day] || null}
+              onRemove={() => onRemoveMeal(day)}
+            />
           ))}
         </div>
       </div>
@@ -216,7 +126,7 @@ END:VCALENDAR`;
           </div>
         </div>
         <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
-          {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
+          {Object.entries(generateGroceryList(mealPlan)).map(([item, { amount, unit }]) => (
             <div key={item} className="flex justify-between py-1 text-sm">
               <span className="dark:text-gray-200">{item}</span>
               <span className="text-gray-600 dark:text-gray-400">
