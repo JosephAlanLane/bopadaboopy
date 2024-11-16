@@ -7,15 +7,7 @@ import { recipes } from "@/data/recipes";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
 
-const DAYS: DayOfWeek[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
@@ -26,10 +18,12 @@ const Index = () => {
     search,
     cuisines,
     allergens,
+    maxIngredients,
   }: {
     search: string;
     cuisines: string[];
     allergens: string[];
+    maxIngredients: number;
   }) => {
     let filtered = recipes;
 
@@ -40,17 +34,18 @@ const Index = () => {
     }
 
     if (cuisines.length > 0) {
-      filtered = filtered.filter((recipe) =>
-        cuisines.includes(recipe.cuisine)
-      );
+      filtered = filtered.filter((recipe) => cuisines.includes(recipe.cuisine));
     }
 
     if (allergens.length > 0) {
       filtered = filtered.filter(
-        (recipe) =>
-          !recipe.allergens.some((allergen) => allergens.includes(allergen))
+        (recipe) => !recipe.allergens.some((allergen) => allergens.includes(allergen))
       );
     }
+
+    filtered = filtered.filter(
+      (recipe) => recipe.ingredients.length <= maxIngredients
+    );
 
     setFilteredRecipes(filtered);
   };
@@ -90,12 +85,14 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="max-w-[1800px] mx-auto p-4 flex gap-4">
-        <aside className="w-80 shrink-0 bg-muted rounded-lg p-4">
+        <aside className="w-80 shrink-0 bg-white rounded-lg p-4 shadow-sm">
           <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
         </aside>
         <div className="flex-1 space-y-4">
           <RecipeFilters onApplyFilters={handleApplyFilters} />
-          <RecipeGrid recipes={filteredRecipes} onAddRecipe={handleAddRecipe} />
+          <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <RecipeGrid recipes={filteredRecipes} onAddRecipe={handleAddRecipe} />
+          </div>
         </div>
       </main>
     </div>

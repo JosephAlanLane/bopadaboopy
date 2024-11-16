@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { cuisineTypes, allergens } from "@/data/recipes";
 
 interface FiltersProps {
@@ -9,6 +10,7 @@ interface FiltersProps {
     search: string;
     cuisines: string[];
     allergens: string[];
+    maxIngredients: number;
   }) => void;
 }
 
@@ -16,12 +18,14 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [search, setSearch] = useState("");
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
+  const [maxIngredients, setMaxIngredients] = useState<number>(20);
 
   const handleApply = () => {
     onApplyFilters({
       search,
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
+      maxIngredients,
     });
   };
 
@@ -34,13 +38,25 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1"
         />
+        <Select value={maxIngredients.toString()} onValueChange={(value) => setMaxIngredients(Number(value))}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Max ingredients" />
+          </SelectTrigger>
+          <SelectContent>
+            {[5, 10, 15, 20, 25].map((num) => (
+              <SelectItem key={num} value={num.toString()}>
+                Max {num} ingredients
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button onClick={handleApply}>Apply Filters</Button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h3 className="font-medium mb-2">Cuisine Types</h3>
-          <div className="space-y-2">
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">Cuisine Types</h3>
+          <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
               <div key={cuisine} className="flex items-center space-x-2">
                 <Checkbox
@@ -50,26 +66,19 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                     if (checked) {
                       setSelectedCuisines([...selectedCuisines, cuisine]);
                     } else {
-                      setSelectedCuisines(
-                        selectedCuisines.filter((c) => c !== cuisine)
-                      );
+                      setSelectedCuisines(selectedCuisines.filter((c) => c !== cuisine));
                     }
                   }}
                 />
-                <label
-                  htmlFor={`cuisine-${cuisine}`}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {cuisine}
-                </label>
+                <label htmlFor={`cuisine-${cuisine}`} className="text-sm">{cuisine}</label>
               </div>
             ))}
           </div>
         </div>
 
-        <div>
-          <h3 className="font-medium mb-2">Allergens</h3>
-          <div className="space-y-2">
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">Allergens</h3>
+          <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (
               <div key={allergen} className="flex items-center space-x-2">
                 <Checkbox
@@ -79,18 +88,11 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                     if (checked) {
                       setSelectedAllergens([...selectedAllergens, allergen]);
                     } else {
-                      setSelectedAllergens(
-                        selectedAllergens.filter((a) => a !== allergen)
-                      );
+                      setSelectedAllergens(selectedAllergens.filter((a) => a !== allergen));
                     }
                   }}
                 />
-                <label
-                  htmlFor={`allergen-${allergen}`}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {allergen}
-                </label>
+                <label htmlFor={`allergen-${allergen}`} className="text-sm">{allergen}</label>
               </div>
             ))}
           </div>

@@ -5,10 +5,10 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200 px-4 py-2.5">
+    <nav className="w-full bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center space-x-8">
-          <h1 className="text-2xl font-bold text-primary">MealPin</h1>
+          <h1 className="text-2xl font-bold text-primary">MealPlanner</h1>
           <div className="hidden md:flex space-x-4">
             <Button variant="ghost" onClick={() => navigate("/")}>Home</Button>
             <Button variant="ghost" onClick={() => navigate("/about")}>About</Button>
