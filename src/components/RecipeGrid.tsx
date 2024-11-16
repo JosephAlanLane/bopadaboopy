@@ -23,20 +23,26 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
     threshold: 0,
   });
 
+  // Only reset when recipes array changes completely
   useEffect(() => {
-    // Reset pagination when recipes prop changes
-    setDisplayedRecipes(recipes.slice(0, recipesPerPage));
-    setPage(1);
-  }, [recipes]);
+    if (recipes.length > 0) {
+      setDisplayedRecipes(recipes.slice(0, recipesPerPage));
+      setPage(1);
+    }
+  }, [recipes.length]);
 
+  // Handle infinite scroll
   useEffect(() => {
     if (inView && displayedRecipes.length < recipes.length) {
       const nextPage = page + 1;
-      const nextRecipes = recipes.slice(0, nextPage * recipesPerPage);
-      setDisplayedRecipes(nextRecipes);
+      const start = 0;
+      const end = nextPage * recipesPerPage;
+      
+      // Append new recipes without modifying existing ones
+      setDisplayedRecipes(recipes.slice(start, end));
       setPage(nextPage);
     }
-  }, [inView, recipes, page]);
+  }, [inView, recipes, page, displayedRecipes.length]);
 
   return (
     <>
