@@ -48,6 +48,53 @@ export type Database = {
           },
         ]
       }
+      pending_recipes: {
+        Row: {
+          approval_token: string | null
+          created_at: string
+          cuisine: string
+          id: string
+          image: string
+          ingredients: Json
+          instructions: string[]
+          status: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          approval_token?: string | null
+          created_at?: string
+          cuisine: string
+          id?: string
+          image: string
+          ingredients: Json
+          instructions: string[]
+          status?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          approval_token?: string | null
+          created_at?: string
+          cuisine?: string
+          id?: string
+          image?: string
+          ingredients?: Json
+          instructions?: string[]
+          status?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_recipes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
