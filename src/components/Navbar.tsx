@@ -18,7 +18,7 @@ export const Navbar = () => {
         <div className="flex items-center space-x-8">
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
-            <p className="text-sm text-gray-600">Your own personal Italian Grandpa</p>
+            <p className="text-sm text-gray-600">Your own personal Nonna</p>
           </div>
           <div className="hidden md:flex space-x-4">
             <Button variant="ghost" onClick={() => navigate("/")}>Home</Button>

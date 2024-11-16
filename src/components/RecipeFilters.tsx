@@ -42,7 +42,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {[5, 10, 15, 20, 25].map((num) => (
               <SelectItem key={num} value={num.toString()}>
                 Max {num} ingredients

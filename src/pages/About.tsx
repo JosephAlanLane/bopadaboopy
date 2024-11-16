@@ -8,16 +8,16 @@ const About = () => {
       <main className="flex-1">
         <div className="max-w-3xl mx-auto p-8">
           <div className="bg-white rounded-lg shadow-sm p-8 space-y-6">
-            <h1 className="text-4xl font-bold text-primary mb-6">Our Story</h1>
+            <h1 className="text-4xl font-bold text-primary mb-6">La Storia Della Nonna</h1>
             <div className="prose prose-lg">
               <p className="text-gray-700 leading-relaxed">
-                Growing up, I was blessed with the most incredible gift anyone could ask for – Italian grandparents who filled our home with the warmth of traditional cooking and the joy of family gatherings. Every Sunday, the kitchen would come alive with the rich aroma of simmering marinara sauce, the sound of my nonno's hearty laughter, and the sight of my nonna teaching us the secrets of authentic Italian cuisine.
+                In every Italian household, the heart of the family beats strongest in the kitchen, where the Nonna (grandmother) reigns supreme. Her wisdom, passed down through generations, transforms simple ingredients into dishes that nourish both body and soul. This is the spirit we wanted to capture with Babada Boopie - your very own virtual Italian Nonna.
               </p>
               <p className="text-gray-700 leading-relaxed mt-4">
-                These cherished memories inspired me to create Babada Boopie – a heartfelt tribute to my Italian heritage and a way to share the magic of having an Italian grandparent with everyone. I wanted to capture not just the recipes, but the love, wisdom, and tradition that made those family meals so special.
+                Just like a real Nonna, Babada Boopie is here to guide you through authentic Italian recipes, sharing not just ingredients and steps, but the love and tradition that makes Italian cooking so special. Every recipe comes with the kind of practical wisdom you'd expect from a grandmother who's been perfecting these dishes for decades.
               </p>
               <p className="text-gray-700 leading-relaxed mt-4">
-                Through Babada Boopie, I hope to bring a piece of that Italian family experience to your kitchen. Whether you're planning your weekly meals or discovering new recipes, consider this your virtual Italian nonno, always ready to share a delicious recipe and a warm "mangia, mangia!"
+                Whether you're learning to make pasta from scratch, mastering the perfect marinara, or discovering the secrets of tiramisu, consider Babada Boopie your personal Nonna in the digital age. She's always here to share her recipes, offer encouragement, and remind you to "Mangia! Mangia!" (Eat! Eat!) - because that's what Italian grandmothers do best.
               </p>
             </div>
           </div>

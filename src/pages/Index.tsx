@@ -3,16 +3,51 @@ import { Navbar } from "@/components/Navbar";
 import { RecipeFilters } from "@/components/RecipeFilters";
 import { RecipeGrid } from "@/components/RecipeGrid";
 import { WeeklyPlanner } from "@/components/WeeklyPlanner";
-import { recipes } from "@/data/recipes";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+const fetchRecipes = async () => {
+  const { data: recipes, error } = await supabase
+    .from('recipes')
+    .select(`
+      id,
+      title,
+      image,
+      cuisine,
+      instructions,
+      recipe_ingredients (
+        amount,
+        unit,
+        item
+      )
+    `);
+
+  if (error) throw error;
+
+  return recipes.map((recipe: any) => ({
+    ...recipe,
+    ingredients: recipe.recipe_ingredients.map((ing: any) => ({
+      amount: ing.amount,
+      unit: ing.unit || '',
+      item: ing.item,
+    })),
+    allergens: [], // You might want to add an allergens table in the future
+  }));
+};
+
 const Index = () => {
-  const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const { toast } = useToast();
+
+  const { data: recipes = [] } = useQuery({
+    queryKey: ['recipes'],
+    queryFn: fetchRecipes,
+  });
 
   const handleApplyFilters = ({
     search,
@@ -94,7 +129,7 @@ const Index = () => {
           <div className="flex-1 space-y-4">
             <RecipeFilters onApplyFilters={handleApplyFilters} />
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <RecipeGrid recipes={filteredRecipes} onAddRecipe={handleAddRecipe} />
+              <RecipeGrid recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} onAddRecipe={handleAddRecipe} />
             </div>
           </div>
         </div>
