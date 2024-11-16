@@ -77,7 +77,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
                     <p className="text-sm text-gray-500">{recipe.cuisine}</p>
                   </button>
                 </HoverCardTrigger>
-                <HoverCardContent className="w-80">
+                <HoverCardContent className="w-80 bg-white border shadow-lg">
                   <div className="space-y-2">
                     <h4 className="font-semibold">Ingredients:</h4>
                     <ul className="text-sm space-y-1">

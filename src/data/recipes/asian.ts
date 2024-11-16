@@ -23,22 +23,24 @@ export const asianRecipes: Recipe[] = [
     allergens: ['peanuts', 'eggs', 'soy']
   },
   {
-    id: '17',
-    title: 'Fried Rice',
-    image: 'https://images.unsplash.com/photo-1589528161513-0c03ef09bee2?w=800&auto=format&fit=crop',
-    recipeUrl: 'https://example.com/fried-rice',
+    id: '4',
+    title: 'Teriyaki Salmon',
+    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&auto=format&fit=crop',
+    recipeUrl: 'https://example.com/teriyaki-salmon',
     ingredients: [
-      { amount: '2', unit: 'cups', item: 'cooked rice' },
-      { amount: '1', unit: 'cup', item: 'mixed vegetables' },
-      { amount: '2', item: 'eggs' },
-      { amount: '2', unit: 'tbsp', item: 'soy sauce' },
+      { amount: '4', item: 'salmon fillets' },
+      { amount: '1/2', unit: 'cup', item: 'soy sauce' },
+      { amount: '1/4', unit: 'cup', item: 'mirin' },
+      { amount: '2', unit: 'tbsp', item: 'brown sugar' },
+      { amount: '1', unit: 'tbsp', item: 'ginger' },
     ],
     instructions: [
-      'Heat oil in a pan',
-      'Scramble eggs and add vegetables',
-      'Add rice and soy sauce, stir until heated'
+      'Mix sauce ingredients',
+      'Marinate salmon for 30 minutes',
+      'Bake at 400°F for 12-15 minutes',
+      'Brush with remaining sauce'
     ],
-    cuisine: 'Chinese',
-    allergens: ['soy', 'eggs']
+    cuisine: 'Japanese',
+    allergens: ['fish', 'soy']
   },
 ];
