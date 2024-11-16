@@ -3,7 +3,6 @@ import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { cuisineTypes, allergens } from "@/data/recipes";
-import { Slider } from "./ui/slider";
 
 interface FiltersProps {
   onApplyFilters: (filters: {
@@ -20,7 +19,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
-  const [servings, setServings] = useState<number>(1);
 
   useEffect(() => {
     onApplyFilters({
@@ -28,9 +26,9 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
       maxIngredients,
-      servings,
+      servings: 1,
     });
-  }, [search, selectedCuisines, selectedAllergens, maxIngredients, servings, onApplyFilters]);
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4">
@@ -56,21 +54,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className="space-y-2">
-        <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Servings Multiplier</h3>
-        <Slider
-          value={[servings]}
-          onValueChange={(value) => setServings(value[0])}
-          min={1}
-          max={10}
-          step={1}
-          className="w-full"
-        />
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Current multiplier: {servings}x
-        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

@@ -33,38 +33,26 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   const handleShare = (method: "sms" | "email" | "copy") => {
     const list = generateGroceryList();
     const text = Object.entries(list)
-      .map(([item, { amount, unit }]) => `${amount}${unit ? ` ${unit}` : ''} ${item}`)
+      .map(([item, { amount, unit }]) => {
+        const adjustedAmount = (amount * servings).toFixed(1);
+        return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${item}`;
+      })
       .join("\n");
 
     switch (method) {
       case "sms":
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         const isMac = /Mac/i.test(navigator.userAgent);
-        const smsUrl = `sms:?body=${encodeURIComponent(text)}`;
-        const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
-        const messagesUrl = `messages://compose?body=${encodeURIComponent(text)}`;
-        
         if (isMobile) {
-          // Try SMS first, then WhatsApp as fallback on mobile
-          window.location.href = smsUrl;
-          setTimeout(() => {
-            window.location.href = whatsappUrl;
-          }, 300);
+          window.location.href = `sms:?body=${encodeURIComponent(text)}`;
         } else if (isMac) {
-          // Use Messages app on macOS
-          window.location.href = messagesUrl;
+          window.location.href = `messages://compose?body=${encodeURIComponent(text)}`;
         } else {
-          toast({
-            title: "Device Not Supported",
-            description: "Please use a mobile device or a Mac with Messages app to send SMS messages.",
-            className: "bg-white",
-          });
+          window.location.href = `mailto:?subject=Grocery List&body=${encodeURIComponent(text)}`;
         }
         break;
       case "email":
-        window.open(
-          `mailto:?subject=Grocery List&body=${encodeURIComponent(text)}`
-        );
+        window.location.href = `mailto:?subject=Grocery List&body=${encodeURIComponent(text)}`;
         break;
       case "copy":
         navigator.clipboard.writeText(text);
@@ -110,7 +98,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[305px]">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[330px]">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
@@ -141,9 +129,9 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       </div>
 
       <div className="mt-4 px-4 pb-4">
-        <div className="flex items-center gap-6 mb-2">
+        <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold">Grocery List</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-4">
             <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
             <Slider
               value={[servings]}
@@ -161,7 +149,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
             <div key={item} className="flex justify-between py-1 text-sm">
               <span className="dark:text-gray-200">{item}</span>
               <span className="text-gray-600 dark:text-gray-400">
-                {(parseFloat(amount.toString()) * servings).toFixed(1)}{unit ? ` ${unit}` : ''}
+                {(amount * servings).toFixed(1)}{unit ? ` ${unit}` : ''}
               </span>
             </div>
           ))}
@@ -176,7 +164,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             onClick={() => handleShare("email")}
           >
             Email
