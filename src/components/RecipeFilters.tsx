@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 import { cuisineTypes, allergens } from "@/data/recipes";
 
 interface FiltersProps {

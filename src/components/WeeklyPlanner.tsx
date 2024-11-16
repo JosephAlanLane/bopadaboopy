@@ -87,9 +87,9 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm sticky top-4">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm">
       <div className="flex-1">
-        <h2 className="font-semibold mb-4 px-4 pt-4">Weekly Meal Plan</h2>
+        <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
           {DAYS.map((day) => (
             <div
@@ -97,9 +97,9 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
               className="p-2 bg-gray-50 rounded border flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                <p className="font-medium w-20">{day}</p>
+                <p className="font-medium w-16 text-sm">{day}</p>
                 {mealPlan[day] ? (
-                  <p className="text-sm text-gray-600">{mealPlan[day]?.title}</p>
+                  <p className="text-sm text-gray-600 truncate">{mealPlan[day]?.title}</p>
                 ) : (
                   <p className="text-sm text-gray-400">No meal planned</p>
                 )}
@@ -118,10 +118,10 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       </div>
 
       <div className="mt-4 px-4 pb-4">
-        <h2 className="font-semibold mb-4">Grocery List</h2>
-        <ScrollArea className="h-48 rounded border bg-gray-50 p-4">
+        <h2 className="font-semibold mb-2">Grocery List</h2>
+        <ScrollArea className="h-40 rounded border bg-gray-50 p-4">
           {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
-            <div key={item} className="flex justify-between py-1">
+            <div key={item} className="flex justify-between py-1 text-sm">
               <span>{item}</span>
               <span className="text-gray-600">
                 {amount}{unit ? ` ${unit}` : ''}
