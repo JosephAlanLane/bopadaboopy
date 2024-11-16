@@ -74,7 +74,7 @@ const Index = () => {
 
     if (allergens.length > 0) {
       filtered = filtered.filter(
-        (recipe) => !recipe.allergens.some((allergen) => allergens.includes(allergen))
+        (recipe) => !allergens.some(allergen => recipe.allergens.includes(allergen))
       );
     }
 

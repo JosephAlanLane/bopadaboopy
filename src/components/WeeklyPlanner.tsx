@@ -101,7 +101,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
                 {mealPlan[day] ? (
                   <p className="text-sm text-gray-600 truncate">{mealPlan[day]?.title}</p>
                 ) : (
-                  <p className="text-sm text-gray-400 pl-2">No meal planned</p>
+                  <p className="text-sm text-gray-400 pl-8">No meal planned</p>
                 )}
               </div>
               {mealPlan[day] && (
@@ -132,21 +132,21 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 bg-blue-500 text-white hover:bg-blue-600"
+            className="flex-1 bg-[#008C45] hover:bg-[#007038] text-gray-200 border-gray-300"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-primary text-white hover:bg-secondary"
+            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300"
             onClick={() => handleShare("email")}
           >
             Email
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
+            className="flex-1 bg-[#CD212A] hover:bg-[#B91C1C] text-gray-200 border-gray-300"
             onClick={() => handleShare("copy")}
           >
             Copy
