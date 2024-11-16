@@ -8,16 +8,16 @@ const About = () => {
       <main className="flex-1">
         <div className="max-w-3xl mx-auto p-8">
           <div className="bg-white rounded-lg shadow-sm p-8 space-y-6">
-            <h1 className="text-4xl font-bold text-primary mb-6">La Storia Della Nonna</h1>
+            <h1 className="text-4xl font-bold text-primary mb-6">The Magic of Family Meals</h1>
             <div className="prose prose-lg">
               <p className="text-gray-700 leading-relaxed">
-                Growing up in an Italian household, the heart of our family was always the kitchen, where my beloved Nonna (grandmother) reigned supreme. Her gentle hands and warm smile turned every meal into a celebration of love and tradition. The aroma of fresh herbs, garlic, and tomato sauce would fill our home, drawing everyone to gather around her as she worked her culinary magic.
+                Growing up, the heart of our family was always the kitchen, where our beloved Nonna (grandmother) made meal planning and cooking feel effortless. Her gentle guidance turned every meal preparation into a celebration of togetherness, creating precious memories that would last a lifetime. The kitchen wasn't just a place to cook; it was where stories were shared, laughter echoed, and bonds grew stronger.
               </p>
               <p className="text-gray-700 leading-relaxed mt-4">
-                My childhood memories are filled with moments spent beside her, learning the secrets of perfect pasta, the patience needed for a rich marinara sauce, and the joy of sharing meals with family. She taught me that cooking wasn't just about following recipes - it was about putting your heart into every dish and creating moments of joy for those you love.
+                In today's busy world, planning and preparing meals can feel overwhelming. That's why we created this platform - to bring back the joy and simplicity of family meal planning. We want to help you create those same magical moments around the dinner table, where conversations flow naturally and memories are made. Whether you're cooking traditional family recipes or exploring new cuisines from around the world, our goal is to make the experience of planning and preparing meals together something to look forward to.
               </p>
               <p className="text-gray-700 leading-relaxed mt-4">
-                Now, I want to share these precious memories and recipes with you. Through this collection, I hope to pass on not just the techniques and ingredients that made my Nonna's cooking special, but also the warmth and love that made every meal in her kitchen feel like coming home. Let these recipes bring a little bit of my Nonna's magic into your kitchen, just as she brought magic into mine.
+                Through this platform, we hope to share the warmth and love that made every meal in Nonna's kitchen feel special. Let these recipes and meal plans help you bring your family together, creating your own traditions and precious memories around the dinner table. Because at the end of the day, it's not just about the food - it's about the joy of cooking together and the bonds we strengthen when we share a meal.
               </p>
               <p className="text-gray-700 leading-relaxed mt-4 italic">
                 "Mangia, mangia! You're too skinny!" - Every Italian Nonna ever
