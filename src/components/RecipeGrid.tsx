@@ -17,7 +17,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>([]);
   const [page, setPage] = useState(1);
-  const recipesPerPage = 8;
+  const recipesPerPage = 12;
   
   const { ref, inView } = useInView({
     threshold: 0,

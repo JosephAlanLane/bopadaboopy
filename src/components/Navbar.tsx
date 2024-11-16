@@ -16,7 +16,10 @@ export const Navbar = () => {
     <nav className="w-full bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center space-x-8">
-          <h1 className="text-2xl font-bold text-primary">MealPlanner</h1>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
+            <p className="text-sm text-gray-600">Your own personal Italian Grandpa</p>
+          </div>
           <div className="hidden md:flex space-x-4">
             <Button variant="ghost" onClick={() => navigate("/")}>Home</Button>
             <Button variant="ghost" onClick={() => navigate("/about")}>About</Button>
