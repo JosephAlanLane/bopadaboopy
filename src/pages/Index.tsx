@@ -120,8 +120,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-200">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4 flex gap-4">
-          <aside className="w-72 shrink-0 max-h-[calc(100vh-8rem)] overflow-auto">
+        <div className="max-w-[1800px] mx-auto p-4 flex gap-6">
+          <aside className="w-80 shrink-0">
             <div className="sticky top-4">
               <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
             </div>
