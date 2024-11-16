@@ -53,16 +53,31 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
     Object.values(mealPlan).forEach((recipe) => {
       if (!recipe) return;
       recipe.ingredients.forEach(({ amount, item, unit }) => {
+        const key = `${item.toLowerCase()}_${unit || ''}`;
         const numericAmount = parseFloat(amount) || 0;
-        if (groceries[item]) {
-          groceries[item].amount += numericAmount;
+        
+        if (groceries[key]) {
+          groceries[key].amount += numericAmount;
         } else {
-          groceries[item] = { amount: numericAmount, unit };
+          groceries[key] = { 
+            amount: numericAmount, 
+            unit,
+            displayName: item 
+          };
         }
       });
     });
 
-    return groceries;
+    // Convert back to display format
+    const displayList: { [key: string]: { amount: number; unit?: string } } = {};
+    Object.entries(groceries).forEach(([key, value]) => {
+      displayList[value.displayName] = {
+        amount: Math.round(value.amount * 100) / 100, // Round to 2 decimal places
+        unit: value.unit
+      };
+    });
+
+    return displayList;
   };
 
   return (
@@ -112,21 +127,21 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 text-blue-500 hover:text-blue-600"
+            className="flex-1 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1 text-green-500 hover:text-green-600"
+            className="flex-1 text-green-500 hover:text-green-600 hover:bg-green-50"
             onClick={() => handleShare("email")}
           >
             Email
           </Button>
           <Button
             variant="outline"
-            className="flex-1 text-gray-500 hover:text-gray-600"
+            className="flex-1 text-gray-500 hover:text-gray-600 hover:bg-gray-50"
             onClick={() => handleShare("copy")}
           >
             Copy

@@ -34,7 +34,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
             />
             {hoveredId === recipe.id && (
               <div
-                className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer animate-fade-in"
+                className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer transition-opacity duration-200"
                 onClick={() => onAddRecipe(recipe)}
               >
                 <Plus className="w-8 h-8 text-white" />
@@ -57,7 +57,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
                   <ul className="text-sm space-y-1">
                     {recipe.ingredients.map((ing, idx) => (
                       <li key={idx}>
-                        {ing.amount} {ing.item}
+                        {ing.amount} {ing.unit} {ing.item}
                       </li>
                     ))}
                   </ul>
