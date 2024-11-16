@@ -18,7 +18,7 @@ export const Navbar = () => {
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-4">
             <img 
-              src="/nonna-logo.png"
+              src="https://gpteng.s3.amazonaws.com/nonna-logo.png"
               alt="Italian Nonna" 
               className="w-16 h-16 object-contain"
             />

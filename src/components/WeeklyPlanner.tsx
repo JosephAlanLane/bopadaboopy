@@ -36,7 +36,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
 
     switch (method) {
       case "sms":
-        window.open(`sms:?body=${encodeURIComponent(text)}`);
+        window.open(`sms:?&body=${encodeURIComponent(text)}`);
         break;
       case "email":
         window.open(
