@@ -10,7 +10,20 @@ interface WeeklyPlannerProps {
   onRemoveMeal: (day: DayOfWeek) => void;
 }
 
-const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+interface GroceryItem {
+  amount: number;
+  unit?: string;
+}
+
+const DAYS: DayOfWeek[] = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) => {
   const { toast } = useToast();
@@ -83,20 +96,20 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
               key={day}
               className="p-2 bg-gray-50 rounded flex items-center justify-between text-sm"
             >
-              <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="flex items-center gap-2 min-w-0">
                 <span className="font-medium w-20">{day}:</span>
-                <span className="truncate text-gray-600 flex-1">
+                <span className="truncate text-gray-600">
                   {mealPlan[day]?.title || "No meal planned"}
                 </span>
-                {mealPlan[day] && (
-                  <button
-                    onClick={() => onRemoveMeal(day)}
-                    className="text-gray-400 hover:text-gray-600 ml-2"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
               </div>
+              {mealPlan[day] && (
+                <button
+                  onClick={() => onRemoveMeal(day)}
+                  className="text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
           ))}
         </div>

@@ -19,7 +19,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
 
-  // Apply filters immediately when any filter changes
   useEffect(() => {
     onApplyFilters({
       search,
@@ -53,7 +52,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2 bg-blue-50 rounded-lg p-3">
+        <div className="space-y-2 bg-muted rounded-lg p-3">
           <h3 className="font-medium text-sm text-primary">Cuisine Types</h3>
           <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
@@ -75,7 +74,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           </div>
         </div>
 
-        <div className="space-y-2 bg-red-50 rounded-lg p-3">
+        <div className="space-y-2 bg-accent rounded-lg p-3">
           <h3 className="font-medium text-sm text-primary">Allergens</h3>
           <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (
