@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { RecipeFilters } from "@/components/RecipeFilters";
 import { RecipeGrid } from "@/components/RecipeGrid";
@@ -7,6 +7,8 @@ import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -42,6 +44,8 @@ const fetchRecipes = async () => {
 const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
+  const [servings, setServings] = useState(1);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { toast } = useToast();
 
   const { data: recipes = [] } = useQuery({
@@ -49,16 +53,31 @@ const Index = () => {
     queryFn: fetchRecipes,
   });
 
+  // Auto-hide sidebar on mobile
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    setSidebarOpen(!isMobile);
+
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleApplyFilters = ({
     search,
     cuisines,
     allergens,
     maxIngredients,
+    servings: newServings,
   }: {
     search: string;
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
+    servings: number;
   }) => {
     let filtered = recipes;
 
@@ -84,6 +103,7 @@ const Index = () => {
       (recipe) => recipe.ingredients.length <= maxIngredients
     );
 
+    setServings(newServings);
     setFilteredRecipes(filtered);
   };
 
@@ -119,33 +139,51 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-200">
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4 flex gap-6">
-          <aside className="w-80 shrink-0">
+        <div className="max-w-[1800px] mx-auto p-4 flex gap-6 relative">
+          <aside 
+            className={`${
+              sidebarOpen ? 'w-80' : 'w-0'
+            } transition-all duration-300 overflow-hidden fixed md:relative z-10 h-[calc(100vh-5rem)] md:h-auto`}
+          >
             <div className="sticky top-4">
               <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
             </div>
           </aside>
-          <div className="flex-1 space-y-4">
+          
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed left-0 top-1/2 transform -translate-y-1/2 z-20 bg-white dark:bg-gray-800 rounded-l-none"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? <ChevronLeft /> : <ChevronRight />}
+          </Button>
+
+          <div className={`flex-1 space-y-4 ${sidebarOpen ? 'md:ml-80' : ''}`}>
             <RecipeFilters onApplyFilters={handleApplyFilters} />
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <RecipeGrid recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} onAddRecipe={handleAddRecipe} />
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+              <RecipeGrid 
+                recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
+                onAddRecipe={handleAddRecipe}
+                servings={servings}
+              />
             </div>
           </div>
         </div>
       </main>
-      <footer className="bg-white border-t mt-8">
+      <footer className="bg-white dark:bg-gray-800 border-t dark:border-gray-700 mt-8">
         <div className="max-w-[1800px] mx-auto py-6 px-4">
           <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} Meal Planner. All rights reserved.
             </div>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Terms of Service</a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Contact</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Privacy Policy</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Terms of Service</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Contact</a>
             </div>
           </div>
         </div>

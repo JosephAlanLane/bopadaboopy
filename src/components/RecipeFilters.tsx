@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { cuisineTypes, allergens } from "@/data/recipes";
+import { Slider } from "./ui/slider";
 
 interface FiltersProps {
   onApplyFilters: (filters: {
@@ -10,6 +11,7 @@ interface FiltersProps {
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
+    servings: number;
   }) => void;
 }
 
@@ -18,6 +20,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
+  const [servings, setServings] = useState<number>(1);
 
   useEffect(() => {
     onApplyFilters({
@@ -25,11 +28,12 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
       maxIngredients,
+      servings,
     });
-  }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, servings, onApplyFilters]);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm space-y-4">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4">
       <div className="flex gap-4">
         <Input
           placeholder="Search recipes..."
@@ -44,7 +48,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
-          <SelectContent className="bg-white">
+          <SelectContent className="bg-white dark:bg-gray-800">
             {[5, 10, 15, 20, 25].map((num) => (
               <SelectItem key={num} value={num.toString()}>
                 Max {num} ingredients
@@ -54,9 +58,24 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
         </Select>
       </div>
 
+      <div className="space-y-2">
+        <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Servings Multiplier</h3>
+        <Slider
+          value={[servings]}
+          onValueChange={(value) => setServings(value[0])}
+          min={1}
+          max={10}
+          step={1}
+          className="w-full"
+        />
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Current multiplier: {servings}x
+        </p>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2 p-4 bg-green-50 rounded-lg border border-gray-100">
-          <h3 className="font-medium text-sm text-gray-600">Cuisine Types</h3>
+        <div className="space-y-2 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
+          <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Cuisine Types</h3>
           <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
               <div key={cuisine} className="flex items-center space-x-2">
@@ -70,7 +89,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                       setSelectedCuisines(selectedCuisines.filter((c) => c !== cuisine));
                     }
                   }}
-                  className="border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  className="border-green-400 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
                 />
                 <label htmlFor={`cuisine-${cuisine}`} className="text-sm">{cuisine}</label>
               </div>
@@ -78,8 +97,8 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           </div>
         </div>
 
-        <div className="space-y-2 p-4 bg-red-50 rounded-lg border border-gray-100">
-          <h3 className="font-medium text-sm text-gray-600">Allergens</h3>
+        <div className="space-y-2 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
+          <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Allergens</h3>
           <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (
               <div key={allergen} className="flex items-center space-x-2">
@@ -93,7 +112,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                       setSelectedAllergens(selectedAllergens.filter((a) => a !== allergen));
                     }
                   }}
-                  className="border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  className="border-red-400 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
                 />
                 <label htmlFor={`allergen-${allergen}`} className="text-sm">{allergen}</label>
               </div>

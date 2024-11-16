@@ -11,9 +11,10 @@ import { useInView } from "react-intersection-observer";
 interface RecipeGridProps {
   recipes: Recipe[];
   onAddRecipe: (recipe: Recipe) => void;
+  servings?: number;
 }
 
-export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
+export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>([]);
   const [page, setPage] = useState(1);
@@ -23,7 +24,6 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
     threshold: 0,
   });
 
-  // Only reset when recipes array changes completely
   useEffect(() => {
     if (recipes.length > 0) {
       setDisplayedRecipes(recipes.slice(0, recipesPerPage));
@@ -31,26 +31,31 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
     }
   }, [recipes.length]);
 
-  // Handle infinite scroll
   useEffect(() => {
     if (inView && displayedRecipes.length < recipes.length) {
       const nextPage = page + 1;
       const start = 0;
       const end = nextPage * recipesPerPage;
-      
-      // Append new recipes without modifying existing ones
       setDisplayedRecipes(recipes.slice(start, end));
       setPage(nextPage);
     }
   }, [inView, recipes, page, displayedRecipes.length]);
 
+  const adjustAmount = (amount: string) => {
+    const numericAmount = parseFloat(amount);
+    if (!isNaN(numericAmount)) {
+      return (numericAmount * servings).toFixed(1);
+    }
+    return amount;
+  };
+
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {displayedRecipes.map((recipe) => (
           <div
             key={recipe.id}
-            className="relative rounded-lg overflow-hidden"
+            className="relative rounded-recipe overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02]"
           >
             <div
               className="relative"
@@ -60,7 +65,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
               <img
                 src={recipe.image}
                 alt={recipe.title}
-                className="w-full aspect-square object-cover"
+                className="w-full aspect-square object-cover rounded-t-recipe"
               />
               {hoveredId === recipe.id && (
                 <div
@@ -71,28 +76,28 @@ export const RecipeGrid = ({ recipes, onAddRecipe }: RecipeGridProps) => {
                 </div>
               )}
             </div>
-            <div className="p-2 bg-white">
+            <div className="p-2">
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <button className="w-full text-left">
-                    <h3 className="font-medium truncate hover:text-primary">
+                    <h3 className="font-medium truncate hover:text-primary dark:text-white">
                       {recipe.title}
                     </h3>
-                    <p className="text-sm text-gray-500">{recipe.cuisine}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{recipe.cuisine}</p>
                   </button>
                 </HoverCardTrigger>
-                <HoverCardContent className="w-80 bg-white border shadow-lg">
+                <HoverCardContent className="w-80 bg-white dark:bg-gray-800 border shadow-lg">
                   <div className="space-y-2">
-                    <h4 className="font-semibold">Ingredients:</h4>
-                    <ul className="text-sm space-y-1">
+                    <h4 className="font-semibold dark:text-white">Ingredients:</h4>
+                    <ul className="text-sm space-y-1 dark:text-gray-300">
                       {recipe.ingredients.map((ing, idx) => (
                         <li key={idx}>
-                          {ing.amount} {ing.unit} {ing.item}
+                          {adjustAmount(ing.amount)} {ing.unit} {ing.item}
                         </li>
                       ))}
                     </ul>
-                    <h4 className="font-semibold">Instructions:</h4>
-                    <ol className="text-sm space-y-1 list-decimal list-inside">
+                    <h4 className="font-semibold dark:text-white">Instructions:</h4>
+                    <ol className="text-sm space-y-1 list-decimal list-inside dark:text-gray-300">
                       {recipe.instructions.map((step, idx) => (
                         <li key={idx}>{step}</li>
                       ))}
