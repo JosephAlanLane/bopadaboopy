@@ -87,25 +87,27 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm sticky top-4 max-h-[calc(100vh-2rem)]">
-      <div className="flex-1 overflow-auto">
-        <h2 className="font-semibold p-3 border-b">Weekly Meal Plan</h2>
-        <div className="space-y-1 p-2">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm sticky top-4">
+      <div className="flex-1">
+        <h2 className="font-semibold mb-4 px-4 pt-4">Weekly Meal Plan</h2>
+        <div className="space-y-2 px-4">
           {DAYS.map((day) => (
             <div
               key={day}
-              className="p-2 bg-gray-50 rounded flex items-center justify-between text-sm"
+              className="p-2 bg-gray-50 rounded border flex items-center justify-between"
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="font-medium w-20">{day}:</span>
-                <span className="truncate text-gray-600">
-                  {mealPlan[day]?.title || "No meal planned"}
-                </span>
+              <div>
+                <p className="font-medium">{day}</p>
+                {mealPlan[day] ? (
+                  <p className="text-sm text-gray-600">{mealPlan[day]?.title}</p>
+                ) : (
+                  <p className="text-sm text-gray-400">No meal planned</p>
+                )}
               </div>
               {mealPlan[day] && (
                 <button
                   onClick={() => onRemoveMeal(day)}
-                  className="text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
+                  className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -115,11 +117,11 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         </div>
       </div>
 
-      <div className="p-3 border-t">
-        <h2 className="font-semibold mb-2">Grocery List</h2>
-        <ScrollArea className="h-32 rounded border bg-gray-50 p-2">
+      <div className="mt-4 px-4 pb-4">
+        <h2 className="font-semibold mb-4">Grocery List</h2>
+        <ScrollArea className="h-48 rounded border bg-gray-50 p-4">
           {Object.entries(generateGroceryList()).map(([item, { amount, unit }]) => (
-            <div key={item} className="flex justify-between py-1 text-sm">
+            <div key={item} className="flex justify-between py-1">
               <span>{item}</span>
               <span className="text-gray-600">
                 {amount}{unit ? ` ${unit}` : ''}
@@ -127,24 +129,24 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
             </div>
           ))}
         </ScrollArea>
-        <div className="flex gap-2 mt-3">
+        <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 bg-primary text-white hover:bg-primary/90"
+            className="flex-1 bg-blue-500 text-white hover:bg-blue-600"
             onClick={() => handleShare("sms")}
           >
             Text
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-primary text-white hover:bg-primary/90"
+            className="flex-1 bg-green-500 text-white hover:bg-green-600"
             onClick={() => handleShare("email")}
           >
             Email
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-primary text-white hover:bg-primary/90"
+            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
             onClick={() => handleShare("copy")}
           >
             Copy
