@@ -86,8 +86,10 @@ const Index = () => {
       <Navbar />
       <main className="flex-1">
         <div className="max-w-[1800px] mx-auto p-4 flex gap-6">
-          <aside className="w-80 shrink-0 sticky top-4">
-            <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
+          <aside className="w-80 shrink-0">
+            <div className="sticky top-4">
+              <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
+            </div>
           </aside>
           <div className="flex-1 space-y-4">
             <RecipeFilters onApplyFilters={handleApplyFilters} />
