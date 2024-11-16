@@ -1,4 +1,5 @@
-import { Recipe, DayOfWeek, MealPlan, Ingredient } from "@/types/recipe";
+import React from "react";
+import { Recipe, DayOfWeek, MealPlan } from "@/types/recipe";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { X } from "lucide-react";
@@ -7,6 +8,11 @@ import { useToast } from "./ui/use-toast";
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
+}
+
+interface GroceryItem {
+  amount: number;
+  unit?: string;
 }
 
 const DAYS: DayOfWeek[] = [
@@ -48,7 +54,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   const generateGroceryList = () => {
-    const groceries: { [key: string]: { amount: number; unit?: string } } = {};
+    const groceries: { [key: string]: GroceryItem & { itemName: string } } = {};
     
     Object.values(mealPlan).forEach((recipe) => {
       if (!recipe) return;
@@ -62,16 +68,16 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
           groceries[key] = { 
             amount: numericAmount, 
             unit,
-            displayName: item 
+            itemName: item 
           };
         }
       });
     });
 
     // Convert back to display format
-    const displayList: { [key: string]: { amount: number; unit?: string } } = {};
-    Object.entries(groceries).forEach(([key, value]) => {
-      displayList[value.displayName] = {
+    const displayList: { [key: string]: GroceryItem } = {};
+    Object.entries(groceries).forEach(([_key, value]) => {
+      displayList[value.itemName] = {
         amount: Math.round(value.amount * 100) / 100, // Round to 2 decimal places
         unit: value.unit
       };
