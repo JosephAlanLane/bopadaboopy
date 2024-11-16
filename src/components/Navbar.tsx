@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
           {user ? (
             <Button variant="ghost" className="border border-gray-200 dark:border-gray-700" onClick={handleSignOut}>Sign Out</Button>
           ) : (

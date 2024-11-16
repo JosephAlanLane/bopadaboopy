@@ -110,7 +110,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[305px]">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
@@ -144,7 +144,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex items-center gap-6 mb-2">
           <h2 className="font-semibold">Grocery List</h2>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Servings:</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
             <Slider
               value={[servings]}
               onValueChange={(value) => setServings(value[0])}
@@ -153,7 +153,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
               step={1}
               className="w-24"
             />
-            <span className="text-sm text-gray-500 min-w-[20px] dark:text-gray-400">{servings}x</span>
+            <span className="text-xs text-gray-500 min-w-[20px] dark:text-gray-400">{servings}x</span>
           </div>
         </div>
         <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
@@ -176,7 +176,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             onClick={() => handleShare("email")}
           >
             Email
