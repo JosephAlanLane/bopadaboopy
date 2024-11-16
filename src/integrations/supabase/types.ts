@@ -147,6 +147,7 @@ export type Database = {
       }
       recipes: {
         Row: {
+          allergens: string[] | null
           created_at: string
           cuisine: string
           id: string
@@ -156,6 +157,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          allergens?: string[] | null
           created_at?: string
           cuisine: string
           id?: string
@@ -165,6 +167,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          allergens?: string[] | null
           created_at?: string
           cuisine?: string
           id?: string

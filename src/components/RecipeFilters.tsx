@@ -55,7 +55,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2 p-4 bg-[#E8F5E9] rounded-lg">
+        <div className="space-y-2 p-4 bg-[#E8F5E9] rounded-lg border border-white">
           <h3 className="font-medium text-sm text-green-900">Cuisine Types</h3>
           <div className="grid grid-cols-2 gap-2">
             {cuisineTypes.map((cuisine) => (
@@ -77,7 +77,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           </div>
         </div>
 
-        <div className="space-y-2 p-4 bg-red-50 rounded-lg border-white">
+        <div className="space-y-2 p-4 bg-red-50 rounded-lg border border-white">
           <h3 className="font-medium text-sm text-red-900">Allergens</h3>
           <div className="grid grid-cols-2 gap-2">
             {allergens.map((allergen) => (
