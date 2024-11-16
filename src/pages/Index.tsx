@@ -142,10 +142,10 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4 flex gap-6 relative">
+        <div className="max-w-[1800px] mx-auto p-4 flex gap-2 relative">
           <aside 
             className={`${
-              sidebarOpen ? 'w-80' : 'w-0'
+              sidebarOpen ? 'w-[355px]' : 'w-0'
             } transition-all duration-300 overflow-hidden fixed md:relative z-10 h-[calc(100vh-5rem)] md:h-auto`}
           >
             <div className="sticky top-4">
@@ -162,7 +162,7 @@ const Index = () => {
             {sidebarOpen ? <ChevronLeft /> : <ChevronRight />}
           </Button>
 
-          <div className={`flex-1 space-y-4 ${sidebarOpen ? 'md:ml-80' : ''}`}>
+          <div className={`flex-1 space-y-4 ${sidebarOpen ? 'md:ml-[355px]' : ''}`}>
             <RecipeFilters onApplyFilters={handleApplyFilters} />
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
               <RecipeGrid 

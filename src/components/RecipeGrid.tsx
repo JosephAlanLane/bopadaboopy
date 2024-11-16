@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/recipe";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import {
   HoverCard,
@@ -16,30 +16,12 @@ interface RecipeGridProps {
 
 export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>([]);
+  const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>(recipes.slice(0, 8));
   const [page, setPage] = useState(1);
-  const recipesPerPage = 8;
   
   const { ref, inView } = useInView({
     threshold: 0,
   });
-
-  useEffect(() => {
-    if (recipes.length > 0) {
-      setDisplayedRecipes(recipes.slice(0, recipesPerPage));
-      setPage(1);
-    }
-  }, [recipes.length]);
-
-  useEffect(() => {
-    if (inView && displayedRecipes.length < recipes.length) {
-      const nextPage = page + 1;
-      const start = 0;
-      const end = nextPage * recipesPerPage;
-      setDisplayedRecipes(recipes.slice(start, end));
-      setPage(nextPage);
-    }
-  }, [inView, recipes, page, displayedRecipes.length]);
 
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
@@ -51,7 +33,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {displayedRecipes.map((recipe) => (
           <div
             key={recipe.id}
@@ -86,22 +68,27 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                     <p className="text-sm text-gray-500 dark:text-gray-400">{recipe.cuisine}</p>
                   </button>
                 </HoverCardTrigger>
-                <HoverCardContent className="w-80 bg-white dark:bg-gray-800 border shadow-lg">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold dark:text-white">Ingredients:</h4>
-                    <ul className="text-sm space-y-1 dark:text-gray-300">
-                      {recipe.ingredients.map((ing, idx) => (
-                        <li key={idx}>
-                          {adjustAmount(ing.amount)} {ing.unit} {ing.item}
-                        </li>
-                      ))}
-                    </ul>
-                    <h4 className="font-semibold dark:text-white">Instructions:</h4>
-                    <ol className="text-sm space-y-1 list-decimal list-inside dark:text-gray-300">
-                      {recipe.instructions.map((step, idx) => (
-                        <li key={idx}>{step}</li>
-                      ))}
-                    </ol>
+                <HoverCardContent className="w-96 bg-white dark:bg-gray-800 border shadow-lg">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold dark:text-white">{recipe.title}</h4>
+                    <div>
+                      <h5 className="font-medium mb-2 dark:text-white">Ingredients:</h5>
+                      <ul className="text-sm space-y-1 dark:text-gray-300">
+                        {recipe.ingredients.map((ing, idx) => (
+                          <li key={idx}>
+                            {adjustAmount(ing.amount)} {ing.unit} {ing.item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-medium mb-2 dark:text-white">Instructions:</h5>
+                      <ol className="text-sm space-y-1 list-decimal list-inside dark:text-gray-300">
+                        {recipe.instructions.map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
                   </div>
                 </HoverCardContent>
               </HoverCard>

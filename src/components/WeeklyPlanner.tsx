@@ -2,35 +2,30 @@ import React from "react";
 import { Recipe, DayOfWeek, MealPlan } from "@/types/recipe";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
-import { X } from "lucide-react";
+import { X, Calendar as CalendarIcon } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { Slider } from "./ui/slider";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
 }
 
-interface GroceryItem {
-  amount: number;
-  unit?: string;
-}
-
 const DAYS: DayOfWeek[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
+  "Monday", "Tuesday", "Wednesday", "Thursday",
+  "Friday", "Saturday", "Sunday"
 ];
 
 export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) => {
   const { toast } = useToast();
   const [servings, setServings] = React.useState(1);
 
-  const handleShare = (method: "sms" | "email" | "copy") => {
+  const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
     const list = generateGroceryList();
     const text = Object.entries(list)
       .map(([item, { amount, unit }]) => {
@@ -40,29 +35,78 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       .join("\n");
 
     switch (method) {
-      case "sms":
+      case "sms": {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const isMac = /Mac/i.test(navigator.userAgent);
-        if (isMobile) {
-          window.location.href = `sms:?body=${encodeURIComponent(text)}`;
-        } else if (isMac) {
-          window.location.href = `messages://compose?body=${encodeURIComponent(text)}`;
-        } else {
-          window.location.href = `mailto:?subject=Grocery List&body=${encodeURIComponent(text)}`;
-        }
+        const smsUrl = isMobile
+          ? `sms:?body=${encodeURIComponent(text)}`
+          : `sms:&body=${encodeURIComponent(text)}`;
+        window.location.href = smsUrl;
         break;
-      case "email":
-        window.location.href = `mailto:?subject=Grocery List&body=${encodeURIComponent(text)}`;
+      }
+      case "email": {
+        const subject = "Weekly Meal Plan Grocery List";
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+        window.location.href = mailtoLink;
         break;
-      case "copy":
+      }
+      case "copy": {
         navigator.clipboard.writeText(text);
         toast({
           title: "Copied to clipboard",
           description: "Your grocery list has been copied to your clipboard.",
-          className: "bg-white",
         });
         break;
+      }
+      case "calendar": {
+        const events = Object.entries(mealPlan)
+          .filter(([_, recipe]) => recipe !== null)
+          .map(([day, recipe]) => {
+            if (!recipe) return null;
+            const ingredients = recipe.ingredients
+              .map(ing => `${ing.amount} ${ing.unit || ''} ${ing.item}`)
+              .join('\n');
+            const description = `Ingredients:\n${ingredients}\n\nInstructions:\n${recipe.instructions.join('\n')}`;
+            return `BEGIN:VEVENT
+SUMMARY:${recipe.title}
+DESCRIPTION:${description.replace(/\n/g, '\\n')}
+DTSTART;VALUE=DATE:${getNextDate(day)}
+DTEND;VALUE=DATE:${getNextDate(day)}
+END:VEVENT`;
+          })
+          .filter(Boolean)
+          .join('\n');
+
+        const calendar = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Meal Planner//EN
+${events}
+END:VCALENDAR`;
+
+        const blob = new Blob([calendar], { type: 'text/calendar' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'meal-plan.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        break;
+      }
     }
+  };
+
+  const getNextDate = (dayName: string) => {
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = new Date();
+    const todayDay = today.getDay();
+    const targetDay = days.indexOf(dayName.toLowerCase());
+    let daysUntilTarget = targetDay - todayDay;
+    if (daysUntilTarget <= 0) daysUntilTarget += 7;
+    
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + daysUntilTarget);
+    return targetDate.toISOString().split('T')[0].replace(/-/g, '');
   };
 
   const generateGroceryList = () => {
@@ -98,7 +142,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[330px]">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[355px] mt-4 md:mt-0">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
@@ -109,11 +153,38 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
             >
               <div className="flex items-center gap-4">
                 <p className="font-medium w-16 text-sm">{day}</p>
-                {mealPlan[day] ? (
-                  <p className="text-sm text-gray-600 truncate dark:text-gray-300">{mealPlan[day]?.title}</p>
-                ) : (
-                  <p className="text-sm text-gray-400 pl-8 dark:text-gray-500">No meal planned</p>
-                )}
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <p className="text-sm text-gray-600 truncate dark:text-gray-300 cursor-pointer">
+                      {mealPlan[day] ? mealPlan[day]?.title : "No meal planned"}
+                    </p>
+                  </HoverCardTrigger>
+                  {mealPlan[day] && (
+                    <HoverCardContent className="w-80 p-4">
+                      <h3 className="font-semibold mb-2">{mealPlan[day]?.title}</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-1">Ingredients:</h4>
+                          <ul className="text-sm space-y-1">
+                            {mealPlan[day]?.ingredients.map((ing, idx) => (
+                              <li key={idx}>
+                                {ing.amount} {ing.unit} {ing.item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-medium mb-1">Instructions:</h4>
+                          <ol className="text-sm space-y-1 list-decimal list-inside">
+                            {mealPlan[day]?.instructions.map((step, idx) => (
+                              <li key={idx}>{step}</li>
+                            ))}
+                          </ol>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  )}
+                </HoverCard>
               </div>
               {mealPlan[day] && (
                 <button
@@ -130,8 +201,8 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
 
       <div className="mt-4 px-4 pb-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold">Grocery List</h2>
-          <div className="flex items-center gap-2 ml-4">
+          <h2 className="font-semibold inline-flex items-center">Grocery List</h2>
+          <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
             <Slider
               value={[servings]}
@@ -154,27 +225,37 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
             </div>
           ))}
         </ScrollArea>
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-col gap-2 mt-4">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 bg-[#008C45] hover:bg-[#007038] text-gray-200 border border-gray-300"
+              onClick={() => handleShare("sms")}
+            >
+              Text
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              onClick={() => handleShare("email")}
+            >
+              Email
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 bg-[#CD212A] hover:bg-[#B91C1C] text-gray-200 border border-gray-300"
+              onClick={() => handleShare("copy")}
+            >
+              Copy
+            </Button>
+          </div>
           <Button
             variant="outline"
-            className="flex-1 bg-[#008C45] hover:bg-[#007038] text-gray-200 border-gray-300"
-            onClick={() => handleShare("sms")}
+            className="w-full border border-gray-300 dark:border-gray-600"
+            onClick={() => handleShare("calendar")}
           >
-            Text
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-            onClick={() => handleShare("email")}
-          >
-            Email
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 bg-[#CD212A] hover:bg-[#B91C1C] text-gray-200 border-gray-300"
-            onClick={() => handleShare("copy")}
-          >
-            Copy
+            <CalendarIcon className="w-4 h-4 mr-2" />
+            Add to Calendar
           </Button>
         </div>
       </div>

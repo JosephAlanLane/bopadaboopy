@@ -10,7 +10,6 @@ interface FiltersProps {
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
-    servings: number;
   }) => void;
 }
 
@@ -26,7 +25,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
       maxIngredients,
-      servings: 1,
     });
   }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
 
@@ -97,7 +95,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                   }}
                   className="border-red-400 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
                 />
-                <label htmlFor={`allergen-${allergen}`} className="text-sm">{allergen}</label>
+                <label htmlFor={`allergen-${allergen}`} className="text-sm uppercase">{allergen}</label>
               </div>
             ))}
           </div>
