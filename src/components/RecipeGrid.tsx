@@ -16,12 +16,17 @@ interface RecipeGridProps {
 
 export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>(recipes.slice(0, 8));
+  const [displayedRecipes, setDisplayedRecipes] = useState<Recipe[]>(recipes);
   const [page, setPage] = useState(1);
   
   const { ref, inView } = useInView({
     threshold: 0,
   });
+
+  // Update displayed recipes when the main recipes prop changes
+  useState(() => {
+    setDisplayedRecipes(recipes);
+  }, [recipes]);
 
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
