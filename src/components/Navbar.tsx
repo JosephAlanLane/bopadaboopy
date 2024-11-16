@@ -18,7 +18,7 @@ export const Navbar = () => {
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-4">
             <img 
-              src="https://raw.githubusercontent.com/gpt-engineer-org/gptengineer-assets/main/nonna-logo.png"
+              src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
               className="w-16 h-16 object-contain"
             />
