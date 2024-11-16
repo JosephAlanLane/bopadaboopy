@@ -141,7 +141,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       </div>
 
       <div className="mt-4 px-4 pb-4">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-6 mb-2">
           <h2 className="font-semibold">Grocery List</h2>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500 dark:text-gray-400">Servings:</span>
