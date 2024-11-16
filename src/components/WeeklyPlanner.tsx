@@ -96,12 +96,12 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
               key={day}
               className="p-2 bg-gray-50 rounded border flex items-center justify-between"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <p className="font-medium w-16 text-sm">{day}</p>
                 {mealPlan[day] ? (
                   <p className="text-sm text-gray-600 truncate">{mealPlan[day]?.title}</p>
                 ) : (
-                  <p className="text-sm text-gray-400">No meal planned</p>
+                  <p className="text-sm text-gray-400 pl-2">No meal planned</p>
                 )}
               </div>
               {mealPlan[day] && (
@@ -132,7 +132,7 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
-            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
+            className="flex-1 bg-blue-500 text-white hover:bg-blue-600"
             onClick={() => handleShare("sms")}
           >
             Text
