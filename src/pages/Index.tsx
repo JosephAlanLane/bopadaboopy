@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { RecipeFilters } from "@/components/RecipeFilters";
 import { RecipeGrid } from "@/components/RecipeGrid";
@@ -7,7 +6,6 @@ import { WeeklyPlanner } from "@/components/WeeklyPlanner";
 import { recipes } from "@/data/recipes";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -15,17 +13,6 @@ const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate("/login");
-      }
-    };
-    checkAuth();
-  }, [navigate]);
 
   const handleApplyFilters = ({
     search,
