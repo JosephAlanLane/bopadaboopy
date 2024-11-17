@@ -85,7 +85,7 @@ export const MealPlanDay = ({
             </HoverCard>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-1">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-4">
             No meal planned
           </p>
         )}
