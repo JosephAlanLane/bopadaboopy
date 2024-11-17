@@ -15,7 +15,7 @@ export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }:
     <>
       <div 
         className={`
-          ${sidebarOpen ? 'w-[320px]' : 'w-0'}
+          ${sidebarOpen ? 'w-[380px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
