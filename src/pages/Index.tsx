@@ -146,22 +146,24 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4 flex gap-4 relative">
-          <Sidebar 
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            mealPlan={mealPlan}
-            onRemoveMeal={handleRemoveMeal}
-          />
-          
-          <div className={`flex-1 space-y-4 transition-all duration-300 ${sidebarOpen ? 'md:ml-2' : ''}`}>
-            <RecipeFilters onApplyFilters={handleApplyFilters} />
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
-              <RecipeGrid 
-                recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
-                onAddRecipe={handleAddRecipe}
-                servings={servings}
-              />
+        <div className="max-w-[1800px] mx-auto p-4">
+          <div className="flex gap-4 relative">
+            <Sidebar 
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              mealPlan={mealPlan}
+              onRemoveMeal={handleRemoveMeal}
+            />
+            
+            <div className={`flex-1 space-y-4 transition-all duration-300 ${sidebarOpen ? 'md:ml-2' : ''}`}>
+              <RecipeFilters onApplyFilters={handleApplyFilters} />
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <RecipeGrid 
+                  recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
+                  onAddRecipe={handleAddRecipe}
+                  servings={servings}
+                />
+              </div>
             </div>
           </div>
         </div>
