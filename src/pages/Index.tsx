@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { RecipeFilters } from "@/components/RecipeFilters";
 import { RecipeGrid } from "@/components/RecipeGrid";
-import { WeeklyPlanner } from "@/components/WeeklyPlanner";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Sidebar } from "@/components/Sidebar";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -148,26 +146,14 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4 flex gap-1 relative">
-          <aside 
-            className={`${
-              sidebarOpen ? 'w-[355px]' : 'w-0'
-            } transition-all duration-300 overflow-hidden fixed md:static z-10`}
-          >
-            <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-              <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
-            </div>
-          </aside>
+        <div className="max-w-[1800px] mx-auto p-4 flex gap-4 relative">
+          <Sidebar 
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            mealPlan={mealPlan}
+            onRemoveMeal={handleRemoveMeal}
+          />
           
-          <Button
-            variant="outline"
-            size="icon"
-            className="fixed left-0 top-1/2 transform -translate-y-1/2 z-20 bg-white dark:bg-gray-800 rounded-l-none"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? <ChevronLeft /> : <ChevronRight />}
-          </Button>
-
           <div className={`flex-1 space-y-4 transition-all duration-300 ${sidebarOpen ? 'md:ml-2' : ''}`}>
             <RecipeFilters onApplyFilters={handleApplyFilters} />
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
