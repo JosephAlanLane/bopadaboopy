@@ -51,7 +51,7 @@ export const MealPlanDay = ({
           <div
             draggable
             onDragStart={handleDragStart}
-            className="flex-1 cursor-move min-w-0"
+            className="flex-1 cursor-move min-w-0 pl-4"
           >
             <HoverCard>
               <HoverCardTrigger asChild>
