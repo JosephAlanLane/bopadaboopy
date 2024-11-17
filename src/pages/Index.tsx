@@ -147,7 +147,7 @@ const Index = () => {
       <Navbar />
       <main className="flex-1">
         <div className="max-w-[1800px] mx-auto p-4">
-          <div className="flex gap-4 relative">
+          <div className="flex gap-4">
             <Sidebar 
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
