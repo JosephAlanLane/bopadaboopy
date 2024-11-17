@@ -46,7 +46,6 @@ const fetchRecipes = async () => {
 const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
-  const [servings, setServings] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { toast } = useToast();
 
@@ -145,7 +144,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 relative">
         <div className="max-w-[1800px] mx-auto">
           <div className="flex">
             <Sidebar 
@@ -155,13 +154,12 @@ const Index = () => {
               onRemoveMeal={handleRemoveMeal}
             />
             
-            <div className={`flex-1 p-4 transition-all duration-300 ${sidebarOpen ? 'ml-0' : ''}`}>
+            <div className="flex-1 p-4">
               <RecipeFilters onApplyFilters={handleApplyFilters} />
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mt-4">
                 <RecipeGrid 
                   recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
                   onAddRecipe={handleAddRecipe}
-                  servings={servings}
                 />
               </div>
             </div>

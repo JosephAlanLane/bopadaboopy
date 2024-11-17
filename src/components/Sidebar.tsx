@@ -20,6 +20,9 @@ export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }:
           overflow-hidden
           bg-white dark:bg-gray-900
           border-r dark:border-gray-800
+          sticky top-[73px]
+          h-[calc(100vh-73px)]
+          overflow-y-auto
         `}
       >
         <div className="p-4">
