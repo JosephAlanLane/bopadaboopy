@@ -24,7 +24,7 @@ export const Navbar = () => {
               className="w-20 h-20 object-contain"
             />
             <div className="flex flex-col">
-              <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>
+              <h1 className="text-2xl font-bold text-primary">Bopada Boopy!</h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">Your own personal Nonna</p>
             </div>
           </div>
