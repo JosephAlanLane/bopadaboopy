@@ -22,7 +22,7 @@ export const Sidebar = ({
     <>
       <div 
         className={`
-          ${sidebarOpen ? 'w-[300px]' : 'w-0'}
+          ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
