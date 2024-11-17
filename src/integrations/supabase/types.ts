@@ -148,31 +148,43 @@ export type Database = {
       recipes: {
         Row: {
           allergens: string[] | null
+          category: string | null
+          cook_time_minutes: number | null
           created_at: string
           cuisine: string
           id: string
           image: string
           instructions: string[]
+          rating: number | null
+          servings: number | null
           title: string
           user_id: string | null
         }
         Insert: {
           allergens?: string[] | null
+          category?: string | null
+          cook_time_minutes?: number | null
           created_at?: string
           cuisine: string
           id?: string
           image: string
           instructions: string[]
+          rating?: number | null
+          servings?: number | null
           title: string
           user_id?: string | null
         }
         Update: {
           allergens?: string[] | null
+          category?: string | null
+          cook_time_minutes?: number | null
           created_at?: string
           cuisine?: string
           id?: string
           image?: string
           instructions?: string[]
+          rating?: number | null
+          servings?: number | null
           title?: string
           user_id?: string | null
         }
