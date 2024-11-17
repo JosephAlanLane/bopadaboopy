@@ -146,8 +146,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1800px] mx-auto p-4">
-          <div className="flex gap-4">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="flex">
             <Sidebar 
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
@@ -155,9 +155,9 @@ const Index = () => {
               onRemoveMeal={handleRemoveMeal}
             />
             
-            <div className={`flex-1 space-y-4 transition-all duration-300 ${sidebarOpen ? 'md:ml-2' : ''}`}>
+            <div className={`flex-1 p-4 transition-all duration-300 ${sidebarOpen ? 'ml-0' : ''}`}>
               <RecipeFilters onApplyFilters={handleApplyFilters} />
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mt-4">
                 <RecipeGrid 
                   recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
                   onAddRecipe={handleAddRecipe}

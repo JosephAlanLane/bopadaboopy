@@ -18,12 +18,11 @@ export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }:
           ${sidebarOpen ? 'w-[355px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
-          relative
-          bg-background
-          z-40
+          bg-white dark:bg-gray-900
+          border-r dark:border-gray-800
         `}
       >
-        <div className="px-4 pt-4">
+        <div className="p-4">
           <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={onRemoveMeal} />
         </div>
       </div>
