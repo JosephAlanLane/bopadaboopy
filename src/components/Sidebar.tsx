@@ -8,9 +8,16 @@ interface SidebarProps {
   setSidebarOpen: (open: boolean) => void;
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
+  onUpdateMealPlan: (newMealPlan: MealPlan) => void;
 }
 
-export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }: SidebarProps) => {
+export const Sidebar = ({ 
+  sidebarOpen, 
+  setSidebarOpen, 
+  mealPlan, 
+  onRemoveMeal,
+  onUpdateMealPlan
+}: SidebarProps) => {
   return (
     <>
       <div 
@@ -25,7 +32,11 @@ export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }:
         `}
       >
         <div className="p-6">
-          <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={onRemoveMeal} />
+          <WeeklyPlanner 
+            mealPlan={mealPlan} 
+            onRemoveMeal={onRemoveMeal}
+            onUpdateMealPlan={onUpdateMealPlan}
+          />
         </div>
       </div>
       

@@ -141,6 +141,10 @@ const Index = () => {
     });
   };
 
+  const handleUpdateMealPlan = (newMealPlan: MealPlan) => {
+    setMealPlan(newMealPlan);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
@@ -152,6 +156,7 @@ const Index = () => {
               setSidebarOpen={setSidebarOpen}
               mealPlan={mealPlan}
               onRemoveMeal={handleRemoveMeal}
+              onUpdateMealPlan={handleUpdateMealPlan}
             />
             
             <div className="flex-1 p-4">

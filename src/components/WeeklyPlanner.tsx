@@ -11,6 +11,7 @@ import { generateGroceryList, getNextDate } from "@/utils/groceryUtils";
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
+  onUpdateMealPlan: (newMealPlan: MealPlan) => void;
 }
 
 const DAYS: DayOfWeek[] = [
@@ -18,7 +19,11 @@ const DAYS: DayOfWeek[] = [
   "Friday", "Saturday", "Sunday"
 ];
 
-export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) => {
+export const WeeklyPlanner = ({ 
+  mealPlan, 
+  onRemoveMeal, 
+  onUpdateMealPlan 
+}: WeeklyPlannerProps) => {
   const { toast } = useToast();
   const [servings, setServings] = React.useState(1);
   const [draggedMeal, setDraggedMeal] = React.useState<{ day: DayOfWeek, recipe: Recipe } | null>(null);
@@ -32,13 +37,13 @@ export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) =>
       Object.entries(updatedMealPlan).forEach(([d, r]) => {
         if (r === null) delete updatedMealPlan[d as DayOfWeek];
       });
-      setMealPlan(updatedMealPlan);
+      onUpdateMealPlan(updatedMealPlan);
     } else {
       // If we're dragging from the recipe grid
-      setMealPlan((prev) => ({
-        ...prev,
+      onUpdateMealPlan({
+        ...mealPlan,
         [day]: recipe,
-      }));
+      });
     }
     setDraggedMeal(null);
   };
