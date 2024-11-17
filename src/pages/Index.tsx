@@ -152,9 +152,9 @@ const Index = () => {
           <aside 
             className={`${
               sidebarOpen ? 'w-[355px]' : 'w-0'
-            } transition-all duration-300 overflow-hidden fixed md:relative z-10`}
+            } transition-all duration-300 overflow-hidden fixed md:static z-10`}
           >
-            <div className="sticky top-4">
+            <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
               <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
             </div>
           </aside>
