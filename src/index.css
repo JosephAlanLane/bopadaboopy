@@ -79,3 +79,7 @@
 .sonner-toast {
   @apply bg-background text-foreground border border-border !important;
 }
+
+.dark .sonner-toast {
+  @apply bg-gray-800 text-white border-gray-700 !important;
+}
