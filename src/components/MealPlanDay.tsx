@@ -45,17 +45,17 @@ export const MealPlanDay = ({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 min-w-0 flex-1">
         <p className="font-medium w-16 text-sm">{day}</p>
         {recipe ? (
           <div
             draggable
             onDragStart={handleDragStart}
-            className="flex-1 cursor-move"
+            className="flex-1 cursor-move min-w-0"
           >
             <HoverCard>
               <HoverCardTrigger asChild>
-                <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+                <p className="text-sm text-gray-600 truncate dark:text-gray-300 pr-2">
                   {recipe.title}
                 </p>
               </HoverCardTrigger>
@@ -85,7 +85,7 @@ export const MealPlanDay = ({
             </HoverCard>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-1">
             No meal planned
           </p>
         )}
@@ -93,7 +93,7 @@ export const MealPlanDay = ({
       {recipe && (
         <button
           onClick={onRemove}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-2"
         >
           <X className="w-4 h-4" />
         </button>
