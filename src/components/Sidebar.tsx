@@ -15,17 +15,16 @@ export const Sidebar = ({ sidebarOpen, setSidebarOpen, mealPlan, onRemoveMeal }:
     <>
       <div 
         className={`
-          ${sidebarOpen ? 'w-[355px]' : 'w-0'}
+          ${sidebarOpen ? 'w-[320px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
           border-r dark:border-gray-800
           sticky top-[73px]
           h-[calc(100vh-73px)]
-          overflow-y-auto
         `}
       >
-        <div className="p-4">
+        <div className="p-6">
           <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={onRemoveMeal} />
         </div>
       </div>
