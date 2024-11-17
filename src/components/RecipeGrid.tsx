@@ -45,7 +45,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Recipes</h2>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-background">
             <SelectValue placeholder="Sort by..." />
           </SelectTrigger>
           <SelectContent>

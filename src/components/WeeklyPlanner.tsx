@@ -124,10 +124,10 @@ END:VCALENDAR`;
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[380px] mt-4 md:mt-0">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-full mt-4 md:mt-0">
       <div className="flex-1">
-        <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
-        <div className="space-y-1 px-4">
+        <h2 className="font-semibold mb-2 px-3 pt-3">Weekly Meal Plan</h2>
+        <div className="space-y-1 px-3">
           {DAYS.map((day) => (
             <MealPlanDay
               key={day}
@@ -141,10 +141,10 @@ END:VCALENDAR`;
         </div>
       </div>
 
-      <div className="mt-4 px-4 pb-4">
+      <div className="mt-4 px-3 pb-3">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold inline-flex items-center">Grocery List</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
             <Slider
               value={[servings]}
@@ -152,7 +152,7 @@ END:VCALENDAR`;
               min={1}
               max={10}
               step={1}
-              className="w-24"
+              className="w-20"
             />
             <span className="text-xs text-gray-500 min-w-[20px] dark:text-gray-400">{servings}x</span>
           </div>
