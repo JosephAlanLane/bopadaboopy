@@ -152,7 +152,7 @@ const Index = () => {
           <aside 
             className={`${
               sidebarOpen ? 'w-[355px]' : 'w-0'
-            } transition-all duration-300 overflow-hidden fixed md:relative z-10 h-[calc(100vh-5rem)] md:h-auto`}
+            } transition-all duration-300 overflow-hidden fixed md:relative z-10`}
           >
             <div className="sticky top-4">
               <WeeklyPlanner mealPlan={mealPlan} onRemoveMeal={handleRemoveMeal} />
