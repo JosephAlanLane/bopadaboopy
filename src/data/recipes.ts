@@ -27,7 +27,9 @@ export const cuisineTypes = [
   'American',
   'Japanese',
   'Mexican',
-  'Indian'
+  'Indian',
+  'French',
+  'Korean'
 ];
 
 export const allergens = [
