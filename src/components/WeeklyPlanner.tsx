@@ -21,6 +21,31 @@ const DAYS: DayOfWeek[] = [
 export const WeeklyPlanner = ({ mealPlan, onRemoveMeal }: WeeklyPlannerProps) => {
   const { toast } = useToast();
   const [servings, setServings] = React.useState(1);
+  const [draggedMeal, setDraggedMeal] = React.useState<{ day: DayOfWeek, recipe: Recipe } | null>(null);
+
+  const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
+    if (draggedMeal) {
+      // If we're dragging from another day, swap the meals
+      const updatedMealPlan = { ...mealPlan };
+      updatedMealPlan[draggedMeal.day] = mealPlan[day];
+      updatedMealPlan[day] = draggedMeal.recipe;
+      Object.entries(updatedMealPlan).forEach(([d, r]) => {
+        if (r === null) delete updatedMealPlan[d as DayOfWeek];
+      });
+      setMealPlan(updatedMealPlan);
+    } else {
+      // If we're dragging from the recipe grid
+      setMealPlan((prev) => ({
+        ...prev,
+        [day]: recipe,
+      }));
+    }
+    setDraggedMeal(null);
+  };
+
+  const handleDragStart = (day: DayOfWeek, recipe: Recipe) => {
+    setDraggedMeal({ day, recipe });
+  };
 
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
     const list = generateGroceryList(mealPlan);
@@ -94,7 +119,7 @@ END:VCALENDAR`;
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[355px] mt-4 md:mt-0">
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-[380px] mt-4 md:mt-0">
       <div className="flex-1">
         <h2 className="font-semibold mb-2 px-4 pt-4">Weekly Meal Plan</h2>
         <div className="space-y-1 px-4">
@@ -104,6 +129,8 @@ END:VCALENDAR`;
               day={day}
               recipe={mealPlan[day] || null}
               onRemove={() => onRemoveMeal(day)}
+              onDrop={(recipe) => handleDrop(day, recipe)}
+              onDragStart={handleDragStart}
             />
           ))}
         </div>
