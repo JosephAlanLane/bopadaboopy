@@ -7,6 +7,10 @@ export interface Recipe {
   instructions: string[];
   cuisine: string;
   allergens: string[];
+  cook_time_minutes?: number;
+  servings?: number;
+  rating?: number;
+  category?: string;
 }
 
 export interface Ingredient {

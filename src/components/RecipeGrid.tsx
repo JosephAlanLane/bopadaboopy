@@ -1,6 +1,6 @@
 import { Recipe } from "@/types/recipe";
-import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Plus, Clock, Users, Star } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -23,10 +23,6 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
     threshold: 0,
   });
 
-  useEffect(() => {
-    setDisplayedRecipes(recipes);
-  }, [recipes]);
-
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
     if (!isNaN(numericAmount)) {
@@ -41,7 +37,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
         {displayedRecipes.map((recipe) => (
           <div
             key={recipe.id}
-            className="relative rounded-recipe overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02]"
+            className="relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02]"
           >
             <div
               className="relative"
@@ -51,7 +47,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
               <img
                 src={recipe.image}
                 alt={recipe.title}
-                className="w-full aspect-square object-cover rounded-t-recipe"
+                className="w-full aspect-square object-cover"
               />
               {hoveredId === recipe.id && (
                 <div
@@ -62,45 +58,24 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                 </div>
               )}
             </div>
-            <div className="p-2">
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <button className="w-full text-left">
-                    <h3 className="font-medium truncate hover:text-primary dark:text-white">
-                      {recipe.title}
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{recipe.cuisine}</p>
-                  </button>
-                </HoverCardTrigger>
-                <HoverCardContent 
-                  className="w-[450px] bg-white dark:bg-gray-800 border shadow-lg"
-                  align="start"
-                  side="right"
-                  sideOffset={15}
-                >
-                  <div className="space-y-4">
-                    <h4 className="font-semibold dark:text-white">{recipe.title}</h4>
-                    <div>
-                      <h5 className="font-medium mb-2 dark:text-white">Ingredients:</h5>
-                      <ul className="text-sm space-y-1 dark:text-gray-300">
-                        {recipe.ingredients.map((ing, idx) => (
-                          <li key={idx}>
-                            {adjustAmount(ing.amount)} {ing.unit} {ing.item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h5 className="font-medium mb-2 dark:text-white">Instructions:</h5>
-                      <ol className="text-sm space-y-1 list-decimal list-inside dark:text-gray-300">
-                        {recipe.instructions.map((step, idx) => (
-                          <li key={idx}>{step}</li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
+            <div className="p-3">
+              <h3 className="font-medium truncate hover:text-primary dark:text-white">
+                {recipe.title}
+              </h3>
+              <div className="flex items-center justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  <span>{recipe.cook_time_minutes}m</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  <span>{recipe.servings}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span>{recipe.rating}</span>
+                </div>
+              </div>
             </div>
           </div>
         ))}

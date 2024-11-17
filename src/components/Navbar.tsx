@@ -21,7 +21,7 @@ export const Navbar = () => {
             <img 
               src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
-              className="w-20 h-20 object-contain rounded-[2rem]"
+              className="w-20 h-20 object-contain"
             />
             <div className="flex flex-col">
               <h1 className="text-2xl font-bold text-primary">Babada Boopie</h1>

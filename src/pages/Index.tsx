@@ -22,6 +22,10 @@ const fetchRecipes = async () => {
       cuisine,
       instructions,
       allergens,
+      cook_time_minutes,
+      servings,
+      rating,
+      category,
       recipe_ingredients (
         amount,
         unit,
@@ -53,7 +57,6 @@ const Index = () => {
     queryFn: fetchRecipes,
   });
 
-  // Auto-hide sidebar on mobile
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
     setSidebarOpen(!isMobile);
@@ -71,13 +74,13 @@ const Index = () => {
     cuisines,
     allergens,
     maxIngredients,
-    servings: newServings,
+    category,
   }: {
     search: string;
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
-    servings: number;
+    category?: string;
   }) => {
     let filtered = recipes;
 
@@ -99,11 +102,14 @@ const Index = () => {
       );
     }
 
+    if (category) {
+      filtered = filtered.filter((recipe) => recipe.category === category);
+    }
+
     filtered = filtered.filter(
       (recipe) => recipe.ingredients.length <= maxIngredients
     );
 
-    setServings(newServings);
     setFilteredRecipes(filtered);
   };
 

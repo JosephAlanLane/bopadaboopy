@@ -10,6 +10,7 @@ interface FiltersProps {
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
+    category?: string;
   }) => void;
 }
 
@@ -18,6 +19,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
+  const [category, setCategory] = useState<string>("");
 
   useEffect(() => {
     onApplyFilters({
@@ -25,8 +27,9 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       cuisines: selectedCuisines,
       allergens: selectedAllergens,
       maxIngredients,
+      category,
     });
-  }, [search, selectedCuisines, selectedAllergens, maxIngredients, onApplyFilters]);
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, category, onApplyFilters]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -54,6 +57,20 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                 Max {num} ingredients
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={category}
+          onValueChange={setCategory}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent className="bg-white dark:bg-gray-800">
+            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="main">Main Dishes</SelectItem>
+            <SelectItem value="side">Side Dishes</SelectItem>
+            <SelectItem value="dessert">Desserts</SelectItem>
           </SelectContent>
         </Select>
       </div>
