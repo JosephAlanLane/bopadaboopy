@@ -2,6 +2,8 @@ import { Recipe } from "@/types/recipe";
 import { useState } from "react";
 import { Plus, Clock, Users, Star } from "lucide-react";
 import { useInView } from "react-intersection-observer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -11,6 +13,7 @@ interface RecipeGridProps {
 
 export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const { ref, inView } = useInView({
     threshold: 0,
   });
@@ -51,7 +54,10 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
               )}
             </div>
             <div className="p-3">
-              <h3 className="font-medium truncate hover:text-primary dark:text-white">
+              <h3 
+                className="font-medium truncate hover:text-primary dark:text-white cursor-pointer"
+                onClick={() => setSelectedRecipe(recipe)}
+              >
                 {recipe.title}
               </h3>
               <div className="flex items-center justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -79,6 +85,38 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
         ))}
       </div>
       <div ref={ref} className="h-10" />
+
+      <Dialog open={selectedRecipe !== null} onOpenChange={() => setSelectedRecipe(null)}>
+        {selectedRecipe && (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{selectedRecipe.title}</DialogTitle>
+            </DialogHeader>
+            <ScrollArea className="max-h-[70vh] px-1">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Ingredients</h4>
+                  <ul className="list-disc pl-5 space-y-1">
+                    {selectedRecipe.ingredients.map((ingredient, index) => (
+                      <li key={index}>
+                        {adjustAmount(ingredient.amount)} {ingredient.unit} {ingredient.item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Instructions</h4>
+                  <ol className="list-decimal pl-5 space-y-2">
+                    {selectedRecipe.instructions.map((instruction, index) => (
+                      <li key={index}>{instruction}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </ScrollArea>
+          </DialogContent>
+        )}
+      </Dialog>
     </>
   );
 };
