@@ -84,22 +84,22 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
               >
                 {recipe.title}
               </h3>
-              <div className="flex items-center justify-between mt-2 text-xs text-gray-600 dark:text-gray-400">
+              <div className="flex items-center justify-between mt-2 text-[10px] text-gray-600 dark:text-gray-400">
                 {recipe.cook_time_minutes && (
                   <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-2.5 h-2.5" />
                     <span>{recipe.cook_time_minutes}m</span>
                   </div>
                 )}
                 {recipe.servings && (
                   <div className="flex items-center gap-1">
-                    <Users className="w-3 h-3" />
+                    <Users className="w-2.5 h-2.5" />
                     <span>{recipe.servings}</span>
                   </div>
                 )}
                 {recipe.rating && (
                   <div className="flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
                     <span>{recipe.rating}</span>
                   </div>
                 )}
