@@ -22,7 +22,7 @@ export const Sidebar = ({
     <>
       <div 
         className={`
-          fixed md:relative
+          fixed md:sticky md:top-[73px]
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
