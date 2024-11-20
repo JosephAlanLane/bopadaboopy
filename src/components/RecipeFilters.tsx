@@ -63,7 +63,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           value={category}
           onValueChange={setCategory}
         >
-          <SelectTrigger className="w-[120px] bg-white dark:bg-black">
+          <SelectTrigger className="w-[100px] bg-white dark:bg-black">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-black">
