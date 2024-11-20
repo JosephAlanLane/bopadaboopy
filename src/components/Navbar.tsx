@@ -21,8 +21,25 @@ export const Navbar = () => {
       <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
         {/* Mobile Layout */}
         <div className="w-full md:hidden">
-          <div className="flex flex-col items-center">
-            <div className="flex justify-between items-center w-full -mb-8">
+          <div className="flex flex-col items-center relative">
+            {/* Logo and Text Container */}
+            <div className="flex flex-col items-center">
+              <img 
+                src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
+                alt="Italian Nonna" 
+                className="w-32 h-32 object-contain mt-2"
+              />
+              <div className="text-center mt-1">
+                <h1 className="website-title text-primary">Bopada Boopy!</h1>
+                <div className="text-[11px] text-gray-600 dark:text-gray-400">
+                  Your meal planning Nonna<br />
+                  <span className="italic">"Mangia! Mangia!"</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Buttons Container */}
+            <div className="w-full flex justify-between items-center absolute bottom-0">
               <ThemeToggle />
               <Button 
                 variant="ghost" 
@@ -31,18 +48,6 @@ export const Navbar = () => {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-            </div>
-            <img 
-              src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
-              alt="Italian Nonna" 
-              className="w-32 h-32 object-contain mt-2"
-            />
-            <div className="text-center mt-1">
-              <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <div className="text-[11px] text-gray-600 dark:text-gray-400">
-                Your meal planning Nonna<br />
-                <span className="italic">"Mangia! Mangia!"</span>
-              </div>
             </div>
           </div>
         </div>
