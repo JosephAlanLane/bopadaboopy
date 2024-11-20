@@ -45,11 +45,11 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       onOpenChange={setIsOpen}
       className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-end">
         <CollapsibleTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            <span>Filters</span>
+          <Button variant="outline" size="sm" className="flex items-center gap-2 h-8 px-3">
+            <Filter className="h-3.5 w-3.5" />
+            <span className="text-sm">Filters</span>
           </Button>
         </CollapsibleTrigger>
       </div>
@@ -82,10 +82,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
               value={category}
               onValueChange={setCategory}
             >
-              <SelectTrigger className="w-full sm:w-[100px] bg-white dark:bg-black">
+              <SelectTrigger className="w-[90px] bg-white dark:bg-black">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-black">
+              <SelectContent className="w-[90px] bg-white dark:bg-black">
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="main">Mains</SelectItem>
                 <SelectItem value="side">Sides</SelectItem>
