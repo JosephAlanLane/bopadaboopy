@@ -19,33 +19,48 @@ export const Navbar = () => {
   return (
     <nav className="w-full bg-gray-50 dark:bg-gray-800 border-b border-gray-200 px-4 py-2.5 shadow-sm">
       <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-        {/* Logo and Title Section */}
-        <div className="w-full md:w-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2 md:space-x-4">
+        {/* Mobile Layout */}
+        <div className="w-full md:hidden">
+          <div className="flex items-center">
+            <ThemeToggle />
+          </div>
+          <div className="flex flex-col items-center mt-2">
             <img 
               src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
-              className="w-16 h-16 md:w-28 md:h-28 object-contain"
+              className="w-32 h-32 object-contain"
             />
-            <div className="flex flex-col">
+            <div className="text-center mt-2">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              <div className="text-xs text-gray-600 dark:text-gray-400">
                 Your meal planning Nonna.<br />
                 <span className="italic">"Mangia! Mangia!"</span>
               </div>
             </div>
-          </div>
-          
-          {/* Mobile Menu Controls */}
-          <div className="flex flex-col items-end space-y-2 md:hidden">
-            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon"
+              className="mt-4"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Menu className="h-5 w-5" />
             </Button>
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center space-x-2 md:space-x-4">
+          <img 
+            src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
+            alt="Italian Nonna" 
+            className="w-28 h-28 object-contain"
+          />
+          <div className="flex flex-col">
+            <h1 className="website-title text-primary">Bopada Boopy!</h1>
+            <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              Your meal planning Nonna.<br />
+              <span className="italic">"Mangia! Mangia!"</span>
+            </div>
           </div>
         </div>
 
