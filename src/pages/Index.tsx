@@ -160,9 +160,9 @@ const Index = () => {
               onUpdateMealPlan={handleUpdateMealPlan}
             />
             
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 space-y-6">
               <RecipeFilters onApplyFilters={handleApplyFilters} />
-              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm mt-4">
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm">
                 <RecipeGrid 
                   recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
                   onAddRecipe={handleAddRecipe}
