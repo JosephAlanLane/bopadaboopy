@@ -77,7 +77,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                 <Plus className="w-8 h-8 text-white" />
               </button>
             </div>
-            <div className="p-1">
+            <div className="p-2">
               <h3 
                 className="font-medium truncate hover:text-primary dark:text-white cursor-pointer mb-0.5"
                 onClick={() => setSelectedRecipe(recipe)}
