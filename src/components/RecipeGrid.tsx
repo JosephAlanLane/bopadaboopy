@@ -48,7 +48,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
           <SelectTrigger className="w-[180px] bg-white dark:bg-gray-800">
             <SelectValue placeholder="Sort by..." />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white dark:bg-gray-800">
             <SelectItem value="rating">Rating</SelectItem>
             <SelectItem value="title">Name</SelectItem>
             <SelectItem value="cookTime">Cook Time</SelectItem>

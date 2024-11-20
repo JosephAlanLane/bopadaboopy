@@ -67,10 +67,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-gray-800">
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="main">Main Dishes</SelectItem>
-            <SelectItem value="side">Side Dishes</SelectItem>
-            <SelectItem value="dessert">Desserts</SelectItem>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="main">Mains</SelectItem>
+            <SelectItem value="side">Sides</SelectItem>
+            <SelectItem value="dessert">Sweets</SelectItem>
           </SelectContent>
         </Select>
       </div>
