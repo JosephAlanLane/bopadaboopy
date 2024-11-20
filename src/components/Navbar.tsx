@@ -1,72 +1,24 @@
-import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
-import { Menu } from "lucide-react";
-import { useState } from "react";
 
 export const Navbar = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
-
   return (
-    <nav className="w-full bg-gray-50 dark:bg-gray-800 border-b border-gray-200 px-4 py-2.5 shadow-sm">
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-        {/* Logo and Title Section */}
-        <div className="w-full md:w-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <img 
-              src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
-              alt="Italian Nonna" 
-              className="w-12 h-12 md:w-20 md:h-20 object-contain"
-            />
-            <div className="flex flex-col">
-              <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Your own personal Nonna</p>
-            </div>
-          </div>
-          
-          {/* Mobile Menu Button */}
-          <div className="flex items-center space-x-2 md:hidden">
-            <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <img src="/nonna-logo.png" alt="Nonna Logo" className="h-6 w-6" />
+            <span className="hidden font-bold sm:inline-block">
+              Your own personal Nonna for meal planning. Mangia! Mangia!
+            </span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground">About</Link>
+          </nav>
         </div>
-
-        {/* Navigation Links and Buttons */}
-        <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto mt-4 md:mt-0`}>
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
-            <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/")}>Home</Button>
-            <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/about")}>About</Button>
-          </div>
-          
-          <div className="hidden md:block">
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
             <ThemeToggle />
-          </div>
-          
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
-            {user ? (
-              <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={handleSignOut}>Sign Out</Button>
-            ) : (
-              <>
-                <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/login")}>Sign In</Button>
-                <Button className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/login")}>Sign Up</Button>
-              </>
-            )}
           </div>
         </div>
       </div>
