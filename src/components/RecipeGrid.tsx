@@ -77,28 +77,28 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
                 <Plus className="w-8 h-8 text-white" />
               </button>
             </div>
-            <div className="p-2">
+            <div className="p-1">
               <h3 
-                className="font-medium truncate hover:text-primary dark:text-white cursor-pointer mb-0.5"
+                className="font-medium truncate hover:text-primary dark:text-white cursor-pointer"
                 onClick={() => setSelectedRecipe(recipe)}
               >
                 {recipe.title}
               </h3>
               <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400">
                 {recipe.cook_time_minutes && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5">
                     <Clock className="w-2.5 h-2.5" />
                     <span>{recipe.cook_time_minutes}m</span>
                   </div>
                 )}
                 {recipe.servings && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5">
                     <Users className="w-2.5 h-2.5" />
                     <span>{recipe.servings}</span>
                   </div>
                 )}
                 {recipe.rating && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5">
                     <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
                     <span>{recipe.rating}</span>
                   </div>

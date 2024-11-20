@@ -25,11 +25,11 @@ export const Navbar = () => {
             <img 
               src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
-              className="w-12 h-12 md:w-20 md:h-20 object-contain"
+              className="w-14 h-14 md:w-24 md:h-24 object-contain"
             />
             <div className="flex flex-col">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Your own personal Nonna</p>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Your own personal Nonna for meal planning. Mangia! Mangia!</p>
             </div>
           </div>
           
