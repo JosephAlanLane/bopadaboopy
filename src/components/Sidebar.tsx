@@ -27,7 +27,8 @@ export const Sidebar = ({
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
-          border-r dark:border-gray-800
+          md:border-r dark:md:border-gray-800
+          border-r-0
           top-[73px]
           h-[calc(100vh-73px)]
           z-50
