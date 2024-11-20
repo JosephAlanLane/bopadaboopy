@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import About from "./pages/About";
+import Privacy from "./pages/Privacy";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -31,6 +32,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </AuthProvider>
         </BrowserRouter>
