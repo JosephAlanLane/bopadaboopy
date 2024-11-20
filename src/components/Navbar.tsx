@@ -35,7 +35,7 @@ export const Navbar = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-center -mt-4">
+          <div className="flex justify-between items-center -mt-6">
             <ThemeToggle />
             <Button 
               variant="ghost" 
@@ -57,7 +57,7 @@ export const Navbar = () => {
           <div className="flex flex-col">
             <h1 className="website-title text-primary">Bopada Boopy!</h1>
             <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-              Your meal planning Nonna.<br />
+              Your meal planning Nonna<br />
               <span className="italic">"Mangia! Mangia!"</span>
             </div>
           </div>
