@@ -46,36 +46,12 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm w-full mt-3 border-0"
     >
       <div className="flex items-center gap-2 flex-wrap">
-        <Select 
-          value={maxIngredients.toString()} 
-          onValueChange={(value) => setMaxIngredients(Number(value))}
-        >
-          <SelectTrigger className="flex-1 min-w-[100px] max-w-[140px] h-8 bg-white dark:bg-black text-xs pl-2 text-left truncate">
-            <SelectValue placeholder="Max ingredients" />
-          </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-black">
-            {[5, 10, 15, 20, 25].map((num) => (
-              <SelectItem key={num} value={num.toString()}>
-                Max {num} ingredients
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        
-        <Select
-          value={category}
-          onValueChange={setCategory}
-        >
-          <SelectTrigger className="flex-1 min-w-[80px] max-w-[100px] h-8 bg-white dark:bg-black text-xs">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent className="w-[80px] bg-white dark:bg-black">
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="main">Mains</SelectItem>
-            <SelectItem value="side">Sides</SelectItem>
-            <SelectItem value="dessert">Sweets</SelectItem>
-          </SelectContent>
-        </Select>
+        <Input
+          placeholder="Search recipes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 placeholder:text-gray-400 border-gray-200 focus:border-gray-300 dark:border-gray-700 dark:focus:border-gray-600 transition-colors h-8"
+        />
 
         <CollapsibleTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center gap-2 h-8 px-3 ml-auto">
@@ -86,6 +62,39 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <CollapsibleContent className="space-y-3 pt-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Select 
+            value={maxIngredients.toString()} 
+            onValueChange={(value) => setMaxIngredients(Number(value))}
+          >
+            <SelectTrigger className="flex-1 min-w-[100px] max-w-[140px] h-8 bg-white dark:bg-black text-xs pl-2 text-left truncate">
+              <SelectValue placeholder="Max ingredients" />
+            </SelectTrigger>
+            <SelectContent className="bg-white dark:bg-black">
+              {[5, 10, 15, 20, 25].map((num) => (
+                <SelectItem key={num} value={num.toString()}>
+                  Max {num} ingredients
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          <Select
+            value={category}
+            onValueChange={setCategory}
+          >
+            <SelectTrigger className="flex-1 min-w-[80px] max-w-[100px] h-8 bg-white dark:bg-black text-xs">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent className="w-[80px] bg-white dark:bg-black">
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="main">Mains</SelectItem>
+              <SelectItem value="side">Sides</SelectItem>
+              <SelectItem value="dessert">Sweets</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
             <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Cuisine Types</h3>
@@ -133,13 +142,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             </div>
           </div>
         </div>
-
-        <Input
-          placeholder="Search recipes..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full placeholder:text-gray-400 border-gray-200 focus:border-gray-300 dark:border-gray-700 dark:focus:border-gray-600 transition-colors"
-        />
       </CollapsibleContent>
     </Collapsible>
   );
