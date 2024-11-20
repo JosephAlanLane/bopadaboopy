@@ -57,57 +57,64 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
         </Select>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 [&>*]:border-0">
-        {sortedRecipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            className="relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02] border-0"
-            draggable
-          >
-            <div className="relative">
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="w-full aspect-square object-cover"
-              />
-              <button
-                className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-200"
-                onClick={() => onAddRecipe(recipe)}
-              >
-                <Plus className="w-8 h-8 text-white" />
-              </button>
-            </div>
-            <div className="p-1">
-              <h3 
-                className="font-medium truncate hover:text-primary dark:text-white cursor-pointer"
-                onClick={() => setSelectedRecipe(recipe)}
-              >
-                {recipe.title}
-              </h3>
-              <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400">
-                {recipe.cook_time_minutes && (
-                  <div className="flex items-center gap-0.5">
-                    <Clock className="w-2.5 h-2.5" />
-                    <span>{recipe.cook_time_minutes}m</span>
-                  </div>
-                )}
-                {recipe.servings && (
-                  <div className="flex items-center gap-0.5">
-                    <Users className="w-2.5 h-2.5" />
-                    <span>{recipe.servings}</span>
-                  </div>
-                )}
-                {recipe.rating && (
-                  <div className="flex items-center gap-0.5">
-                    <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                    <span>{recipe.rating}</span>
-                  </div>
-                )}
+      {sortedRecipes.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-lg text-gray-500 dark:text-gray-400">No recipes found</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Try adjusting your filters</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 [&>*]:border-0">
+          {sortedRecipes.map((recipe) => (
+            <div
+              key={recipe.id}
+              className="relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02] border-0"
+              draggable
+            >
+              <div className="relative">
+                <img
+                  src={recipe.image}
+                  alt={recipe.title}
+                  className="w-full aspect-square object-cover"
+                />
+                <button
+                  className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-200"
+                  onClick={() => onAddRecipe(recipe)}
+                >
+                  <Plus className="w-8 h-8 text-white" />
+                </button>
+              </div>
+              <div className="p-1">
+                <h3 
+                  className="font-medium truncate hover:text-primary dark:text-white cursor-pointer"
+                  onClick={() => setSelectedRecipe(recipe)}
+                >
+                  {recipe.title}
+                </h3>
+                <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400">
+                  {recipe.cook_time_minutes && (
+                    <div className="flex items-center gap-0.5">
+                      <Clock className="w-2.5 h-2.5" />
+                      <span>{recipe.cook_time_minutes}m</span>
+                    </div>
+                  )}
+                  {recipe.servings && (
+                    <div className="flex items-center gap-0.5">
+                      <Users className="w-2.5 h-2.5" />
+                      <span>{recipe.servings}</span>
+                    </div>
+                  )}
+                  {recipe.rating && (
+                    <div className="flex items-center gap-0.5">
+                      <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                      <span>{recipe.rating}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <div ref={ref} className="h-10" />
 
       <Dialog open={selectedRecipe !== null} onOpenChange={() => setSelectedRecipe(null)}>
