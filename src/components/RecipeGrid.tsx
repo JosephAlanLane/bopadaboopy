@@ -52,7 +52,7 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
             <SelectItem value="rating">Rating</SelectItem>
             <SelectItem value="title">Name</SelectItem>
             <SelectItem value="cookTime">Time</SelectItem>
-            <SelectItem value="servings">Size</SelectItem>
+            <SelectItem value="servings">Portions</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -84,22 +84,22 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
               >
                 {recipe.title}
               </h3>
-              <div className="flex items-center justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center justify-between mt-2 text-xs text-gray-600 dark:text-gray-400">
                 {recipe.cook_time_minutes && (
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <Clock className="w-3 h-3" />
                     <span>{recipe.cook_time_minutes}m</span>
                   </div>
                 )}
                 {recipe.servings && (
                   <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
+                    <Users className="w-3 h-3" />
                     <span>{recipe.servings}</span>
                   </div>
                 )}
                 {recipe.rating && (
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                     <span>{recipe.rating}</span>
                   </div>
                 )}
