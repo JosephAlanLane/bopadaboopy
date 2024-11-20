@@ -150,8 +150,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="flex-1 relative">
-        <div className="max-w-[1800px] mx-auto">
-          <div className="flex">
+        <div className="max-w-[1800px] mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <Sidebar 
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
@@ -160,9 +160,9 @@ const Index = () => {
               onUpdateMealPlan={handleUpdateMealPlan}
             />
             
-            <div className="flex-1 p-4">
+            <div className="flex-1 min-w-0">
               <RecipeFilters onApplyFilters={handleApplyFilters} />
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mt-4">
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm mt-4">
                 <RecipeGrid 
                   recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
                   onAddRecipe={handleAddRecipe}
@@ -174,13 +174,13 @@ const Index = () => {
       </main>
       <footer className="bg-white dark:bg-gray-800 border-t dark:border-gray-700 mt-8">
         <div className="max-w-[1800px] mx-auto py-6 px-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} Meal Planner. All rights reserved.
             </div>
             <div className="flex gap-6">
               <Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Privacy Policy</Link>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Terms of Service</a>
+              <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">About</Link>
               <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Contact</a>
             </div>
           </div>
