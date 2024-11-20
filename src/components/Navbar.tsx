@@ -21,21 +21,21 @@ export const Navbar = () => {
       <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
         {/* Mobile Layout */}
         <div className="w-full md:hidden">
-          <div className="flex flex-col items-center pt-2">
+          <div className="flex flex-col items-center pt-1">
             <img 
               src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
               className="w-32 h-32 object-contain"
             />
-            <div className="text-center">
+            <div className="text-center -mt-2">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Your meal planning Nonna.<br />
+              <div className="text-[11px] text-gray-600 dark:text-gray-400">
+                Your meal planning Nonna<br />
                 <span className="italic">"Mangia! Mangia!"</span>
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex justify-between items-center -mt-4">
             <ThemeToggle />
             <Button 
               variant="ghost" 

@@ -45,12 +45,12 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       onOpenChange={setIsOpen}
       className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4 max-w-full overflow-hidden"
     >
-      <div className="flex items-center justify-end gap-2 flex-wrap">
+      <div className="flex items-center justify-end gap-2">
         <Select 
           value={maxIngredients.toString()} 
           onValueChange={(value) => setMaxIngredients(Number(value))}
         >
-          <SelectTrigger className="w-[180px] h-8 bg-white dark:bg-black">
+          <SelectTrigger className="w-[140px] h-8 bg-white dark:bg-black text-xs">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-black">
@@ -66,10 +66,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           value={category}
           onValueChange={setCategory}
         >
-          <SelectTrigger className="w-[100px] h-8 bg-white dark:bg-black">
+          <SelectTrigger className="w-[80px] h-8 bg-white dark:bg-black text-xs">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
-          <SelectContent className="w-[100px] bg-white dark:bg-black">
+          <SelectContent className="w-[80px] bg-white dark:bg-black">
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="main">Mains</SelectItem>
             <SelectItem value="side">Sides</SelectItem>
