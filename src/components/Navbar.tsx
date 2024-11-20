@@ -21,29 +21,29 @@ export const Navbar = () => {
       <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
         {/* Mobile Layout */}
         <div className="w-full md:hidden">
-          <div className="flex flex-col items-center pt-1">
+          <div className="flex flex-col items-center">
+            <div className="flex justify-between items-center w-full -mb-8">
+              <ThemeToggle />
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
             <img 
               src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
               alt="Italian Nonna" 
-              className="w-32 h-32 object-contain"
+              className="w-32 h-32 object-contain mt-2"
             />
-            <div className="text-center -mt-2">
+            <div className="text-center -mt-4">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
               <div className="text-[11px] text-gray-600 dark:text-gray-400">
                 Your meal planning Nonna<br />
                 <span className="italic">"Mangia! Mangia!"</span>
               </div>
             </div>
-          </div>
-          <div className="flex justify-between items-center -mt-6">
-            <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
           </div>
         </div>
 

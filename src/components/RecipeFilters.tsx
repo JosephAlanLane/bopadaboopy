@@ -43,14 +43,14 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4 w-full max-w-full overflow-hidden"
+      className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm space-y-3 w-full max-w-[100vw] overflow-hidden"
     >
-      <div className="flex items-center justify-end gap-2 min-w-0 flex-nowrap">
+      <div className="flex items-center justify-end gap-1.5 min-w-0 flex-nowrap">
         <Select 
           value={maxIngredients.toString()} 
           onValueChange={(value) => setMaxIngredients(Number(value))}
         >
-          <SelectTrigger className="w-[140px] h-8 bg-white dark:bg-black text-xs">
+          <SelectTrigger className="w-[140px] h-8 bg-white dark:bg-black text-xs pl-2">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-black">
