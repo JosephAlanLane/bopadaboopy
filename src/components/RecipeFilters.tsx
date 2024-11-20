@@ -50,7 +50,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           value={maxIngredients.toString()} 
           onValueChange={(value) => setMaxIngredients(Number(value))}
         >
-          <SelectTrigger className="w-[180px] h-8 bg-white dark:bg-black text-xs pl-2 text-left truncate">
+          <SelectTrigger className="w-auto min-w-[120px] max-w-[160px] h-8 bg-white dark:bg-black text-xs pl-2 text-left truncate">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-black">
