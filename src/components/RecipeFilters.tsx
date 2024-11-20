@@ -48,10 +48,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           value={maxIngredients.toString()} 
           onValueChange={(value) => setMaxIngredients(Number(value))}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white dark:bg-black">
             <SelectValue placeholder="Max ingredients" />
           </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-gray-800">
+          <SelectContent className="bg-white dark:bg-black">
             {[5, 10, 15, 20, 25].map((num) => (
               <SelectItem key={num} value={num.toString()}>
                 Max {num} ingredients
@@ -63,10 +63,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           value={category}
           onValueChange={setCategory}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[120px] bg-white dark:bg-black">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-gray-800">
+          <SelectContent className="bg-white dark:bg-black">
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="main">Mains</SelectItem>
             <SelectItem value="side">Sides</SelectItem>
