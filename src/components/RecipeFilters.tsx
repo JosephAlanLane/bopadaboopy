@@ -43,7 +43,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm w-full mt-6"
+      className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm w-full mt-3"
     >
       <div className="flex items-center gap-2 flex-wrap">
         <Select 
