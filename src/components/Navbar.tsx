@@ -29,21 +29,20 @@ export const Navbar = () => {
             />
             <div className="flex flex-col">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                 Your own meal-planning Nonna!<br />
                 <span className="italic">"Mangia! Mangia!"</span>
               </div>
             </div>
           </div>
           
-          {/* Mobile Menu Button */}
-          <div className="flex items-center space-x-2 md:hidden">
+          {/* Mobile Menu Controls */}
+          <div className="flex flex-col items-end space-y-2 md:hidden">
             <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>
