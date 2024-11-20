@@ -48,12 +48,19 @@ const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const { toast } = useToast();
 
   const { data: recipes = [] } = useQuery({
     queryKey: ['recipes'],
     queryFn: fetchRecipes,
   });
+
+  useEffect(() => {
+    if (!filtersApplied) {
+      setFilteredRecipes(recipes);
+    }
+  }, [recipes, filtersApplied]);
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
@@ -82,6 +89,7 @@ const Index = () => {
   }) => {
     console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
     let filtered = [...recipes];
+    setFiltersApplied(true);
 
     if (search) {
       filtered = filtered.filter((recipe) =>
@@ -168,7 +176,7 @@ const Index = () => {
               <RecipeFilters onApplyFilters={handleApplyFilters} />
               <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
                 <RecipeGrid 
-                  recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
+                  recipes={filteredRecipes} 
                   onAddRecipe={handleAddRecipe}
                 />
               </div>
