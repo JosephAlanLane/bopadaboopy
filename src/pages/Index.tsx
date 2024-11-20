@@ -80,6 +80,7 @@ const Index = () => {
     maxIngredients: number;
     category?: string;
   }) => {
+    console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
     let filtered = [...recipes];
 
     if (search) {
@@ -89,7 +90,9 @@ const Index = () => {
     }
 
     if (cuisines.length > 0) {
-      filtered = filtered.filter((recipe) => cuisines.includes(recipe.cuisine));
+      filtered = filtered.filter((recipe) => 
+        recipe.cuisine && cuisines.includes(recipe.cuisine)
+      );
     }
 
     if (allergens.length > 0) {
@@ -108,6 +111,7 @@ const Index = () => {
       (recipe) => recipe.ingredients.length <= maxIngredients
     );
 
+    console.log('Filtered recipes count:', filtered.length);
     setFilteredRecipes(filtered);
   };
 
