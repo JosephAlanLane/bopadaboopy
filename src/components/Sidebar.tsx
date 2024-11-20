@@ -22,13 +22,15 @@ export const Sidebar = ({
     <>
       <div 
         className={`
+          fixed md:relative
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
           border-r dark:border-gray-800
-          sticky top-[73px]
+          top-[73px]
           h-[calc(100vh-73px)]
+          z-50
         `}
       >
         <div className="p-4">
