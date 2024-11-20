@@ -29,7 +29,10 @@ export const Navbar = () => {
             />
             <div className="flex flex-col">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Your own personal Nonna for meal planning. Mangia! Mangia!</p>
+              <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                Your own meal-planning Nonna!<br />
+                <span className="italic">"Mangia! Mangia!"</span>
+              </div>
             </div>
           </div>
           
