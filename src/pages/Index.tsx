@@ -80,7 +80,7 @@ const Index = () => {
     maxIngredients: number;
     category?: string;
   }) => {
-    let filtered = recipes;
+    let filtered = [...recipes];
 
     if (search) {
       filtered = filtered.filter((recipe) =>
@@ -100,7 +100,7 @@ const Index = () => {
       );
     }
 
-    if (category) {
+    if (category && category !== 'all') {
       filtered = filtered.filter((recipe) => recipe.category === category);
     }
 
