@@ -43,7 +43,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm w-full"
+      className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm w-full mt-6"
     >
       <div className="flex items-center gap-2 flex-wrap">
         <Select 
@@ -86,8 +86,8 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <CollapsibleContent className="space-y-3 pt-2">
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-1 space-y-1.5 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1.5 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
             <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Cuisine Types</h3>
             <div className="grid grid-cols-1 xs:grid-cols-2 gap-1.5">
               {cuisineTypes.map((cuisine) => (
@@ -110,7 +110,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             </div>
           </div>
 
-          <div className="flex-1 space-y-1.5 p-2 bg-red-50 dark:bg-red-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
+          <div className="space-y-1.5 p-2 bg-red-50 dark:bg-red-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
             <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Allergens</h3>
             <div className="grid grid-cols-1 xs:grid-cols-2 gap-1.5">
               {allergens.map((allergen) => (
