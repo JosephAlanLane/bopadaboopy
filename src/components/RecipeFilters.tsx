@@ -45,7 +45,38 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       onOpenChange={setIsOpen}
       className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-4"
     >
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        <Select 
+          value={maxIngredients.toString()} 
+          onValueChange={(value) => setMaxIngredients(Number(value))}
+        >
+          <SelectTrigger className="w-[140px] h-8 bg-white dark:bg-black">
+            <SelectValue placeholder="Max ingredients" />
+          </SelectTrigger>
+          <SelectContent className="bg-white dark:bg-black">
+            {[5, 10, 15, 20, 25].map((num) => (
+              <SelectItem key={num} value={num.toString()}>
+                Max {num} ingredients
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <Select
+          value={category}
+          onValueChange={setCategory}
+        >
+          <SelectTrigger className="w-[100px] h-8 bg-white dark:bg-black">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent className="w-[100px] bg-white dark:bg-black">
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="main">Mains</SelectItem>
+            <SelectItem value="side">Sides</SelectItem>
+            <SelectItem value="dessert">Sweets</SelectItem>
+          </SelectContent>
+        </Select>
+
         <CollapsibleTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center gap-2 h-8 px-3">
             <Filter className="h-3.5 w-3.5" />
@@ -55,46 +86,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       </div>
 
       <CollapsibleContent className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Input
-            placeholder="Search recipes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 placeholder:text-gray-400"
-          />
-          <div className="flex gap-2 flex-col sm:flex-row">
-            <Select 
-              value={maxIngredients.toString()} 
-              onValueChange={(value) => setMaxIngredients(Number(value))}
-            >
-              <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-black">
-                <SelectValue placeholder="Max ingredients" />
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-black">
-                {[5, 10, 15, 20, 25].map((num) => (
-                  <SelectItem key={num} value={num.toString()}>
-                    Max {num} ingredients
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={category}
-              onValueChange={setCategory}
-            >
-              <SelectTrigger className="w-[90px] bg-white dark:bg-black">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent className="w-[90px] bg-white dark:bg-black">
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="main">Mains</SelectItem>
-                <SelectItem value="side">Sides</SelectItem>
-                <SelectItem value="dessert">Sweets</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
         <div className="flex flex-row gap-4 min-w-0">
           <div className="flex-1 space-y-2 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-gray-100 dark:border-gray-700">
             <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300">Cuisine Types</h3>
@@ -142,6 +133,13 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             </div>
           </div>
         </div>
+
+        <Input
+          placeholder="Search recipes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 placeholder:text-gray-400 border-gray-200 focus:border-gray-300 dark:border-gray-700 dark:focus:border-gray-600 transition-colors"
+        />
       </CollapsibleContent>
     </Collapsible>
   );
