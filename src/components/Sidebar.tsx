@@ -32,6 +32,7 @@ export const Sidebar = ({
           top-[73px]
           h-[calc(100vh-73px)]
           z-50
+          -mr-[1px]
         `}
       >
         <div className="p-4">
