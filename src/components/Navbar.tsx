@@ -37,7 +37,7 @@ export const Navbar = () => {
               alt="Italian Nonna" 
               className="w-32 h-32 object-contain mt-2"
             />
-            <div className="text-center -mt-4">
+            <div className="text-center mt-2">
               <h1 className="website-title text-primary">Bopada Boopy!</h1>
               <div className="text-[11px] text-gray-600 dark:text-gray-400">
                 Your meal planning Nonna<br />
