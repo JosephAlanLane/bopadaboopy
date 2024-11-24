@@ -41,6 +41,8 @@ export function SubscriptionButton() {
 
     try {
       console.log('Creating checkout session for user:', user.id)
+      console.log('Using subscription tier:', subscriptionTier)
+      
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: {
           priceId: subscriptionTier?.price_id,
@@ -55,6 +57,7 @@ export function SubscriptionButton() {
       }
 
       if (!data?.url) {
+        console.error('No URL in response:', data)
         throw new Error('No checkout URL returned')
       }
 
