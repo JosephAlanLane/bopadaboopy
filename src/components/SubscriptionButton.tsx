@@ -2,6 +2,7 @@ import { Button } from "./ui/button"
 import { useToast } from "./ui/use-toast"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
+import { SubscriptionTier } from "@/integrations/supabase/types/subscription"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
@@ -21,9 +22,13 @@ export function SubscriptionButton() {
       const { data, error } = await supabase
         .from('subscription_tiers')
         .select('*')
-        .single()
+        .single() as { data: SubscriptionTier | null, error: Error | null }
 
       if (error) throw error
+
+      if (!data) {
+        throw new Error('No subscription tier found')
+      }
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
