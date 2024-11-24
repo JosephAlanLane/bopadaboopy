@@ -43,6 +43,7 @@ export function useSubscription() {
       // Transform the data to match our UserSubscription type
       const transformedData: UserSubscription = {
         ...data,
+        status: data.status as UserSubscription['status'], // Type assertion to ensure status matches the union type
         subscription_tier_id: data.subscription_tiers[0] // Get the first (and should be only) subscription tier
       }
 
