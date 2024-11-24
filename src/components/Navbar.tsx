@@ -84,11 +84,7 @@ export const Navbar = () => {
             {user ? (
               <>
                 <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={handleSignOut}>Sign Out</Button>
-                <Button 
-                  className="bg-gradient-to-r from-primary to-secondary text-white w-full md:w-auto hover:from-primary/90 hover:to-secondary/90"
-                >
-                  Join the Family for $1/month!
-                </Button>
+                <SubscriptionButton />
               </>
             ) : (
               <>
