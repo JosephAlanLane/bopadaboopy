@@ -54,14 +54,19 @@ export function SubscriptionButton() {
         }),
       })
 
+      const responseData = await response.json()
+      
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create checkout session')
+        console.error('Error response:', responseData)
+        throw new Error(responseData.error || 'Failed to create checkout session')
       }
 
-      const { url } = await response.json()
-      console.log('Redirecting to checkout URL:', url)
-      window.location.href = url
+      if (!responseData.url) {
+        throw new Error('No checkout URL returned')
+      }
+
+      console.log('Redirecting to checkout URL:', responseData.url)
+      window.location.href = responseData.url
     } catch (error) {
       console.error('Subscription error:', error)
       toast({

@@ -6,14 +6,26 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
   httpClient: Stripe.createFetchHttpClient(),
 })
 
+console.log('Create Checkout Session Function Started')
+
 Deno.serve(async (req) => {
+  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    // Parse the request body
     const { priceId, userId, tierId } = await req.json()
+    
+    console.log('Received request:', { priceId, userId, tierId })
+    
+    if (!priceId || !userId || !tierId) {
+      console.error('Missing required fields:', { priceId, userId, tierId })
+      throw new Error('Missing required fields: priceId, userId, or tierId')
+    }
 
+    console.log('Creating Stripe checkout session...')
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -31,6 +43,8 @@ Deno.serve(async (req) => {
       }
     })
 
+    console.log('Checkout session created:', session.id)
+
     return new Response(
       JSON.stringify({ url: session.url }),
       {
@@ -39,9 +53,12 @@ Deno.serve(async (req) => {
       }
     )
   } catch (error) {
-    console.error('Error creating checkout session:', error)
+    console.error('Error in create-checkout-session:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: 'If you are seeing this error, make sure STRIPE_SECRET_KEY is properly set in Supabase Edge Function Secrets'
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
