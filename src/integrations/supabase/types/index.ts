@@ -76,6 +76,33 @@ export type Database = {
           }
         ];
       };
+      subscription_tiers: {
+        Row: SubscriptionTier;
+        Insert: SubscriptionTier;
+        Update: SubscriptionTier;
+        Relationships: [];
+      };
+      user_subscriptions: {
+        Row: UserSubscription;
+        Insert: UserSubscription;
+        Update: UserSubscription;
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_subscriptions_subscription_tier_id_fkey"
+            columns: ["subscription_tier_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_tiers"
+            referencedColumns: ["id"]
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -135,3 +162,4 @@ export * from './auth';
 export * from './recipe';
 export * from './ingredient';
 export * from './meal-plan';
+export * from './subscription';
