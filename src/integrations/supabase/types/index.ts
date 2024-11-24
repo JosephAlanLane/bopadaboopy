@@ -3,6 +3,7 @@ import { Profile, ProfileInsert, ProfileUpdate } from './auth';
 import { Recipe, RecipeInsert, RecipeUpdate, PendingRecipe, PendingRecipeInsert, PendingRecipeUpdate } from './recipe';
 import { RecipeIngredient, RecipeIngredientInsert, RecipeIngredientUpdate } from './ingredient';
 import { MealPlan, MealPlanInsert, MealPlanUpdate } from './meal-plan';
+import { SubscriptionTier, UserSubscription } from './subscription';
 
 export type Database = {
   public: {

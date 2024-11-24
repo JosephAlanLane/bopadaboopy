@@ -2,7 +2,7 @@ import { Button } from "./ui/button"
 import { useToast } from "./ui/use-toast"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
-import type { SubscriptionTier } from "@/integrations/supabase/types"
+import type { Database } from "@/integrations/supabase/types"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
@@ -22,7 +22,10 @@ export function SubscriptionButton() {
       const { data, error } = await supabase
         .from('subscription_tiers')
         .select('*')
-        .single() as { data: SubscriptionTier | null, error: Error | null }
+        .single() as { 
+          data: Database['public']['Tables']['subscription_tiers']['Row'] | null, 
+          error: Error | null 
+        }
 
       if (error) throw error
 
