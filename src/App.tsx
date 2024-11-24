@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
+import SubscriptionSuccess from "./pages/subscription/Success";
+import SubscriptionCancel from "./pages/subscription/Cancel";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -33,6 +35,8 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+              <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
             </Routes>
           </AuthProvider>
         </BrowserRouter>
