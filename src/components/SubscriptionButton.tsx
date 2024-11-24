@@ -22,10 +22,7 @@ export function SubscriptionButton() {
       const { data, error } = await supabase
         .from('subscription_tiers')
         .select('*')
-        .single() as { 
-          data: Database['public']['Tables']['subscription_tiers']['Row'] | null, 
-          error: Error | null 
-        }
+        .single()
 
       if (error) throw error
 
