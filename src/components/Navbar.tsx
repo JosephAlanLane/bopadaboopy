@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { SubscriptionButton } from "./SubscriptionButton";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -81,11 +82,24 @@ export const Navbar = () => {
           
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
             {user ? (
-              <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={handleSignOut}>Sign Out</Button>
+              <>
+                <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={handleSignOut}>Sign Out</Button>
+                <Button 
+                  className="bg-gradient-to-r from-primary to-secondary text-white w-full md:w-auto hover:from-primary/90 hover:to-secondary/90"
+                >
+                  Join the Family for $1/month!
+                </Button>
+              </>
             ) : (
               <>
                 <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/login")}>Sign In</Button>
                 <Button className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/login")}>Sign Up</Button>
+                <Button 
+                  className="bg-gradient-to-r from-primary to-secondary text-white w-full md:w-auto hover:from-primary/90 hover:to-secondary/90"
+                  onClick={() => navigate("/login")}
+                >
+                  Join the Family for $1/month!
+                </Button>
               </>
             )}
           </div>
