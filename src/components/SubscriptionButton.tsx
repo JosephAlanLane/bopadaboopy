@@ -2,7 +2,7 @@ import { Button } from "./ui/button"
 import { useToast } from "./ui/use-toast"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
-import { SubscriptionTier } from "@/integrations/supabase/types/subscription"
+import type { SubscriptionTier } from "@/integrations/supabase/types"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
