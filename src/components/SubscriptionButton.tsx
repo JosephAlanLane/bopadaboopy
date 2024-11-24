@@ -41,32 +41,25 @@ export function SubscriptionButton() {
 
     try {
       console.log('Creating checkout session for user:', user.id)
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: {
           priceId: subscriptionTier?.price_id,
           userId: user.id,
           tierId: subscriptionTier?.id
-        }),
+        }
       })
 
-      const responseData = await response.json()
-      
-      if (!response.ok) {
-        console.error('Error response:', responseData)
-        throw new Error(responseData.error || 'Failed to create checkout session')
+      if (error) {
+        console.error('Error response:', error)
+        throw error
       }
 
-      if (!responseData.url) {
+      if (!data?.url) {
         throw new Error('No checkout URL returned')
       }
 
-      console.log('Redirecting to checkout URL:', responseData.url)
-      window.location.href = responseData.url
+      console.log('Redirecting to checkout URL:', data.url)
+      window.location.href = data.url
     } catch (error) {
       console.error('Subscription error:', error)
       toast({
