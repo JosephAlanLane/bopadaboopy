@@ -28,8 +28,8 @@ Deno.serve(async (request) => {
   try {
     event = await stripe.webhooks.constructEventAsync(
       body,
-      signature,
-      Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET') ?? '',
+      signature!,
+      Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')!,
       undefined,
       cryptoProvider
     )
