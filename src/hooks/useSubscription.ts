@@ -13,8 +13,22 @@ export function useSubscription() {
       const { data, error } = await supabase
         .from('user_subscriptions')
         .select(`
-          *,
-          subscription_tier_id:subscription_tiers(*)
+          id,
+          user_id,
+          status,
+          stripe_subscription_id,
+          stripe_customer_id,
+          current_period_start,
+          current_period_end,
+          created_at,
+          subscription_tiers (
+            id,
+            name,
+            price_id,
+            price_amount,
+            features,
+            created_at
+          )
         `)
         .eq('user_id', user?.id)
         .single()
@@ -29,7 +43,7 @@ export function useSubscription() {
       // Transform the data to match our UserSubscription type
       const transformedData: UserSubscription = {
         ...data,
-        subscription_tier_id: data.subscription_tier_id[0] // Get the first (and should be only) subscription tier
+        subscription_tier_id: data.subscription_tiers[0] // Get the first (and should be only) subscription tier
       }
 
       return transformedData
