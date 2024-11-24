@@ -82,10 +82,12 @@ export function SubscriptionButton() {
     )
   }
 
+  const italianFlagGradient = "bg-gradient-to-r from-green-500 via-white to-red-500 hover:from-green-600 hover:via-white hover:to-red-600 text-gray-800 font-medium transition-all duration-300"
+
   return (
     <Button 
       onClick={handleSubscribe}
-      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+      className={italianFlagGradient}
     >
       {user ? "Upgrade to Premium" : "Join the Family for $1/month!"}
     </Button>
