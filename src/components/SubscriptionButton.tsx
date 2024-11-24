@@ -13,12 +13,17 @@ export function SubscriptionButton() {
   const { data: subscriptionTier, isLoading } = useQuery<SubscriptionTier>({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
+      console.log('Fetching subscription tier')
       const { data, error } = await supabase
         .from('subscription_tiers')
         .select('*')
         .single()
       
-      if (error) throw error
+      if (error) {
+        console.error('Error fetching subscription tier:', error)
+        throw error
+      }
+      console.log('Fetched subscription tier:', data)
       return data as SubscriptionTier
     },
     enabled: !!user,
@@ -36,10 +41,11 @@ export function SubscriptionButton() {
 
     try {
       console.log('Creating checkout session for user:', user.id)
-      const response = await fetch('/api/create-checkout-session', {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           priceId: subscriptionTier?.price_id,
@@ -49,7 +55,8 @@ export function SubscriptionButton() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create checkout session')
       }
 
       const { url } = await response.json()
@@ -59,7 +66,7 @@ export function SubscriptionButton() {
       console.error('Subscription error:', error)
       toast({
         title: "Error",
-        description: "Failed to start subscription process",
+        description: error instanceof Error ? error.message : "Failed to start subscription process",
         variant: "destructive",
       })
     }
@@ -79,7 +86,7 @@ export function SubscriptionButton() {
       onClick={handleSubscribe}
       className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
     >
-      Upgrade to Premium
+      {user ? "Upgrade to Premium" : "Join the Family for $1/month!"}
     </Button>
   )
 }
