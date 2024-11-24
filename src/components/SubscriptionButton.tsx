@@ -82,7 +82,7 @@ export function SubscriptionButton() {
     )
   }
 
-  const italianFlagGradient = "bg-gradient-to-r from-green-500 via-white to-red-500 hover:from-green-600 hover:via-white hover:to-red-600 text-gray-800 font-medium transition-all duration-300"
+  const italianFlagGradient = "bg-gradient-to-r from-green-500 via-white to-red-500 hover:from-green-600 hover:via-white hover:to-red-600 text-gray-800 font-medium shadow-sm hover:shadow-md transition-all duration-300"
 
   return (
     <Button 
