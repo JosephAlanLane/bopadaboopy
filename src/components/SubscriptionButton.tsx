@@ -82,12 +82,11 @@ export function SubscriptionButton() {
     )
   }
 
-  const italianFlagGradient = "bg-gradient-to-r from-green-500 via-white to-red-500 hover:from-green-600 hover:via-white hover:to-red-600 text-gray-800 font-medium shadow-sm hover:shadow-md transition-all duration-300"
-
   return (
     <Button 
       onClick={handleSubscribe}
-      className={italianFlagGradient}
+      variant="ghost"
+      className="border border-gray-200 dark:border-gray-700 text-gray-600 hover:bg-[linear-gradient(-45deg,#008C45_25%,#F4F9FF_50%,#CD212A_75%)] hover:text-gray-700 hover:border-transparent transition-all duration-300"
     >
       {user ? "Upgrade to Premium" : "Join the Family for $1/month!"}
     </Button>
