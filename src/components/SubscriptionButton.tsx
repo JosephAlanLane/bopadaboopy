@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { useQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
+import type { SubscriptionTier } from "@/integrations/supabase/types"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
@@ -18,7 +19,7 @@ export function SubscriptionButton() {
         .single()
       
       if (error) throw error
-      return data
+      return data as SubscriptionTier
     },
     enabled: !!user,
   })
