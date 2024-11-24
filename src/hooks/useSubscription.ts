@@ -3,6 +3,10 @@ import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 import type { UserSubscription } from "@/integrations/supabase/types/subscription"
 
+const isValidStatus = (status: string): status is UserSubscription['status'] => {
+  return ['active', 'canceled', 'past_due', 'trialing'].includes(status)
+}
+
 export function useSubscription() {
   const { user } = useAuth()
 
@@ -40,10 +44,14 @@ export function useSubscription() {
       
       console.log('Fetched subscription data:', data)
       
+      if (!isValidStatus(data.status)) {
+        throw new Error(`Invalid subscription status: ${data.status}`)
+      }
+
       // Transform the data to match our UserSubscription type
       const transformedData: UserSubscription = {
         ...data,
-        status: data.status as UserSubscription['status'], // Type assertion to ensure status matches the union type
+        status: data.status, // Now TypeScript knows this is a valid status
         subscription_tier_id: data.subscription_tiers[0] // Get the first (and should be only) subscription tier
       }
 
