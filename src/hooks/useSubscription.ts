@@ -9,14 +9,30 @@ export function useSubscription() {
   const { data: subscription, isLoading } = useQuery<UserSubscription>({
     queryKey: ['subscription', user?.id],
     queryFn: async () => {
+      console.log('Fetching subscription for user:', user?.id)
       const { data, error } = await supabase
         .from('user_subscriptions')
-        .select('*, subscription_tier_id(*)')
+        .select(`
+          *,
+          subscription_tier_id:subscription_tiers(*)
+        `)
         .eq('user_id', user?.id)
         .single()
 
-      if (error) throw error
-      return data as UserSubscription
+      if (error) {
+        console.error('Subscription fetch error:', error)
+        throw error
+      }
+      
+      console.log('Fetched subscription data:', data)
+      
+      // Transform the data to match our UserSubscription type
+      const transformedData: UserSubscription = {
+        ...data,
+        subscription_tier_id: data.subscription_tier_id[0] // Get the first (and should be only) subscription tier
+      }
+
+      return transformedData
     },
     enabled: !!user,
   })
