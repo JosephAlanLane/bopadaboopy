@@ -4,13 +4,13 @@ import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { useQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import type { SubscriptionTier } from "@/integrations/supabase/types"
+import type { SubscriptionTier } from "@/integrations/supabase/types/subscription"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const { data: subscriptionTier, isLoading } = useQuery({
+  const { data: subscriptionTier, isLoading } = useQuery<SubscriptionTier>({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -42,9 +42,9 @@ export function SubscriptionButton() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: subscriptionTier.price_id,
+          priceId: subscriptionTier?.price_id,
           userId: user.id,
-          tierId: subscriptionTier.id
+          tierId: subscriptionTier?.id
         }),
       })
 
