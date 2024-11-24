@@ -2,11 +2,26 @@ import { Button } from "./ui/button"
 import { useToast } from "./ui/use-toast"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
-import type { Database } from "@/integrations/supabase/types"
+import { useQuery } from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
+
+  const { data: subscriptionTier, isLoading } = useQuery({
+    queryKey: ['subscriptionTier'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('subscription_tiers')
+        .select('*')
+        .single()
+      
+      if (error) throw error
+      return data
+    },
+    enabled: !!user,
+  })
 
   const handleSubscribe = async () => {
     if (!user) {
@@ -19,35 +34,28 @@ export function SubscriptionButton() {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('subscription_tiers')
-        .select('*')
-        .single()
-
-      if (error) throw error
-
-      if (!data) {
-        throw new Error('No subscription tier found')
-      }
-
+      console.log('Creating checkout session for user:', user.id)
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: data.price_id,
+          priceId: subscriptionTier.price_id,
           userId: user.id,
-          tierId: data.id
+          tierId: subscriptionTier.id
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to create checkout session')
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session')
+      }
 
       const { url } = await response.json()
+      console.log('Redirecting to checkout URL:', url)
       window.location.href = url
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Subscription error:', error)
       toast({
         title: "Error",
         description: "Failed to start subscription process",
@@ -56,12 +64,21 @@ export function SubscriptionButton() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <Button disabled>
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        Loading...
+      </Button>
+    )
+  }
+
   return (
     <Button 
       onClick={handleSubscribe}
       className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
     >
-      Subscribe for $1/month
+      Upgrade to Premium
     </Button>
   )
 }
