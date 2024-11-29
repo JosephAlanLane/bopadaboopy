@@ -1,5 +1,5 @@
 import React from 'react';
-import { Recipe } from '@/types/recipe';
+import { Recipe, DayOfWeek } from '@/types/recipe';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
@@ -10,21 +10,25 @@ interface WeeklyMealPlanCardProps {
   recipes: Recipe[];
 }
 
+const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 export const WeeklyMealPlanCard = ({ title, recipes }: WeeklyMealPlanCardProps) => {
   const [showDialog, setShowDialog] = React.useState(false);
   const navigate = useNavigate();
 
   const handleLoadMeals = () => {
-    // Store the meal plan in localStorage to retrieve it on the home page
-    localStorage.setItem('selectedMealPlan', JSON.stringify({
-      Monday: recipes[0],
-      Tuesday: recipes[1],
-      Wednesday: recipes[2],
-      Thursday: recipes[3],
-      Friday: recipes[4],
-      Saturday: recipes[5],
-      Sunday: recipes[6]
-    }));
+    // Create a properly structured meal plan object
+    const mealPlanObject: { [key in DayOfWeek]?: Recipe } = {};
+    
+    // Map each recipe to a day of the week
+    recipes.forEach((recipe, index) => {
+      if (index < DAYS.length) {
+        mealPlanObject[DAYS[index]] = recipe;
+      }
+    });
+    
+    // Store the meal plan in localStorage
+    localStorage.setItem('selectedMealPlan', JSON.stringify(mealPlanObject));
     
     // Navigate to home page
     navigate('/');
@@ -72,7 +76,9 @@ export const WeeklyMealPlanCard = ({ title, recipes }: WeeklyMealPlanCardProps) 
                     />
                     <div>
                       <h4 className="font-medium">{recipe.title}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{recipe.cuisine}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {DAYS[index]}: {recipe.cuisine}
+                      </p>
                     </div>
                   </div>
                 ))}
