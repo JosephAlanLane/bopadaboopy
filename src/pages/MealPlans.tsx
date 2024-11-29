@@ -8,24 +8,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@supabase/auth-helpers-react";
 import { createExampleMealPlans } from '@/data/exampleMealPlans';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [publicMealPlans, setPublicMealPlans] = useState([]);
   const [savedMealPlans, setSavedMealPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
+  const session = useSession();
   const navigate = useNavigate();
 
   useEffect(() => {
     const initializePage = async () => {
-      console.log('Initializing meal plans page, user:', user);
+      console.log('Initializing meal plans page, session:', session);
       setIsLoading(true);
       
       try {
-        if (!user) {
-          console.log('No user found, redirecting to login');
+        if (!session) {
+          console.log('No session found, redirecting to login');
           navigate('/login');
           return;
         }
@@ -41,7 +40,7 @@ const MealPlans = () => {
     };
 
     initializePage();
-  }, [user, navigate]);
+  }, [session, navigate]);
 
   const fetchMealPlans = async () => {
     try {
@@ -55,11 +54,11 @@ const MealPlans = () => {
       console.log('Fetched public meal plans:', publicData);
       setPublicMealPlans(publicData || []);
 
-      if (user) {
+      if (session?.user) {
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', user.id);
+          .eq('user_id', session.user.id);
         
         if (savedError) throw savedError;
         console.log('Fetched saved meal plans:', savedData);
@@ -97,15 +96,19 @@ const MealPlans = () => {
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Weekly Meal Plans
-          </h1>
-          <Tabs defaultValue="discover" className="w-auto">
-            <TabsList>
-              <TabsTrigger value="discover">Discover Meal Plans</TabsTrigger>
-              <TabsTrigger value="saved">My ❤️'d Meal Plans</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Weekly Meal Plans
+            </h1>
+          </div>
+          <div className="flex-1">
+            <Tabs defaultValue="discover" className="w-full">
+              <TabsList className="w-full">
+                <TabsTrigger value="discover" className="flex-1">Discover Meal Plans</TabsTrigger>
+                <TabsTrigger value="saved" className="flex-1">My ❤️'d Meal Plans</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">

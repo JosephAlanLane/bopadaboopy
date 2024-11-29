@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MealPlan } from "@/types/recipe";
 import { useSession } from "@supabase/auth-helpers-react";
 import { Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
@@ -14,28 +15,20 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const session = useSession();
-
-  // Add effect to check session status
-  useEffect(() => {
-    console.log('Session status changed:', session?.user?.id);
-  }, [session]);
+  const navigate = useNavigate();
 
   const handleSave = async () => {
-    console.log('Save button clicked, session:', session); // Debug log
+    console.log('Save button clicked, session:', session);
 
     if (!session?.user) {
-      console.log('No session found'); // Debug log
-      toast({
-        title: "Please login",
-        description: "You need to be logged in to save meal plans",
-        variant: "destructive",
-      });
+      console.log('No session found, redirecting to login');
+      navigate('/login');
       return;
     }
 
     setIsSaving(true);
     try {
-      console.log('Starting save process for user:', session.user.id); // Debug log
+      console.log('Starting save process for user:', session.user.id);
       
       // Convert recipes to a serializable array and remove null values
       const recipes = Object.values(mealPlan)
@@ -59,24 +52,24 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           category: recipe!.category || null
         }));
 
-      console.log('Prepared recipes for save:', recipes); // Debug log
+      console.log('Prepared recipes for save:', recipes);
 
       const { data, error } = await supabase
         .from('saved_meal_plans')
         .insert({
           user_id: session.user.id,
           title: "My Weekly Meal Plan",
-          recipes: recipes as any, // Type assertion needed due to Supabase's JSON type limitations
-          is_public: false // Make sure it's private by default
+          recipes: recipes as any,
+          is_public: false
         })
         .select();
 
       if (error) {
-        console.error('Supabase error:', error); // Debug log
+        console.error('Supabase error:', error);
         throw error;
       }
 
-      console.log('Save successful:', data); // Debug log
+      console.log('Save successful:', data);
 
       toast({
         title: "Meal plan saved!",

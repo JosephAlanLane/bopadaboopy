@@ -36,8 +36,10 @@ export const WeeklyMealPlanCard = ({
   const { toast } = useToast();
   const session = useSession();
 
-  const handleLoadMeals = () => {
+  const handleLoadMeals = async () => {
+    console.log('Loading meals, session:', session);
     if (!session) {
+      console.log('No session, redirecting to login');
       navigate('/login');
       return;
     }
@@ -56,7 +58,10 @@ export const WeeklyMealPlanCard = ({
 
   const handleToggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('Toggle save clicked, session:', session);
+    
     if (!session) {
+      console.log('No session, redirecting to login');
       navigate('/login');
       return;
     }
@@ -64,6 +69,7 @@ export const WeeklyMealPlanCard = ({
     setIsLoading(true);
     try {
       if (isSaved) {
+        console.log('Removing meal plan:', id);
         const { error } = await supabase
           .from('saved_meal_plans')
           .delete()
@@ -76,6 +82,7 @@ export const WeeklyMealPlanCard = ({
           title: "Meal plan removed from saved",
         });
       } else {
+        console.log('Saving meal plan:', id);
         const { error } = await supabase
           .from('saved_meal_plans')
           .insert({
@@ -93,7 +100,10 @@ export const WeeklyMealPlanCard = ({
         });
       }
       
-      onToggleSave?.();
+      if (onToggleSave) {
+        console.log('Calling onToggleSave callback');
+        onToggleSave();
+      }
     } catch (error) {
       console.error('Error toggling save:', error);
       toast({
