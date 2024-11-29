@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@supabase/auth-helpers-react";
-import { createExampleMealPlans } from '@/data/exampleMealPlans';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { createExampleMealPlans } from '@/data/exampleMealPlans';
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,6 +16,7 @@ const MealPlans = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('discover');
 
   useEffect(() => {
     const initializePage = async () => {
@@ -46,6 +46,7 @@ const MealPlans = () => {
   const fetchMealPlans = async () => {
     try {
       console.log('Fetching meal plans');
+      // Fetch public meal plans
       const { data: publicData, error: publicError } = await supabase
         .from('saved_meal_plans')
         .select('*')
@@ -56,6 +57,7 @@ const MealPlans = () => {
       setPublicMealPlans(publicData || []);
 
       if (user) {
+        // Fetch user's saved meal plans
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
@@ -78,6 +80,15 @@ const MealPlans = () => {
       (plan.description && plan.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   };
+
+  const handleTabChange = (value) => {
+    console.log('Tab changed to:', value);
+    setActiveTab(value);
+  };
+
+  const displayedMealPlans = activeTab === 'discover' 
+    ? filterMealPlans(publicMealPlans)
+    : filterMealPlans(savedMealPlans);
 
   if (isLoading) {
     return (
@@ -103,7 +114,7 @@ const MealPlans = () => {
             </h1>
           </div>
           <div className="flex-1">
-            <Tabs defaultValue="discover" className="w-full">
+            <Tabs defaultValue="discover" value={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList className="w-full">
                 <TabsTrigger value="discover" className="flex-1">Discover Meal Plans</TabsTrigger>
                 <TabsTrigger value="saved" className="flex-1">My ❤️'d Meal Plans</TabsTrigger>
@@ -125,10 +136,10 @@ const MealPlans = () => {
               />
             </div>
 
-            <Tabs defaultValue="discover" className="space-y-6">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
               <TabsContent value="discover" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {filterMealPlans(publicMealPlans).map((plan) => (
+                  {displayedMealPlans.map((plan) => (
                     <WeeklyMealPlanCard
                       key={plan.id}
                       {...plan}
@@ -137,7 +148,7 @@ const MealPlans = () => {
                       isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
                     />
                   ))}
-                  {filterMealPlans(publicMealPlans).length === 0 && (
+                  {displayedMealPlans.length === 0 && (
                     <div className="col-span-2 text-center py-12">
                       <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
                     </div>
@@ -147,14 +158,16 @@ const MealPlans = () => {
 
               <TabsContent value="saved" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {filterMealPlans(savedMealPlans).map((plan) => (
+                  {displayedMealPlans.map((plan) => (
                     <WeeklyMealPlanCard
                       key={plan.id}
                       {...plan}
                       onToggleSave={fetchMealPlans}
+                      showHeart
+                      isSaved={true}
                     />
                   ))}
-                  {filterMealPlans(savedMealPlans).length === 0 && (
+                  {displayedMealPlans.length === 0 && (
                     <div className="col-span-2 text-center py-12">
                       <p className="text-gray-500 dark:text-gray-400">No saved meal plans yet.</p>
                     </div>
