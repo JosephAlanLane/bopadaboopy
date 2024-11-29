@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Recipe, DayOfWeek } from '@/types/recipe';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -28,14 +28,44 @@ export const WeeklyMealPlanCard = ({
   recipes,
   description,
   showHeart,
-  isSaved,
+  isSaved: initialIsSaved,
   onToggleSave
 }: WeeklyMealPlanCardProps) => {
   const [showDialog, setShowDialog] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(initialIsSaved || false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      if (!user) return;
+      
+      try {
+        console.log('Checking if meal plan is saved:', id);
+        const { data, error } = await supabase
+          .from('saved_meal_plans')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('title', title)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error checking saved status:', error);
+          return;
+        }
+
+        const saved = !!data;
+        console.log('Meal plan saved status:', saved);
+        setIsSaved(saved);
+      } catch (error) {
+        console.error('Error checking saved status:', error);
+      }
+    };
+
+    checkIfSaved();
+  }, [user, id, title]);
 
   const handleLoadMeals = async () => {
     console.log('Loading meals, user:', user);
@@ -74,13 +104,14 @@ export const WeeklyMealPlanCard = ({
           .from('saved_meal_plans')
           .delete()
           .eq('user_id', user.id)
-          .eq('id', id);
+          .eq('title', title);
 
         if (error) {
           console.error('Delete error:', error);
           throw error;
         }
 
+        setIsSaved(false);
         toast({
           title: "Meal plan removed from saved",
         });
@@ -107,6 +138,7 @@ export const WeeklyMealPlanCard = ({
           throw error;
         }
 
+        setIsSaved(true);
         toast({
           title: "Meal plan saved!",
         });
@@ -136,7 +168,7 @@ export const WeeklyMealPlanCard = ({
       >
         {showHeart && (
           <HeartButton 
-            isSaved={isSaved || false}
+            isSaved={isSaved}
             isLoading={isLoading}
             onClick={handleToggleSave}
           />
