@@ -37,31 +37,27 @@ export const WeeklyMealPlanCard = ({
   const session = useSession();
 
   const handleLoadMeals = () => {
-    // Create a properly structured meal plan object
+    if (!session) {
+      navigate('/login');
+      return;
+    }
+
     const mealPlanObject: { [key in DayOfWeek]?: Recipe } = {};
     
-    // Map each recipe to a day of the week
     recipes.forEach((recipe, index) => {
       if (index < DAYS.length) {
         mealPlanObject[DAYS[index]] = recipe;
       }
     });
     
-    // Store the meal plan in localStorage
     localStorage.setItem('selectedMealPlan', JSON.stringify(mealPlanObject));
-    
-    // Navigate to home page
     navigate('/');
   };
 
   const handleToggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!session?.user) {
-      toast({
-        title: "Please login",
-        description: "You need to be logged in to save meal plans",
-        variant: "destructive",
-      });
+    if (!session) {
+      navigate('/login');
       return;
     }
 
