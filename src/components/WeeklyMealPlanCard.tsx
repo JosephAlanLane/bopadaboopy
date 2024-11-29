@@ -73,8 +73,8 @@ export const WeeklyMealPlanCard = ({
         const { error } = await supabase
           .from('saved_meal_plans')
           .delete()
-          .eq('id', id)
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .eq('id', id);
 
         if (error) throw error;
 
@@ -94,7 +94,25 @@ export const WeeklyMealPlanCard = ({
             is_public: false
           });
 
-        if (error) throw error;
+        if (error) {
+          // If the meal plan already exists with this ID, try updating it instead
+          if (error.code === '23505') { // Unique violation error code
+            const { error: updateError } = await supabase
+              .from('saved_meal_plans')
+              .update({
+                user_id: user.id,
+                title,
+                description,
+                recipes,
+                is_public: false
+              })
+              .eq('id', id);
+            
+            if (updateError) throw updateError;
+          } else {
+            throw error;
+          }
+        }
 
         toast({
           title: "Meal plan saved!",
