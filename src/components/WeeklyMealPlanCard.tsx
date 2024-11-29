@@ -151,7 +151,7 @@ export const WeeklyMealPlanCard = ({
               className={`w-5 h-5 transition-colors ${
                 isSaved 
                   ? 'text-red-500 fill-red-500' 
-                  : 'text-gray-400 dark:text-gray-500'
+                  : 'text-gray-400 dark:text-gray-500 hover:text-red-500'
               }`} 
             />
           </button>
