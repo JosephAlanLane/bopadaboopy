@@ -16,7 +16,10 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const session = useSession();
 
   const handleSave = async () => {
+    console.log('Save button clicked, session:', session); // Debug log
+
     if (!session?.user) {
+      console.log('No session found'); // Debug log
       toast({
         title: "Please login",
         description: "You need to be logged in to save meal plans",
@@ -27,6 +30,8 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
 
     setIsSaving(true);
     try {
+      console.log('Starting save process for user:', session.user.id); // Debug log
+      
       // Convert recipes to a serializable array and remove null values
       const recipes = Object.values(mealPlan)
         .filter(recipe => recipe !== null)
@@ -49,15 +54,23 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           category: recipe!.category || null
         }));
 
-      const { error } = await supabase
+      console.log('Prepared recipes for save:', recipes); // Debug log
+
+      const { data, error } = await supabase
         .from('saved_meal_plans')
         .insert({
           user_id: session.user.id,
           title: "My Weekly Meal Plan",
           recipes: recipes as any, // Type assertion needed due to Supabase's JSON type limitations
-        });
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error); // Debug log
+        throw error;
+      }
+
+      console.log('Save successful:', data); // Debug log
 
       toast({
         title: "Meal plan saved!",
