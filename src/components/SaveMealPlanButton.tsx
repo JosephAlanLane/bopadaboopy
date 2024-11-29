@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Save } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MealPlan } from "@/types/recipe";
 import { useSession } from "@supabase/auth-helpers-react";
+import { Save } from "lucide-react";
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
@@ -27,10 +27,28 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
 
     setIsSaving(true);
     try {
+      // Convert recipes to a serializable array and remove null values
+      const recipes = Object.values(mealPlan)
+        .filter(recipe => recipe !== null)
+        .map(recipe => ({
+          id: recipe!.id,
+          title: recipe!.title,
+          image: recipe!.image,
+          recipeUrl: recipe!.recipeUrl,
+          ingredients: recipe!.ingredients,
+          instructions: recipe!.instructions,
+          cuisine: recipe!.cuisine,
+          allergens: recipe!.allergens,
+          cook_time_minutes: recipe!.cook_time_minutes,
+          servings: recipe!.servings,
+          rating: recipe!.rating,
+          category: recipe!.category
+        }));
+
       const { error } = await supabase.from('saved_meal_plans').insert({
         user_id: session.user.id,
         title: "My Weekly Meal Plan",
-        recipes: Object.values(mealPlan).filter(recipe => recipe !== null),
+        recipes: recipes,
       });
 
       if (error) throw error;
