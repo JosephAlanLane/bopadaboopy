@@ -46,6 +46,7 @@ const MealPlans = () => {
   const fetchMealPlans = async () => {
     try {
       console.log('Fetching meal plans');
+      
       // Fetch public meal plans
       const { data: publicData, error: publicError } = await supabase
         .from('saved_meal_plans')
@@ -61,8 +62,7 @@ const MealPlans = () => {
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', user.id)
-          .eq('is_public', false);
+          .eq('user_id', user.id);
         
         if (savedError) throw savedError;
         console.log('Fetched saved meal plans:', savedData);

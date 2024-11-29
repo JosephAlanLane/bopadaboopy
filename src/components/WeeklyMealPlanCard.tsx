@@ -4,10 +4,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from '@/contexts/AuthContext';
+import { HeartButton } from './HeartButton';
+import { MealPlanRecipeGrid } from './MealPlanRecipeGrid';
 
 interface WeeklyMealPlanCardProps {
   id: string;
@@ -45,7 +46,6 @@ export const WeeklyMealPlanCard = ({
     }
 
     const mealPlanObject: { [key in DayOfWeek]?: Recipe } = {};
-    
     recipes.forEach((recipe, index) => {
       if (index < DAYS.length) {
         mealPlanObject[DAYS[index]] = recipe;
@@ -95,23 +95,8 @@ export const WeeklyMealPlanCard = ({
           });
 
         if (error) {
-          // If the meal plan already exists with this ID, try updating it instead
-          if (error.code === '23505') { // Unique violation error code
-            const { error: updateError } = await supabase
-              .from('saved_meal_plans')
-              .update({
-                user_id: user.id,
-                title,
-                description,
-                recipes,
-                is_public: false
-              })
-              .eq('id', id);
-            
-            if (updateError) throw updateError;
-          } else {
-            throw error;
-          }
+          console.error('Error saving meal plan:', error);
+          throw error;
         }
 
         toast({
@@ -142,19 +127,11 @@ export const WeeklyMealPlanCard = ({
         className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] cursor-pointer border border-gray-200 dark:border-gray-700"
       >
         {showHeart && (
-          <button
+          <HeartButton 
+            isSaved={isSaved || false}
+            isLoading={isLoading}
             onClick={handleToggleSave}
-            disabled={isLoading}
-            className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 transition-colors"
-          >
-            <Heart 
-              className={`w-5 h-5 transition-colors ${
-                isSaved 
-                  ? 'text-red-500 fill-red-500' 
-                  : 'text-gray-400 dark:text-gray-500 hover:text-red-500'
-              }`} 
-            />
-          </button>
+          />
         )}
         
         <div className="p-4">
@@ -162,20 +139,7 @@ export const WeeklyMealPlanCard = ({
           {description && (
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{description}</p>
           )}
-          <div className="grid grid-cols-7 gap-2">
-            {Object.values(recipes).map((recipe: Recipe, index: number) => (
-              <div key={index} className="relative aspect-square">
-                <img
-                  src={recipe.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&auto=format&fit=crop'}
-                  alt={recipe.title}
-                  className="w-full h-full object-cover rounded-md"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-md flex items-center justify-center">
-                  <p className="text-white text-xs text-center px-1">{recipe.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <MealPlanRecipeGrid recipes={recipes} />
         </div>
       </div>
 
