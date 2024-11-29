@@ -1,6 +1,7 @@
 import { recipes } from './recipes';
 import { supabase } from "@/integrations/supabase/client";
 import { Recipe } from '@/types/recipe';
+import { Json } from '@/integrations/supabase/types/utils';
 
 // Helper function to get random recipes
 const getRandomRecipes = (count: number) => {
@@ -9,21 +10,25 @@ const getRandomRecipes = (count: number) => {
 };
 
 // Convert Recipe array to JSON-compatible format
-const recipesToJson = (recipes: Recipe[]) => {
+const recipesToJson = (recipes: Recipe[]): Json => {
   return recipes.map(recipe => ({
     id: recipe.id,
     title: recipe.title,
     image: recipe.image,
     recipeUrl: recipe.recipeUrl,
-    ingredients: recipe.ingredients,
+    ingredients: recipe.ingredients.map(ing => ({
+      amount: ing.amount,
+      unit: ing.unit || null,
+      item: ing.item
+    })),
     instructions: recipe.instructions,
     cuisine: recipe.cuisine,
     allergens: recipe.allergens,
-    cook_time_minutes: recipe.cook_time_minutes,
-    servings: recipe.servings,
-    rating: recipe.rating,
-    category: recipe.category
-  }));
+    cook_time_minutes: recipe.cook_time_minutes || null,
+    servings: recipe.servings || null,
+    rating: recipe.rating || null,
+    category: recipe.category || null
+  })) as Json;
 };
 
 // Create example meal plans
