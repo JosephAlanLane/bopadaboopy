@@ -8,39 +8,61 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@supabase/auth-helpers-react";
 import { createExampleMealPlans } from '@/data/exampleMealPlans';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [publicMealPlans, setPublicMealPlans] = useState([]);
   const [savedMealPlans, setSavedMealPlans] = useState([]);
-  const session = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!session) {
-      navigate('/login');
-      return;
-    }
-    
-    createExampleMealPlans();
-    fetchMealPlans();
-  }, [session, navigate]);
+    const initializePage = async () => {
+      console.log('Initializing meal plans page, user:', user);
+      setIsLoading(true);
+      
+      try {
+        if (!user) {
+          console.log('No user found, redirecting to login');
+          navigate('/login');
+          return;
+        }
+
+        console.log('Creating example meal plans');
+        await createExampleMealPlans();
+        await fetchMealPlans();
+      } catch (error) {
+        console.error('Error initializing page:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializePage();
+  }, [user, navigate]);
 
   const fetchMealPlans = async () => {
     try {
-      const { data: publicData } = await supabase
+      console.log('Fetching meal plans');
+      const { data: publicData, error: publicError } = await supabase
         .from('saved_meal_plans')
         .select('*')
         .eq('is_public', true);
       
+      if (publicError) throw publicError;
+      console.log('Fetched public meal plans:', publicData);
       setPublicMealPlans(publicData || []);
 
-      if (session?.user) {
-        const { data: savedData } = await supabase
+      if (user) {
+        const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
         
+        if (savedError) throw savedError;
+        console.log('Fetched saved meal plans:', savedData);
         setSavedMealPlans(savedData || []);
       }
     } catch (error) {
@@ -57,15 +79,24 @@ const MealPlans = () => {
     );
   };
 
-  if (!session) {
-    return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Navbar />
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             Weekly Meal Plans
           </h1>
@@ -77,55 +108,57 @@ const MealPlans = () => {
           </Tabs>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <div className="relative w-full max-w-md mb-6">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search meal plans..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 w-full"
-            />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="relative w-full max-w-md mb-6">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search meal plans..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 w-full"
+              />
+            </div>
+
+            <Tabs defaultValue="discover" className="space-y-6">
+              <TabsContent value="discover" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {filterMealPlans(publicMealPlans).map((plan) => (
+                    <WeeklyMealPlanCard
+                      key={plan.id}
+                      {...plan}
+                      onToggleSave={fetchMealPlans}
+                      showHeart
+                      isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
+                    />
+                  ))}
+                  {filterMealPlans(publicMealPlans).length === 0 && (
+                    <div className="col-span-2 text-center py-12">
+                      <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="saved" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {filterMealPlans(savedMealPlans).map((plan) => (
+                    <WeeklyMealPlanCard
+                      key={plan.id}
+                      {...plan}
+                      onToggleSave={fetchMealPlans}
+                    />
+                  ))}
+                  {filterMealPlans(savedMealPlans).length === 0 && (
+                    <div className="col-span-2 text-center py-12">
+                      <p className="text-gray-500 dark:text-gray-400">No saved meal plans yet.</p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
-
-          <Tabs defaultValue="discover" className="space-y-6">
-            <TabsContent value="discover" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {filterMealPlans(publicMealPlans).map((plan) => (
-                  <WeeklyMealPlanCard
-                    key={plan.id}
-                    {...plan}
-                    onToggleSave={fetchMealPlans}
-                    showHeart
-                    isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
-                  />
-                ))}
-                {filterMealPlans(publicMealPlans).length === 0 && (
-                  <div className="col-span-2 text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="saved" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {filterMealPlans(savedMealPlans).map((plan) => (
-                  <WeeklyMealPlanCard
-                    key={plan.id}
-                    {...plan}
-                    onToggleSave={fetchMealPlans}
-                  />
-                ))}
-                {filterMealPlans(savedMealPlans).length === 0 && (
-                  <div className="col-span-2 text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">No saved meal plans yet.</p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
       </main>
     </div>
