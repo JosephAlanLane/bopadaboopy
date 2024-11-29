@@ -24,10 +24,16 @@ const MealPlans = () => {
 
   // Ensure we have exactly 7 recipes for each cuisine
   while (asianRecipes.length < 7) {
-    asianRecipes.push(asianRecipes[0]); // Duplicate first recipe if needed
+    asianRecipes.push({
+      ...asianRecipes[0],
+      id: `${asianRecipes[0].id}-${asianRecipes.length}`,
+    });
   }
   while (mediterraneanRecipes.length < 7) {
-    mediterraneanRecipes.push(mediterraneanRecipes[0]); // Duplicate first recipe if needed
+    mediterraneanRecipes.push({
+      ...mediterraneanRecipes[0],
+      id: `${mediterraneanRecipes[0].id}-${mediterraneanRecipes.length}`,
+    });
   }
 
   // Filter meal plans based on search query
