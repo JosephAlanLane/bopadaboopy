@@ -4,17 +4,37 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Heart } from "lucide-react";
+import { useToast } from "./ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@supabase/auth-helpers-react";
 
 interface WeeklyMealPlanCardProps {
+  id: string;
   title: string;
-  recipes: Recipe[];
+  recipes: any;
+  description?: string;
+  showHeart?: boolean;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
 }
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-export const WeeklyMealPlanCard = ({ title, recipes }: WeeklyMealPlanCardProps) => {
+export const WeeklyMealPlanCard = ({ 
+  id,
+  title, 
+  recipes,
+  description,
+  showHeart,
+  isSaved,
+  onToggleSave
+}: WeeklyMealPlanCardProps) => {
   const [showDialog, setShowDialog] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const user = useAuth();
 
   const handleLoadMeals = () => {
     // Create a properly structured meal plan object
@@ -34,16 +54,91 @@ export const WeeklyMealPlanCard = ({ title, recipes }: WeeklyMealPlanCardProps) 
     navigate('/');
   };
 
+  const handleToggleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      toast({
+        title: "Please login",
+        description: "You need to be logged in to save meal plans",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      if (isSaved) {
+        const { error } = await supabase
+          .from('saved_meal_plans')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Meal plan removed from saved",
+        });
+      } else {
+        const { error } = await supabase
+          .from('saved_meal_plans')
+          .insert({
+            id,
+            user_id: user.id,
+            title,
+            description,
+            recipes,
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Meal plan saved!",
+        });
+      }
+      
+      onToggleSave?.();
+    } catch (error) {
+      console.error('Error toggling save:', error);
+      toast({
+        title: "Error saving meal plan",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <div 
         onClick={() => setShowDialog(true)}
-        className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] cursor-pointer border border-gray-200 dark:border-gray-700"
+        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] cursor-pointer border border-gray-200 dark:border-gray-700"
       >
+        {showHeart && (
+          <button
+            onClick={handleToggleSave}
+            disabled={isLoading}
+            className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+          >
+            <Heart 
+              className={`w-5 h-5 transition-colors ${
+                isSaved 
+                  ? 'text-red-500 fill-red-500' 
+                  : 'text-gray-400 dark:text-gray-500'
+              }`} 
+            />
+          </button>
+        )}
+        
         <div className="p-4">
           <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{title}</h3>
+          {description && (
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{description}</p>
+          )}
           <div className="grid grid-cols-7 gap-2">
-            {recipes.map((recipe, index) => (
+            {Object.values(recipes).map((recipe: Recipe, index: number) => (
               <div key={index} className="relative aspect-square">
                 <img
                   src={recipe.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&auto=format&fit=crop'}

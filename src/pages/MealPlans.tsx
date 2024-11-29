@@ -1,55 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { WeeklyMealPlanCard } from '@/components/WeeklyMealPlanCard';
-import { recipes } from '@/data/recipes';
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@supabase/auth-helpers-react";
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [publicMealPlans, setPublicMealPlans] = useState([]);
+  const [savedMealPlans, setSavedMealPlans] = useState([]);
+  const user = useAuth();
 
-  // Filter Asian recipes (Chinese and Thai)
-  const asianRecipes = recipes
-    .filter(recipe => 
-      recipe.cuisine === 'Chinese' || recipe.cuisine === 'Thai'
-    )
-    .slice(0, 7);
+  useEffect(() => {
+    fetchMealPlans();
+  }, [user]);
 
-  // Filter Italian and Mediterranean recipes
-  const mediterraneanRecipes = recipes
-    .filter(recipe => 
-      recipe.cuisine === 'Italian' || recipe.cuisine === 'Mediterranean'
-    )
-    .slice(0, 7);
+  const fetchMealPlans = async () => {
+    try {
+      // Fetch public meal plans
+      const { data: publicData } = await supabase
+        .from('saved_meal_plans')
+        .select('*')
+        .eq('is_public', true);
+      
+      setPublicMealPlans(publicData || []);
 
-  // Ensure we have exactly 7 recipes for each cuisine
-  while (asianRecipes.length < 7) {
-    asianRecipes.push({
-      ...asianRecipes[0],
-      id: `${asianRecipes[0].id}-${asianRecipes.length}`,
-    });
-  }
-  while (mediterraneanRecipes.length < 7) {
-    mediterraneanRecipes.push({
-      ...mediterraneanRecipes[0],
-      id: `${mediterraneanRecipes[0].id}-${mediterraneanRecipes.length}`,
-    });
-  }
+      if (user) {
+        // Fetch user's saved meal plans
+        const { data: savedData } = await supabase
+          .from('saved_meal_plans')
+          .select('*')
+          .eq('user_id', user.id);
+        
+        setSavedMealPlans(savedData || []);
+      }
+    } catch (error) {
+      console.error('Error fetching meal plans:', error);
+    }
+  };
 
-  // Filter meal plans based on search query
-  const filteredMealPlans = searchQuery.trim() === '' ? [
-    { title: "Asian Weekly Meal Plan", recipes: asianRecipes },
-    { title: "Italian/Medi Weekly Meal Plan", recipes: mediterraneanRecipes }
-  ] : [
-    { title: "Asian Weekly Meal Plan", recipes: asianRecipes },
-    { title: "Italian/Medi Weekly Meal Plan", recipes: mediterraneanRecipes }
-  ].filter(plan => 
-    plan.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    plan.recipes.some(recipe => 
-      recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      recipe.cuisine.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
+  const filterMealPlans = (plans) => {
+    if (!searchQuery.trim()) return plans;
+    
+    return plans.filter(plan => 
+      plan.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (plan.description && plan.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -70,20 +69,49 @@ const MealPlans = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {filteredMealPlans.map((plan, index) => (
-            <WeeklyMealPlanCard
-              key={index}
-              title={plan.title}
-              recipes={plan.recipes}
-            />
-          ))}
-          {filteredMealPlans.length === 0 && (
-            <div className="col-span-2 text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
+
+        <Tabs defaultValue="discover" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="discover">Discover Meal Plans</TabsTrigger>
+            <TabsTrigger value="saved">My ❤️'d Meal Plans</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="discover" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {filterMealPlans(publicMealPlans).map((plan) => (
+                <WeeklyMealPlanCard
+                  key={plan.id}
+                  {...plan}
+                  onToggleSave={fetchMealPlans}
+                  showHeart
+                  isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
+                />
+              ))}
+              {filterMealPlans(publicMealPlans).length === 0 && (
+                <div className="col-span-2 text-center py-12">
+                  <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="saved" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {filterMealPlans(savedMealPlans).map((plan) => (
+                <WeeklyMealPlanCard
+                  key={plan.id}
+                  {...plan}
+                  onToggleSave={fetchMealPlans}
+                />
+              ))}
+              {filterMealPlans(savedMealPlans).length === 0 && (
+                <div className="col-span-2 text-center py-12">
+                  <p className="text-gray-500 dark:text-gray-400">No saved meal plans yet.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

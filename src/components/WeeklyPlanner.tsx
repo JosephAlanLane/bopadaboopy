@@ -7,6 +7,7 @@ import { useToast } from "./ui/use-toast";
 import { Slider } from "./ui/slider";
 import { MealPlanDay } from "./MealPlanDay";
 import { generateGroceryList, getNextDate } from "@/utils/groceryUtils";
+import { SaveMealPlanButton } from "./SaveMealPlanButton";
 
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
@@ -126,7 +127,10 @@ END:VCALENDAR`;
   return (
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-full mt-4 md:mt-0">
       <div className="flex-1">
-        <h2 className="font-semibold mb-2 px-3 pt-3">Weekly Meal Plan</h2>
+        <div className="flex items-center justify-between px-3 pt-3">
+          <h2 className="font-semibold mb-2">Weekly Meal Plan</h2>
+          <SaveMealPlanButton mealPlan={mealPlan} />
+        </div>
         <div className="space-y-1 px-3">
           {DAYS.map((day) => (
             <MealPlanDay
