@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sidebar } from "@/components/Sidebar";
 import { Link } from "react-router-dom";
 
+// Move these to a separate constants file if needed
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const fetchRecipes = async () => {
@@ -55,6 +56,25 @@ const Index = () => {
     queryKey: ['recipes'],
     queryFn: fetchRecipes,
   });
+
+  // Add effect to load meal plan from localStorage
+  useEffect(() => {
+    const savedMealPlan = localStorage.getItem('selectedMealPlan');
+    if (savedMealPlan) {
+      try {
+        const parsedMealPlan = JSON.parse(savedMealPlan);
+        setMealPlan(parsedMealPlan);
+        localStorage.removeItem('selectedMealPlan'); // Clear it after loading
+        
+        toast({
+          title: "Meal plan loaded",
+          description: "Your selected meal plan has been loaded into the planner.",
+        });
+      } catch (error) {
+        console.error('Error loading meal plan:', error);
+      }
+    }
+  }, []); // Only run once on mount
 
   useEffect(() => {
     if (!filtersApplied) {
