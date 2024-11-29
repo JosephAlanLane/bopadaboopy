@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@supabase/auth-helpers-react";
+import { useAuth } from '@/contexts/AuthContext';
 
 interface WeeklyMealPlanCardProps {
   id: string;
@@ -34,12 +34,12 @@ export const WeeklyMealPlanCard = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const session = useSession();
+  const { user } = useAuth();
 
   const handleLoadMeals = async () => {
-    console.log('Loading meals, session:', session);
-    if (!session) {
-      console.log('No session, redirecting to login');
+    console.log('Loading meals, user:', user);
+    if (!user) {
+      console.log('No user, redirecting to login');
       navigate('/login');
       return;
     }
@@ -58,10 +58,10 @@ export const WeeklyMealPlanCard = ({
 
   const handleToggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('Toggle save clicked, session:', session);
+    console.log('Toggle save clicked, user:', user);
     
-    if (!session) {
-      console.log('No session, redirecting to login');
+    if (!user) {
+      console.log('No user, redirecting to login');
       navigate('/login');
       return;
     }
@@ -74,7 +74,7 @@ export const WeeklyMealPlanCard = ({
           .from('saved_meal_plans')
           .delete()
           .eq('id', id)
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
 
         if (error) throw error;
 
@@ -87,10 +87,11 @@ export const WeeklyMealPlanCard = ({
           .from('saved_meal_plans')
           .insert({
             id,
-            user_id: session.user.id,
+            user_id: user.id,
             title,
             description,
             recipes,
+            is_public: false
           });
 
         if (error) throw error;

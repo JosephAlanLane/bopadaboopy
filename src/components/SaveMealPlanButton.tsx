@@ -3,9 +3,9 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MealPlan } from "@/types/recipe";
-import { useSession } from "@supabase/auth-helpers-react";
 import { Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
@@ -14,21 +14,21 @@ interface SaveMealPlanButtonProps {
 export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
-  const session = useSession();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    console.log('Save button clicked, session:', session);
+    console.log('Save button clicked, user:', user);
 
-    if (!session?.user) {
-      console.log('No session found, redirecting to login');
+    if (!user) {
+      console.log('No user found, redirecting to login');
       navigate('/login');
       return;
     }
 
     setIsSaving(true);
     try {
-      console.log('Starting save process for user:', session.user.id);
+      console.log('Starting save process for user:', user.id);
       
       // Convert recipes to a serializable array and remove null values
       const recipes = Object.values(mealPlan)
@@ -57,7 +57,7 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
       const { data, error } = await supabase
         .from('saved_meal_plans')
         .insert({
-          user_id: session.user.id,
+          user_id: user.id,
           title: "My Weekly Meal Plan",
           recipes: recipes as any,
           is_public: false

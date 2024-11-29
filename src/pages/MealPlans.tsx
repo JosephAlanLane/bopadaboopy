@@ -8,23 +8,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@supabase/auth-helpers-react";
 import { createExampleMealPlans } from '@/data/exampleMealPlans';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [publicMealPlans, setPublicMealPlans] = useState([]);
   const [savedMealPlans, setSavedMealPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const session = useSession();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const initializePage = async () => {
-      console.log('Initializing meal plans page, session:', session);
+      console.log('Initializing meal plans page, user:', user);
       setIsLoading(true);
       
       try {
-        if (!session) {
-          console.log('No session found, redirecting to login');
+        if (!user) {
+          console.log('No user found, redirecting to login');
           navigate('/login');
           return;
         }
@@ -40,7 +41,7 @@ const MealPlans = () => {
     };
 
     initializePage();
-  }, [session, navigate]);
+  }, [user, navigate]);
 
   const fetchMealPlans = async () => {
     try {
@@ -54,11 +55,11 @@ const MealPlans = () => {
       console.log('Fetched public meal plans:', publicData);
       setPublicMealPlans(publicData || []);
 
-      if (session?.user) {
+      if (user) {
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
         
         if (savedError) throw savedError;
         console.log('Fetched saved meal plans:', savedData);
