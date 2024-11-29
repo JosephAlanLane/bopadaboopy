@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,11 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const session = useSession();
+
+  // Add effect to check session status
+  useEffect(() => {
+    console.log('Session status changed:', session?.user?.id);
+  }, [session]);
 
   const handleSave = async () => {
     console.log('Save button clicked, session:', session); // Debug log
@@ -62,6 +67,7 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           user_id: session.user.id,
           title: "My Weekly Meal Plan",
           recipes: recipes as any, // Type assertion needed due to Supabase's JSON type limitations
+          is_public: false // Make sure it's private by default
         })
         .select();
 

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@supabase/auth-helpers-react";
+import { createExampleMealPlans } from '@/data/exampleMealPlans';
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,6 +15,7 @@ const MealPlans = () => {
   const session = useSession();
 
   useEffect(() => {
+    createExampleMealPlans(); // Create example meal plans if none exist
     fetchMealPlans();
   }, [session]);
 
