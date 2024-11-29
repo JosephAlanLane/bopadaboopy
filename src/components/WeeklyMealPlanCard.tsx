@@ -98,17 +98,31 @@ export const WeeklyMealPlanCard = ({
 
     setIsLoading(true);
     try {
-      if (isSaved) {
-        console.log('Removing meal plan:', id);
-        const { error } = await supabase
+      // Check if the meal plan is already saved
+      const { data: existingPlan, error: checkError } = await supabase
+        .from('saved_meal_plans')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('title', title)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing plan:', checkError);
+        throw checkError;
+      }
+
+      if (existingPlan) {
+        // If the plan exists, delete it
+        console.log('Removing meal plan:', existingPlan.id);
+        const { error: deleteError } = await supabase
           .from('saved_meal_plans')
           .delete()
           .eq('user_id', user.id)
           .eq('title', title);
 
-        if (error) {
-          console.error('Delete error:', error);
-          throw error;
+        if (deleteError) {
+          console.error('Delete error:', deleteError);
+          throw deleteError;
         }
 
         setIsSaved(false);
@@ -116,6 +130,7 @@ export const WeeklyMealPlanCard = ({
           title: "Meal plan removed from saved",
         });
       } else {
+        // If the plan doesn't exist, save it
         console.log('Saving meal plan with data:', {
           user_id: user.id,
           title,
@@ -123,7 +138,7 @@ export const WeeklyMealPlanCard = ({
           recipes,
         });
         
-        const { error } = await supabase
+        const { error: insertError } = await supabase
           .from('saved_meal_plans')
           .insert({
             user_id: user.id,
@@ -133,9 +148,9 @@ export const WeeklyMealPlanCard = ({
             is_public: false
           });
 
-        if (error) {
-          console.error('Insert error:', error);
-          throw error;
+        if (insertError) {
+          console.error('Insert error:', insertError);
+          throw insertError;
         }
 
         setIsSaved(true);
