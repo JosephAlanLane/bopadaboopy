@@ -35,21 +35,27 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           title: recipe!.title,
           image: recipe!.image,
           recipeUrl: recipe!.recipeUrl,
-          ingredients: recipe!.ingredients,
+          ingredients: recipe!.ingredients.map(ing => ({
+            amount: ing.amount,
+            unit: ing.unit || null,
+            item: ing.item
+          })),
           instructions: recipe!.instructions,
           cuisine: recipe!.cuisine,
           allergens: recipe!.allergens,
-          cook_time_minutes: recipe!.cook_time_minutes,
-          servings: recipe!.servings,
-          rating: recipe!.rating,
-          category: recipe!.category
+          cook_time_minutes: recipe!.cook_time_minutes || null,
+          servings: recipe!.servings || null,
+          rating: recipe!.rating || null,
+          category: recipe!.category || null
         }));
 
-      const { error } = await supabase.from('saved_meal_plans').insert({
-        user_id: session.user.id,
-        title: "My Weekly Meal Plan",
-        recipes: recipes,
-      });
+      const { error } = await supabase
+        .from('saved_meal_plans')
+        .insert({
+          user_id: session.user.id,
+          title: "My Weekly Meal Plan",
+          recipes: recipes as any, // Type assertion needed due to Supabase's JSON type limitations
+        });
 
       if (error) throw error;
 
