@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 interface WeeklyMealPlanCardProps {
   id: string;
@@ -34,7 +34,7 @@ export const WeeklyMealPlanCard = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const user = useAuth();
+  const session = useSession();
 
   const handleLoadMeals = () => {
     // Create a properly structured meal plan object
@@ -56,7 +56,7 @@ export const WeeklyMealPlanCard = ({
 
   const handleToggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) {
+    if (!session?.user) {
       toast({
         title: "Please login",
         description: "You need to be logged in to save meal plans",
@@ -72,7 +72,7 @@ export const WeeklyMealPlanCard = ({
           .from('saved_meal_plans')
           .delete()
           .eq('id', id)
-          .eq('user_id', user.id);
+          .eq('user_id', session.user.id);
 
         if (error) throw error;
 
@@ -84,7 +84,7 @@ export const WeeklyMealPlanCard = ({
           .from('saved_meal_plans')
           .insert({
             id,
-            user_id: user.id,
+            user_id: session.user.id,
             title,
             description,
             recipes,

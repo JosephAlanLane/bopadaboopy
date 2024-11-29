@@ -4,7 +4,7 @@ import { Save } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MealPlan } from "@/types/recipe";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
@@ -13,10 +13,10 @@ interface SaveMealPlanButtonProps {
 export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
-  const user = useAuth();
+  const session = useSession();
 
   const handleSave = async () => {
-    if (!user) {
+    if (!session?.user) {
       toast({
         title: "Please login",
         description: "You need to be logged in to save meal plans",
@@ -28,9 +28,9 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
     setIsSaving(true);
     try {
       const { error } = await supabase.from('saved_meal_plans').insert({
-        user_id: user.id,
+        user_id: session.user.id,
         title: "My Weekly Meal Plan",
-        recipes: mealPlan,
+        recipes: Object.values(mealPlan).filter(recipe => recipe !== null),
       });
 
       if (error) throw error;

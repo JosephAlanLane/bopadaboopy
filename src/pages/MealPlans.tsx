@@ -5,17 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 const MealPlans = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [publicMealPlans, setPublicMealPlans] = useState([]);
   const [savedMealPlans, setSavedMealPlans] = useState([]);
-  const user = useAuth();
+  const session = useSession();
 
   useEffect(() => {
     fetchMealPlans();
-  }, [user]);
+  }, [session]);
 
   const fetchMealPlans = async () => {
     try {
@@ -27,12 +27,12 @@ const MealPlans = () => {
       
       setPublicMealPlans(publicData || []);
 
-      if (user) {
+      if (session?.user) {
         // Fetch user's saved meal plans
         const { data: savedData } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', user.id);
+          .eq('user_id', session.user.id);
         
         setSavedMealPlans(savedData || []);
       }
