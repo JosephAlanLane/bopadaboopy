@@ -76,17 +76,25 @@ export const WeeklyMealPlanCard = ({
           .eq('user_id', user.id)
           .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Delete error:', error);
+          throw error;
+        }
 
         toast({
           title: "Meal plan removed from saved",
         });
       } else {
-        console.log('Saving meal plan:', id);
+        console.log('Saving meal plan with data:', {
+          user_id: user.id,
+          title,
+          description,
+          recipes,
+        });
+        
         const { error } = await supabase
           .from('saved_meal_plans')
           .insert({
-            id,
             user_id: user.id,
             title,
             description,
@@ -95,7 +103,7 @@ export const WeeklyMealPlanCard = ({
           });
 
         if (error) {
-          console.error('Error saving meal plan:', error);
+          console.error('Insert error:', error);
           throw error;
         }
 
