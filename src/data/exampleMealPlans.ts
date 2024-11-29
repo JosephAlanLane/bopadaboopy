@@ -1,4 +1,5 @@
 import { recipes } from './recipes';
+import { supabase } from "@/integrations/supabase/client";
 
 // Helper function to get random recipes
 const getRandomRecipes = (count: number) => {
