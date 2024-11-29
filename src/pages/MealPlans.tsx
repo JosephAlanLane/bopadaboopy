@@ -61,7 +61,8 @@ const MealPlans = () => {
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .eq('is_public', false);
         
         if (savedError) throw savedError;
         console.log('Fetched saved meal plans:', savedData);
@@ -86,9 +87,11 @@ const MealPlans = () => {
     setActiveTab(value);
   };
 
-  const displayedMealPlans = activeTab === 'discover' 
-    ? filterMealPlans(publicMealPlans)
-    : filterMealPlans(savedMealPlans);
+  const getCurrentTabPlans = () => {
+    return activeTab === 'discover' 
+      ? filterMealPlans(publicMealPlans)
+      : filterMealPlans(savedMealPlans);
+  };
 
   if (isLoading) {
     return (
@@ -102,6 +105,8 @@ const MealPlans = () => {
       </div>
     );
   }
+
+  const displayedMealPlans = getCurrentTabPlans();
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -136,45 +141,28 @@ const MealPlans = () => {
               />
             </div>
 
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-              <TabsContent value="discover" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {displayedMealPlans.map((plan) => (
-                    <WeeklyMealPlanCard
-                      key={plan.id}
-                      {...plan}
-                      onToggleSave={fetchMealPlans}
-                      showHeart
-                      isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
-                    />
-                  ))}
-                  {displayedMealPlans.length === 0 && (
-                    <div className="col-span-2 text-center py-12">
-                      <p className="text-gray-500 dark:text-gray-400">No meal plans found matching your search.</p>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="saved" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {displayedMealPlans.map((plan) => (
-                    <WeeklyMealPlanCard
-                      key={plan.id}
-                      {...plan}
-                      onToggleSave={fetchMealPlans}
-                      showHeart
-                      isSaved={true}
-                    />
-                  ))}
-                  {displayedMealPlans.length === 0 && (
-                    <div className="col-span-2 text-center py-12">
-                      <p className="text-gray-500 dark:text-gray-400">No saved meal plans yet.</p>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {displayedMealPlans.map((plan) => (
+                  <WeeklyMealPlanCard
+                    key={plan.id}
+                    {...plan}
+                    onToggleSave={fetchMealPlans}
+                    showHeart
+                    isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
+                  />
+                ))}
+                {displayedMealPlans.length === 0 && (
+                  <div className="col-span-2 text-center py-12">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {activeTab === 'discover' 
+                        ? "No meal plans found matching your search."
+                        : "No saved meal plans yet."}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </main>

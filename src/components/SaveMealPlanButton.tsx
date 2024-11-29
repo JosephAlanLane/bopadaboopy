@@ -6,6 +6,9 @@ import { MealPlan } from "@/types/recipe";
 import { Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
@@ -13,6 +16,8 @@ interface SaveMealPlanButtonProps {
 
 export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [title, setTitle] = useState("My Weekly Meal Plan");
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -58,7 +63,7 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
         .from('saved_meal_plans')
         .insert({
           user_id: user.id,
-          title: "My Weekly Meal Plan",
+          title: title,
           recipes: recipes as any,
           is_public: false
         })
@@ -70,6 +75,7 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
       }
 
       console.log('Save successful:', data);
+      setShowDialog(false);
 
       toast({
         title: "Meal plan saved!",
@@ -88,15 +94,42 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   };
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleSave}
-      disabled={isSaving}
-      className="ml-2"
-    >
-      <Save className="w-4 h-4 mr-1" />
-      Save
-    </Button>
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setShowDialog(true)}
+        disabled={isSaving}
+        className="ml-2"
+      >
+        <Save className="w-4 h-4 mr-1" />
+        Save
+      </Button>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save Meal Plan</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Label htmlFor="title">Meal Plan Name</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter a name for your meal plan"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
