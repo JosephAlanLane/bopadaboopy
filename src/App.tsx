@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
+import MealPlans from "./pages/MealPlans";
 import SubscriptionSuccess from "./pages/subscription/Success";
 import SubscriptionCancel from "./pages/subscription/Cancel";
 
@@ -36,6 +37,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/meal-plans" element={<MealPlans />} />
                 <Route path="/subscription/success" element={<SubscriptionSuccess />} />
                 <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
               </Routes>
