@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Sidebar } from "@/components/Sidebar";
 import { Link } from "react-router-dom";
+import { useSortedRecipes } from "@/hooks/useSortedRecipes";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -85,7 +86,14 @@ const Index = () => {
     queryFn: fetchRecipes,
   });
 
-  // Add effect to load meal plan from localStorage
+  const {
+    sortedRecipes,
+    sortBy,
+    isAscending,
+    handleSortChange,
+    handleDirectionChange
+  } = useSortedRecipes(filteredRecipes);
+
   useEffect(() => {
     const savedMealPlan = localStorage.getItem('selectedMealPlan');
     if (savedMealPlan) {
@@ -135,16 +143,14 @@ const Index = () => {
     allergens,
     maxIngredients,
     category,
-    sortBy = 'popular',
   }: {
     search: string;
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
     category?: string;
-    sortBy?: string;
   }) => {
-    console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category, sortBy });
+    console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
     let filtered = [...recipes];
     setFiltersApplied(true);
 
@@ -176,56 +182,8 @@ const Index = () => {
       (recipe) => recipe.ingredients.length <= maxIngredients
     );
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'popular':
-          return (b.popularity || 0) - (a.popularity || 0);
-        case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
-        case 'cookTime':
-          return (a.cook_time_minutes || 0) - (b.cook_time_minutes || 0);
-        case 'servings':
-          return (b.servings || 0) - (a.servings || 0);
-        case 'name':
-          return a.title.localeCompare(b.title);
-        default:
-          return (b.popularity || 0) - (a.popularity || 0);
-      }
-    });
-
     console.log('Filtered recipes count:', filtered.length);
     setFilteredRecipes(filtered);
-  };
-
-  const handleSortChange = (sortBy: string, ascending: boolean) => {
-    console.log('Sorting recipes:', { sortBy, ascending });
-    const sorted = [...filteredRecipes].sort((a, b) => {
-      let comparison = 0;
-      switch (sortBy) {
-        case 'popular':
-          comparison = ((b.popularity || 0) - (a.popularity || 0));
-          break;
-        case 'rating':
-          comparison = ((b.rating || 0) - (a.rating || 0));
-          break;
-        case 'cookTime':
-          comparison = ((a.cook_time_minutes || 0) - (b.cook_time_minutes || 0));
-          break;
-        case 'servings':
-          comparison = ((b.servings || 0) - (a.servings || 0));
-          break;
-        case 'name':
-          comparison = a.title.localeCompare(b.title);
-          break;
-        default:
-          comparison = ((b.popularity || 0) - (a.popularity || 0));
-      }
-      return ascending ? -comparison : comparison;
-    });
-    
-    console.log('Sorted recipes count:', sorted.length);
-    setFilteredRecipes(sorted);
   };
 
   const handleAddRecipe = async (recipe: Recipe) => {
@@ -285,9 +243,12 @@ const Index = () => {
               <RecipeFilters onApplyFilters={handleApplyFilters} />
               <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
                 <RecipeGrid 
-                  recipes={filteredRecipes} 
+                  recipes={sortedRecipes}
                   onAddRecipe={handleAddRecipe}
                   onSortChange={handleSortChange}
+                  onDirectionChange={handleDirectionChange}
+                  sortBy={sortBy}
+                  isAscending={isAscending}
                 />
               </div>
             </div>

@@ -10,28 +10,25 @@ interface RecipeGridProps {
   recipes: Recipe[];
   onAddRecipe: (recipe: Recipe) => void;
   servings?: number;
-  onSortChange: (value: string, ascending: boolean) => void;
+  onSortChange: (value: string) => void;
+  onDirectionChange: () => void;
+  sortBy: string;
+  isAscending: boolean;
 }
 
-export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1, onSortChange }: RecipeGridProps) => {
+export const RecipeGrid = ({ 
+  recipes, 
+  onAddRecipe, 
+  servings = 1,
+  onSortChange,
+  onDirectionChange,
+  sortBy,
+  isAscending
+}: RecipeGridProps) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [sortBy, setSortBy] = useState<string>("popular");
-  const [isAscending, setIsAscending] = useState(false);
   const { ref, inView } = useInView({
     threshold: 0,
   });
-
-  const handleSortChange = (value: string) => {
-    console.log('Sort changed to:', value, 'Direction:', isAscending);
-    setSortBy(value);
-    onSortChange(value, isAscending);
-  };
-
-  const handleDirectionChange = () => {
-    console.log('Direction changed from:', isAscending, 'to:', !isAscending);
-    setIsAscending(!isAscending);
-    onSortChange(sortBy, !isAscending);
-  };
 
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
@@ -48,8 +45,8 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1, onSortChange }:
         <RecipeSorting
           sortBy={sortBy}
           isAscending={isAscending}
-          onSortChange={handleSortChange}
-          onDirectionChange={handleDirectionChange}
+          onSortChange={onSortChange}
+          onDirectionChange={onDirectionChange}
         />
       </div>
 
