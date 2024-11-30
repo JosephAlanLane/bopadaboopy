@@ -4,7 +4,6 @@ import { Plus, Clock, Users, Star } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -14,7 +13,6 @@ interface RecipeGridProps {
 
 export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [sortBy, setSortBy] = useState<string>("rating");
   const { ref, inView } = useInView({
     threshold: 0,
   });
@@ -27,44 +25,20 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
     return amount;
   };
 
-  const sortedRecipes = [...recipes].sort((a, b) => {
-    switch (sortBy) {
-      case "rating":
-        return (b.rating || 0) - (a.rating || 0);
-      case "cookTime":
-        return (a.cook_time_minutes || 0) - (b.cook_time_minutes || 0);
-      case "servings":
-        return (b.servings || 0) - (a.servings || 0);
-      default:
-        return a.title.localeCompare(b.title);
-    }
-  });
-
   return (
     <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Recipes</h2>
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-[90px] bg-white dark:bg-black">
-            <SelectValue placeholder="Sort by..." />
-          </SelectTrigger>
-          <SelectContent className="w-[90px] bg-white dark:bg-black">
-            <SelectItem value="rating">Rating</SelectItem>
-            <SelectItem value="title">Name</SelectItem>
-            <SelectItem value="cookTime">Time</SelectItem>
-            <SelectItem value="servings">Portions</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
-      {sortedRecipes.length === 0 ? (
+      {recipes.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <p className="text-lg text-gray-500 dark:text-gray-400">No recipes found</p>
           <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Try adjusting your filters</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 [&>*]:border-0">
-          {sortedRecipes.map((recipe) => (
+          {recipes.map((recipe) => (
             <div
               key={recipe.id}
               className="relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm transition-transform hover:scale-[1.02] border-0"

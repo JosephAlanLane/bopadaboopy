@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const fetchRecipes = async () => {
+  console.log('Fetching recipes with usage stats...');
   const { data: recipes, error } = await supabase
     .from('recipes')
     .select(`
@@ -38,16 +39,17 @@ const fetchRecipes = async () => {
   // Fetch recipe usage stats for popularity sorting
   const { data: usageStats, error: usageError } = await supabase
     .from('recipe_usage_stats')
-    .select('recipe_id, used_at')
-    .gte('used_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()); // Last 7 days
+    .select('recipe_id, used_at');
 
   if (usageError) throw usageError;
 
   // Create a map of recipe_id to usage count
-  const usageCount = usageStats?.reduce((acc, stat) => {
+  const usageCount = usageStats?.reduce((acc: { [key: string]: number }, stat) => {
     acc[stat.recipe_id] = (acc[stat.recipe_id] || 0) + 1;
     return acc;
   }, {});
+
+  console.log('Usage counts:', usageCount);
 
   return recipes.map((recipe: any) => ({
     ...recipe,
@@ -60,6 +62,17 @@ const fetchRecipes = async () => {
   }));
 };
 
+const trackRecipeUsage = async (recipeId: string) => {
+  console.log('Tracking recipe usage:', recipeId);
+  const { error } = await supabase
+    .from('recipe_usage_stats')
+    .insert([{ recipe_id: recipeId }]);
+  
+  if (error) {
+    console.error('Error tracking recipe usage:', error);
+  }
+};
+
 const Index = () => {
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
@@ -67,7 +80,7 @@ const Index = () => {
   const [filtersApplied, setFiltersApplied] = useState(false);
   const { toast } = useToast();
 
-  const { data: recipes = [] } = useQuery({
+  const { data: recipes = [], refetch: refetchRecipes } = useQuery({
     queryKey: ['recipes'],
     queryFn: fetchRecipes,
   });
@@ -81,6 +94,13 @@ const Index = () => {
         setMealPlan(parsedMealPlan);
         localStorage.removeItem('selectedMealPlan'); // Clear it after loading
         
+        // Track usage for all recipes in the loaded meal plan
+        Object.values(parsedMealPlan).forEach((recipe: Recipe | null) => {
+          if (recipe) {
+            trackRecipeUsage(recipe.id);
+          }
+        });
+
         toast({
           title: "Meal plan loaded",
           description: "Your selected meal plan has been loaded into the planner.",
@@ -115,7 +135,7 @@ const Index = () => {
     allergens,
     maxIngredients,
     category,
-    sortBy = 'rating',
+    sortBy = 'popular',
   }: {
     search: string;
     cuisines: string[];
@@ -161,13 +181,16 @@ const Index = () => {
       switch (sortBy) {
         case 'popular':
           return (b.popularity || 0) - (a.popularity || 0);
-        case 'newest':
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
         case 'cookTime':
           return (a.cook_time_minutes || 0) - (b.cook_time_minutes || 0);
-        case 'rating':
+        case 'servings':
+          return (b.servings || 0) - (a.servings || 0);
+        case 'name':
+          return a.title.localeCompare(b.title);
         default:
-          return (b.rating || 0) - (a.rating || 0);
+          return (b.popularity || 0) - (a.popularity || 0);
       }
     });
 
@@ -175,7 +198,7 @@ const Index = () => {
     setFilteredRecipes(filtered);
   };
 
-  const handleAddRecipe = (recipe: Recipe) => {
+  const handleAddRecipe = async (recipe: Recipe) => {
     const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
     
     if (!nextAvailableDay) {
@@ -186,6 +209,10 @@ const Index = () => {
       });
       return;
     }
+
+    // Track recipe usage
+    await trackRecipeUsage(recipe.id);
+    await refetchRecipes(); // Refresh recipes to update popularity
 
     setMealPlan((prev) => ({
       ...prev,

@@ -24,7 +24,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
   const [category, setCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("rating");
+  const [sortBy, setSortBy] = useState<string>("popular");
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -55,6 +55,22 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 placeholder:text-gray-400 border-gray-200 focus:border-gray-300 dark:border-gray-700 dark:focus:border-gray-600 transition-colors h-8"
         />
+
+        <Select
+          value={sortBy}
+          onValueChange={setSortBy}
+        >
+          <SelectTrigger className="w-[130px] h-8 bg-white dark:bg-black text-xs">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent className="w-[130px] bg-white dark:bg-black">
+            <SelectItem value="popular">Popular Now</SelectItem>
+            <SelectItem value="rating">Top Rated</SelectItem>
+            <SelectItem value="cookTime">Total Time</SelectItem>
+            <SelectItem value="servings">Portions</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+          </SelectContent>
+        </Select>
 
         <CollapsibleTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center gap-2 h-8 px-3 ml-auto">
@@ -98,21 +114,6 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
               <SelectItem value="breakfast">Breakfast</SelectItem>
               <SelectItem value="soup">Soups</SelectItem>
               <SelectItem value="sauce">Sauces</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={sortBy}
-            onValueChange={setSortBy}
-          >
-            <SelectTrigger className="flex-1 min-w-[80px] max-w-[120px] h-8 bg-white dark:bg-black text-xs">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent className="w-[120px] bg-white dark:bg-black">
-              <SelectItem value="rating">Top Rated</SelectItem>
-              <SelectItem value="popular">Popular Now</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="cookTime">Cook Time</SelectItem>
             </SelectContent>
           </Select>
         </div>
