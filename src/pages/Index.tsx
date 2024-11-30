@@ -204,7 +204,7 @@ const Index = () => {
       let comparison = 0;
       switch (sortBy) {
         case 'popular':
-          comparison = (b.popularity || 0) - (a.popularity || 0);
+          comparison = ((b.popularity || 0) - (a.popularity || 0));
           break;
         case 'rating':
           comparison = ((b.rating || 0) - (a.rating || 0));
@@ -219,10 +219,12 @@ const Index = () => {
           comparison = a.title.localeCompare(b.title);
           break;
         default:
-          comparison = (b.popularity || 0) - (a.popularity || 0);
+          comparison = ((b.popularity || 0) - (a.popularity || 0));
       }
       return ascending ? -comparison : comparison;
     });
+    
+    console.log('Sorted recipes count:', sorted.length);
     setFilteredRecipes(sorted);
   };
 
