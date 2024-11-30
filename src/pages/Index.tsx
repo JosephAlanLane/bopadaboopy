@@ -198,6 +198,34 @@ const Index = () => {
     setFilteredRecipes(filtered);
   };
 
+  const handleSortChange = (sortBy: string, ascending: boolean) => {
+    console.log('Sorting recipes:', { sortBy, ascending });
+    const sorted = [...filteredRecipes].sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case 'popular':
+          comparison = (b.popularity || 0) - (a.popularity || 0);
+          break;
+        case 'rating':
+          comparison = ((b.rating || 0) - (a.rating || 0));
+          break;
+        case 'cookTime':
+          comparison = ((a.cook_time_minutes || 0) - (b.cook_time_minutes || 0));
+          break;
+        case 'servings':
+          comparison = ((b.servings || 0) - (a.servings || 0));
+          break;
+        case 'name':
+          comparison = a.title.localeCompare(b.title);
+          break;
+        default:
+          comparison = (b.popularity || 0) - (a.popularity || 0);
+      }
+      return ascending ? -comparison : comparison;
+    });
+    setFilteredRecipes(sorted);
+  };
+
   const handleAddRecipe = async (recipe: Recipe) => {
     const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
     
@@ -257,6 +285,7 @@ const Index = () => {
                 <RecipeGrid 
                   recipes={filteredRecipes} 
                   onAddRecipe={handleAddRecipe}
+                  onSortChange={handleSortChange}
                 />
               </div>
             </div>

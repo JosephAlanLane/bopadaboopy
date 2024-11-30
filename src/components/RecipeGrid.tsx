@@ -1,21 +1,36 @@
 import { Recipe } from "@/types/recipe";
 import { useState } from "react";
-import { Plus, Clock, Users, Star } from "lucide-react";
+import { Plus, Clock, Users, Star, ArrowDown, ArrowUp } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Button } from "./ui/button";
 
 interface RecipeGridProps {
   recipes: Recipe[];
   onAddRecipe: (recipe: Recipe) => void;
   servings?: number;
+  onSortChange: (value: string, ascending: boolean) => void;
 }
 
-export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridProps) => {
+export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1, onSortChange }: RecipeGridProps) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [sortBy, setSortBy] = useState<string>("popular");
+  const [isAscending, setIsAscending] = useState(false);
   const { ref, inView } = useInView({
     threshold: 0,
   });
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    onSortChange(value, isAscending);
+  };
+
+  const toggleSortDirection = () => {
+    setIsAscending(!isAscending);
+    onSortChange(sortBy, !isAscending);
+  };
 
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
@@ -29,6 +44,35 @@ export const RecipeGrid = ({ recipes, onAddRecipe, servings = 1 }: RecipeGridPro
     <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Recipes</h2>
+        <div className="flex items-center gap-2">
+          <Select
+            value={sortBy}
+            onValueChange={handleSortChange}
+          >
+            <SelectTrigger className="w-[130px] h-8 bg-white dark:bg-black text-xs">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent className="w-[130px] bg-white dark:bg-black">
+              <SelectItem value="popular">Popular Now</SelectItem>
+              <SelectItem value="rating">Top Rated</SelectItem>
+              <SelectItem value="cookTime">Total Time</SelectItem>
+              <SelectItem value="servings">Portions</SelectItem>
+              <SelectItem value="name">Name</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleSortDirection}
+            className="h-8 px-2"
+          >
+            {isAscending ? (
+              <ArrowUp className="h-4 w-4" />
+            ) : (
+              <ArrowDown className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
 
       {recipes.length === 0 ? (
