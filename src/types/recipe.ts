@@ -11,6 +11,8 @@ export interface Recipe {
   servings?: number;
   rating?: number;
   category?: string;
+  created_at?: string;
+  popularity?: number;
 }
 
 export interface Ingredient {

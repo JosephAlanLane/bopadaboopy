@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sidebar } from "@/components/Sidebar";
 import { Link } from "react-router-dom";
 
-// Move these to a separate constants file if needed
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const fetchRecipes = async () => {
@@ -26,6 +25,7 @@ const fetchRecipes = async () => {
       servings,
       rating,
       category,
+      created_at,
       recipe_ingredients (
         amount,
         unit,
@@ -35,8 +35,23 @@ const fetchRecipes = async () => {
 
   if (error) throw error;
 
+  // Fetch recipe usage stats for popularity sorting
+  const { data: usageStats, error: usageError } = await supabase
+    .from('recipe_usage_stats')
+    .select('recipe_id, used_at')
+    .gte('used_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()); // Last 7 days
+
+  if (usageError) throw usageError;
+
+  // Create a map of recipe_id to usage count
+  const usageCount = usageStats?.reduce((acc, stat) => {
+    acc[stat.recipe_id] = (acc[stat.recipe_id] || 0) + 1;
+    return acc;
+  }, {});
+
   return recipes.map((recipe: any) => ({
     ...recipe,
+    popularity: usageCount?.[recipe.id] || 0,
     ingredients: recipe.recipe_ingredients.map((ing: any) => ({
       amount: ing.amount,
       unit: ing.unit || '',
@@ -100,14 +115,16 @@ const Index = () => {
     allergens,
     maxIngredients,
     category,
+    sortBy = 'rating',
   }: {
     search: string;
     cuisines: string[];
     allergens: string[];
     maxIngredients: number;
     category?: string;
+    sortBy?: string;
   }) => {
-    console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
+    console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category, sortBy });
     let filtered = [...recipes];
     setFiltersApplied(true);
 
@@ -138,6 +155,21 @@ const Index = () => {
     filtered = filtered.filter(
       (recipe) => recipe.ingredients.length <= maxIngredients
     );
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'popular':
+          return (b.popularity || 0) - (a.popularity || 0);
+        case 'newest':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'cookTime':
+          return (a.cook_time_minutes || 0) - (b.cook_time_minutes || 0);
+        case 'rating':
+        default:
+          return (b.rating || 0) - (a.rating || 0);
+      }
+    });
 
     console.log('Filtered recipes count:', filtered.length);
     setFilteredRecipes(filtered);

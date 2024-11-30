@@ -154,6 +154,32 @@ export type Database = {
           },
         ]
       }
+      recipe_usage_stats: {
+        Row: {
+          id: string
+          recipe_id: string | null
+          used_at: string | null
+        }
+        Insert: {
+          id?: string
+          recipe_id?: string | null
+          used_at?: string | null
+        }
+        Update: {
+          id?: string
+          recipe_id?: string | null
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_usage_stats_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipes: {
         Row: {
           allergens: string[] | null
@@ -164,6 +190,7 @@ export type Database = {
           id: string
           image: string
           instructions: string[]
+          originating_url: string | null
           rating: number | null
           servings: number | null
           title: string
@@ -178,6 +205,7 @@ export type Database = {
           id?: string
           image: string
           instructions: string[]
+          originating_url?: string | null
           rating?: number | null
           servings?: number | null
           title: string
@@ -192,6 +220,7 @@ export type Database = {
           id?: string
           image?: string
           instructions?: string[]
+          originating_url?: string | null
           rating?: number | null
           servings?: number | null
           title?: string

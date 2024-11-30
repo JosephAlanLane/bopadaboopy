@@ -14,6 +14,7 @@ interface FiltersProps {
     allergens: string[];
     maxIngredients: number;
     category?: string;
+    sortBy?: string;
   }) => void;
 }
 
@@ -23,6 +24,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
   const [category, setCategory] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("rating");
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -32,8 +34,9 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       allergens: selectedAllergens,
       maxIngredients,
       category: category === "all" ? undefined : category,
+      sortBy,
     });
-  }, [search, selectedCuisines, selectedAllergens, maxIngredients, category, onApplyFilters]);
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, category, sortBy, onApplyFilters]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -83,14 +86,33 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
             value={category}
             onValueChange={setCategory}
           >
-            <SelectTrigger className="flex-1 min-w-[80px] max-w-[100px] h-8 bg-white dark:bg-black text-xs">
+            <SelectTrigger className="flex-1 min-w-[80px] max-w-[120px] h-8 bg-white dark:bg-black text-xs">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
-            <SelectContent className="w-[80px] bg-white dark:bg-black">
+            <SelectContent className="w-[120px] bg-white dark:bg-black">
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="main">Mains</SelectItem>
               <SelectItem value="side">Sides</SelectItem>
               <SelectItem value="dessert">Sweets</SelectItem>
+              <SelectItem value="appetizer">Appetizers</SelectItem>
+              <SelectItem value="breakfast">Breakfast</SelectItem>
+              <SelectItem value="soup">Soups</SelectItem>
+              <SelectItem value="sauce">Sauces</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={sortBy}
+            onValueChange={setSortBy}
+          >
+            <SelectTrigger className="flex-1 min-w-[80px] max-w-[120px] h-8 bg-white dark:bg-black text-xs">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent className="w-[120px] bg-white dark:bg-black">
+              <SelectItem value="rating">Top Rated</SelectItem>
+              <SelectItem value="popular">Popular Now</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="cookTime">Cook Time</SelectItem>
             </SelectContent>
           </Select>
         </div>
