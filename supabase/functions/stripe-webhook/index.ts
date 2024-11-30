@@ -28,9 +28,9 @@ Deno.serve(async (request) => {
     
     if (!signature) {
       console.error('No Stripe signature found')
-      return new Response('No Stripe signature', { 
+      return new Response(JSON.stringify({ error: 'No Stripe signature' }), { 
         status: 400,
-        headers: corsHeaders 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
@@ -40,9 +40,9 @@ Deno.serve(async (request) => {
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')
     if (!webhookSecret) {
       console.error('Missing STRIPE_WEBHOOK_SIGNING_SECRET')
-      return new Response('Webhook secret missing', { 
+      return new Response(JSON.stringify({ error: 'Webhook secret missing' }), { 
         status: 500,
-        headers: corsHeaders 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
@@ -58,18 +58,25 @@ Deno.serve(async (request) => {
 
     // Handle specific event types
     switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session
         console.log('Checkout session completed:', session.id)
-        // Add your checkout session handling logic here
+        
+        // Handle the completed checkout session
+        if (session.metadata?.user_id && session.metadata?.tier_id) {
+          // Add subscription handling logic here
+          console.log('Processing subscription for user:', session.metadata.user_id)
+        }
         break
+      }
 
       case 'customer.subscription.updated':
-      case 'customer.subscription.deleted':
-        const subscription = event.data.object
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription
         console.log('Subscription event:', subscription.id)
-        // Add your subscription handling logic here
+        // Add subscription update/delete handling logic here
         break
+      }
 
       default:
         console.log(`Unhandled event type: ${event.type}`)
