@@ -79,6 +79,8 @@ const Index = () => {
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"weekly" | "custom">("weekly");
+  const [customMeals, setCustomMeals] = useState<(Recipe | null)[]>([null]);
   const { toast } = useToast();
 
   const { data: recipes = [], refetch: refetchRecipes } = useQuery({
@@ -187,6 +189,8 @@ const Index = () => {
   };
 
   const handleAddRecipe = async (recipe: Recipe) => {
+    console.log('Adding recipe to tab:', activeTab);
+    
     if (activeTab === "weekly") {
       const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
       
@@ -256,6 +260,10 @@ const Index = () => {
               mealPlan={mealPlan}
               onRemoveMeal={handleRemoveMeal}
               onUpdateMealPlan={handleUpdateMealPlan}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              customMeals={customMeals}
+              setCustomMeals={setCustomMeals}
             />
             
             <div className="flex-1 min-w-0 space-y-4">

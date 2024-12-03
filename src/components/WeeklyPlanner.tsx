@@ -11,40 +11,44 @@ import { SaveMealPlanButton } from "./SaveMealPlanButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { CustomMealPlanList } from "./CustomMealPlanList";
 
-interface WeeklyPlannerProps {
-  mealPlan: MealPlan;
-  onRemoveMeal: (day: DayOfWeek) => void;
-  onUpdateMealPlan: (newMealPlan: MealPlan) => void;
-}
-
 const DAYS: DayOfWeek[] = [
   "Monday", "Tuesday", "Wednesday", "Thursday",
   "Friday", "Saturday", "Sunday"
 ];
 
+interface WeeklyPlannerProps {
+  mealPlan: MealPlan;
+  onRemoveMeal: (day: DayOfWeek) => void;
+  onUpdateMealPlan: (newMealPlan: MealPlan) => void;
+  activeTab: "weekly" | "custom";
+  setActiveTab: (tab: "weekly" | "custom") => void;
+  customMeals: (Recipe | null)[];
+  setCustomMeals: (meals: (Recipe | null)[]) => void;
+}
+
 export const WeeklyPlanner = ({ 
   mealPlan, 
   onRemoveMeal, 
-  onUpdateMealPlan 
+  onUpdateMealPlan,
+  activeTab,
+  setActiveTab,
+  customMeals,
+  setCustomMeals
 }: WeeklyPlannerProps) => {
   const { toast } = useToast();
   const [servings, setServings] = useState(1);
   const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek | string, recipe: Recipe } | null>(null);
-  const [customMeals, setCustomMeals] = useState<(Recipe | null)[]>([null]);
-  const [activeTab, setActiveTab] = useState<"weekly" | "custom">("weekly");
 
   const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
     if (draggedMeal) {
       const updatedMealPlan = { ...mealPlan };
       if (typeof draggedMeal.day === 'string' && !DAYS.includes(draggedMeal.day as DayOfWeek)) {
-        // Handle drag from custom to weekly
         updatedMealPlan[day] = draggedMeal.recipe;
         const customIndex = parseInt(draggedMeal.day.replace('Meal ', '')) - 1;
         const newCustomMeals = [...customMeals];
         newCustomMeals[customIndex] = null;
         setCustomMeals(newCustomMeals);
       } else {
-        // Handle drag within weekly
         updatedMealPlan[draggedMeal.day as DayOfWeek] = mealPlan[day];
         updatedMealPlan[day] = draggedMeal.recipe;
       }
@@ -150,9 +154,9 @@ END:VCALENDAR`;
   return (
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-full mt-4 md:mt-0">
       <div className="flex-1">
-        <div className="flex items-center justify-between px-3 pt-3">
+        <div className="px-3 pt-3">
           <Tabs value={activeTab} onValueChange={(value: "weekly" | "custom") => setActiveTab(value)} className="flex-1">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <TabsList className="w-[200px]">
                 <TabsTrigger value="weekly" className="flex-1">Weekly Meal Plan</TabsTrigger>
                 <TabsTrigger value="custom" className="flex-1">Custom</TabsTrigger>
@@ -160,8 +164,8 @@ END:VCALENDAR`;
               <SaveMealPlanButton mealPlan={mealPlan} />
             </div>
 
-            <div className="px-3">
-              <TabsContent value="weekly" className="mt-2">
+            <div className="mt-4">
+              <TabsContent value="weekly" className="m-0">
                 <div className="space-y-1">
                   {DAYS.map((day) => (
                     <MealPlanDay
@@ -176,7 +180,7 @@ END:VCALENDAR`;
                 </div>
               </TabsContent>
 
-              <TabsContent value="custom" className="mt-2">
+              <TabsContent value="custom" className="m-0">
                 <CustomMealPlanList
                   meals={customMeals}
                   onAddMeal={handleAddCustomMeal}

@@ -1,4 +1,4 @@
-import { DayOfWeek, MealPlan } from "@/types/recipe";
+import { DayOfWeek, MealPlan, Recipe } from "@/types/recipe";
 import { WeeklyPlanner } from "./WeeklyPlanner";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
@@ -9,6 +9,10 @@ interface SidebarProps {
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
   onUpdateMealPlan: (newMealPlan: MealPlan) => void;
+  activeTab: "weekly" | "custom";
+  setActiveTab: (tab: "weekly" | "custom") => void;
+  customMeals: (Recipe | null)[];
+  setCustomMeals: (meals: (Recipe | null)[]) => void;
 }
 
 export const Sidebar = ({ 
@@ -16,7 +20,11 @@ export const Sidebar = ({
   setSidebarOpen, 
   mealPlan, 
   onRemoveMeal,
-  onUpdateMealPlan
+  onUpdateMealPlan,
+  activeTab,
+  setActiveTab,
+  customMeals,
+  setCustomMeals
 }: SidebarProps) => {
   return (
     <>
@@ -40,6 +48,10 @@ export const Sidebar = ({
             mealPlan={mealPlan} 
             onRemoveMeal={onRemoveMeal}
             onUpdateMealPlan={onUpdateMealPlan}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            customMeals={customMeals}
+            setCustomMeals={setCustomMeals}
           />
         </div>
       </div>
