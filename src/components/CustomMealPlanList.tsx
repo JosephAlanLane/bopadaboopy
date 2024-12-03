@@ -21,7 +21,7 @@ export const CustomMealPlanList = ({
   onDragStart,
 }: CustomMealPlanListProps) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[calc(100vh-450px)]">
       <ScrollArea className="flex-1 pr-4">
         <div className="space-y-2">
           {meals.map((meal, index) => (

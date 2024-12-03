@@ -82,8 +82,8 @@ export const WeeklyPlanner = ({
       <div className="flex-1">
         <div className="px-3 pt-3">
           <Tabs value={activeTab} onValueChange={(value: "weekly" | "custom") => setActiveTab(value)} className="flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <TabsList className="w-[280px]">
+            <div className="flex items-center justify-between gap-4">
+              <TabsList className="w-[320px]">
                 <TabsTrigger value="weekly" className="flex-1">Weekly Meal Plan</TabsTrigger>
                 <TabsTrigger value="custom" className="flex-1">Custom</TabsTrigger>
               </TabsList>
