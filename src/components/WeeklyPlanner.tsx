@@ -29,15 +29,25 @@ export const WeeklyPlanner = ({
 }: WeeklyPlannerProps) => {
   const { toast } = useToast();
   const [servings, setServings] = useState(1);
-  const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek, recipe: Recipe } | null>(null);
+  const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek | string, recipe: Recipe } | null>(null);
   const [customMeals, setCustomMeals] = useState<(Recipe | null)[]>([null]);
   const [activeTab, setActiveTab] = useState<"weekly" | "custom">("weekly");
 
   const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
     if (draggedMeal) {
       const updatedMealPlan = { ...mealPlan };
-      updatedMealPlan[draggedMeal.day] = mealPlan[day];
-      updatedMealPlan[day] = draggedMeal.recipe;
+      if (typeof draggedMeal.day === 'string' && !DAYS.includes(draggedMeal.day as DayOfWeek)) {
+        // Handle drag from custom to weekly
+        updatedMealPlan[day] = draggedMeal.recipe;
+        const customIndex = parseInt(draggedMeal.day.replace('Meal ', '')) - 1;
+        const newCustomMeals = [...customMeals];
+        newCustomMeals[customIndex] = null;
+        setCustomMeals(newCustomMeals);
+      } else {
+        // Handle drag within weekly
+        updatedMealPlan[draggedMeal.day as DayOfWeek] = mealPlan[day];
+        updatedMealPlan[day] = draggedMeal.recipe;
+      }
       Object.entries(updatedMealPlan).forEach(([d, r]) => {
         if (r === null) delete updatedMealPlan[d as DayOfWeek];
       });
@@ -141,43 +151,43 @@ END:VCALENDAR`;
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-full mt-4 md:mt-0">
       <div className="flex-1">
         <div className="flex items-center justify-between px-3 pt-3">
-          <h2 className="font-semibold mb-2">Meal Plan</h2>
-          <SaveMealPlanButton mealPlan={mealPlan} />
+          <Tabs value={activeTab} onValueChange={(value: "weekly" | "custom") => setActiveTab(value)} className="flex-1">
+            <div className="flex items-center justify-between">
+              <TabsList className="w-[200px]">
+                <TabsTrigger value="weekly" className="flex-1">Weekly Meal Plan</TabsTrigger>
+                <TabsTrigger value="custom" className="flex-1">Custom</TabsTrigger>
+              </TabsList>
+              <SaveMealPlanButton mealPlan={mealPlan} />
+            </div>
+
+            <div className="px-3">
+              <TabsContent value="weekly" className="mt-2">
+                <div className="space-y-1">
+                  {DAYS.map((day) => (
+                    <MealPlanDay
+                      key={day}
+                      day={day}
+                      recipe={mealPlan[day] || null}
+                      onRemove={() => onRemoveMeal(day)}
+                      onDrop={(recipe) => handleDrop(day, recipe)}
+                      onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="custom" className="mt-2">
+                <CustomMealPlanList
+                  meals={customMeals}
+                  onAddMeal={handleAddCustomMeal}
+                  onRemoveMeal={handleRemoveCustomMeal}
+                  onDrop={handleCustomDrop}
+                  onDragStart={(index, recipe) => setDraggedMeal({ day: `Meal ${index + 1}`, recipe })}
+                />
+              </TabsContent>
+            </div>
+          </Tabs>
         </div>
-        
-        <Tabs value={activeTab} onValueChange={(value: "weekly" | "custom") => setActiveTab(value)} className="w-full">
-          <TabsList className="w-full">
-            <TabsTrigger value="weekly" className="flex-1">Weekly Meal Plan</TabsTrigger>
-            <TabsTrigger value="custom" className="flex-1">Custom</TabsTrigger>
-          </TabsList>
-
-          <div className="px-3">
-            <TabsContent value="weekly" className="mt-2">
-              <div className="space-y-1">
-                {DAYS.map((day) => (
-                  <MealPlanDay
-                    key={day}
-                    day={day}
-                    recipe={mealPlan[day] || null}
-                    onRemove={() => onRemoveMeal(day)}
-                    onDrop={(recipe) => handleDrop(day, recipe)}
-                    onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="custom" className="mt-2">
-              <CustomMealPlanList
-                meals={customMeals}
-                onAddMeal={handleAddCustomMeal}
-                onRemoveMeal={handleRemoveCustomMeal}
-                onDrop={handleCustomDrop}
-                onDragStart={(index, recipe) => console.log('Custom meal drag start:', index, recipe)}
-              />
-            </TabsContent>
-          </div>
-        </Tabs>
       </div>
 
       <div className="mt-4 px-3 pb-3">

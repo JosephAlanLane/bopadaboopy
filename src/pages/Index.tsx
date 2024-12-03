@@ -187,30 +187,49 @@ const Index = () => {
   };
 
   const handleAddRecipe = async (recipe: Recipe) => {
-    const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
-    
-    if (!nextAvailableDay) {
+    if (activeTab === "weekly") {
+      const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
+      
+      if (!nextAvailableDay) {
+        toast({
+          title: "Weekly plan is full",
+          description: "Remove a meal before adding a new one.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setMealPlan((prev) => ({
+        ...prev,
+        [nextAvailableDay]: recipe,
+      }));
+
       toast({
-        title: "Weekly plan is full",
-        description: "Remove a meal before adding a new one.",
-        variant: "destructive",
+        title: "Meal added",
+        description: `${recipe.title} added to ${nextAvailableDay}`,
       });
-      return;
+    } else {
+      // Handle custom tab
+      const nextAvailableIndex = customMeals.findIndex(meal => meal === null);
+      if (nextAvailableIndex === -1) {
+        // No empty slot found, add new one
+        setCustomMeals([...customMeals, recipe]);
+      } else {
+        // Fill empty slot
+        const newMeals = [...customMeals];
+        newMeals[nextAvailableIndex] = recipe;
+        setCustomMeals(newMeals);
+      }
+
+      toast({
+        title: "Meal added",
+        description: `${recipe.title} added to custom meal plan`,
+      });
     }
 
     // Track recipe usage
     await trackRecipeUsage(recipe.id);
     await refetchRecipes(); // Refresh recipes to update popularity
-
-    setMealPlan((prev) => ({
-      ...prev,
-      [nextAvailableDay]: recipe,
-    }));
-
-    toast({
-      title: "Meal added",
-      description: `${recipe.title} added to ${nextAvailableDay}`,
-    });
   };
 
   const handleRemoveMeal = (day: DayOfWeek) => {
