@@ -47,26 +47,26 @@ export const MealPlanDay = ({
 
   return (
     <div 
-      className="p-1.5 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
+      className="py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-2 min-w-0 flex-1">
-        <p className="font-medium w-14 text-sm">{day}</p>
+      <div className="flex items-center gap-4 min-w-0 flex-1">
+        <p className="font-medium w-16 text-sm">{day}</p>
         {recipe ? (
           <div
             draggable
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            className="flex-1 cursor-move min-w-0 pl-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center justify-between pr-2"
+            className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center"
           >
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300 pr-8">
               {recipe.title}
             </p>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-2">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300">
             No meal planned
           </p>
         )}
@@ -74,7 +74,7 @@ export const MealPlanDay = ({
       {recipe && (
         <button
           onClick={onRemove}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-1"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-2"
         >
           <X className="w-4 h-4" />
         </button>

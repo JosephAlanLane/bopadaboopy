@@ -33,7 +33,6 @@ export const WeeklyPlanner = ({
   customMeals,
   setCustomMeals
 }: WeeklyPlannerProps) => {
-  const { toast } = useToast();
   const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek | string, recipe: Recipe } | null>(null);
 
   const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
@@ -92,26 +91,23 @@ export const WeeklyPlanner = ({
 
             <div className="mt-4">
               <TabsContent value="weekly" className="m-0">
-                <ScrollArea className="h-[calc(100vh-450px)]">
-                  <div className="space-y-1">
-                    {DAYS.map((day) => (
-                      <MealPlanDay
-                        key={day}
-                        day={day}
-                        recipe={mealPlan[day] || null}
-                        onRemove={() => onRemoveMeal(day)}
-                        onDrop={(recipe) => handleDrop(day, recipe)}
-                        onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
-                      />
-                    ))}
-                  </div>
-                </ScrollArea>
+                <div className="space-y-1">
+                  {DAYS.map((day) => (
+                    <MealPlanDay
+                      key={day}
+                      day={day}
+                      recipe={mealPlan[day] || null}
+                      onRemove={() => onRemoveMeal(day)}
+                      onDrop={(recipe) => handleDrop(day, recipe)}
+                      onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
+                    />
+                  ))}
+                </div>
               </TabsContent>
 
               <TabsContent value="custom" className="m-0">
                 <CustomMealPlanList
                   meals={customMeals}
-                  onAddMeal={handleAddCustomMeal}
                   onRemoveMeal={handleRemoveCustomMeal}
                   onDrop={handleCustomDrop}
                   onDragStart={(index, recipe) => setDraggedMeal({ day: `Meal ${index + 1}`, recipe })}
