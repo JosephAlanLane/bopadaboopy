@@ -23,19 +23,13 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    console.log('Save button clicked, user:', user);
-
     if (!user) {
-      console.log('No user found, redirecting to login');
       navigate('/login');
       return;
     }
 
     setIsSaving(true);
     try {
-      console.log('Starting save process for user:', user.id);
-      
-      // Convert recipes to a serializable array and remove null values
       const recipes = Object.values(mealPlan)
         .filter(recipe => recipe !== null)
         .map(recipe => ({
@@ -43,11 +37,7 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           title: recipe!.title,
           image: recipe!.image,
           recipeUrl: recipe!.recipeUrl,
-          ingredients: recipe!.ingredients.map(ing => ({
-            amount: ing.amount,
-            unit: ing.unit || null,
-            item: ing.item
-          })),
+          ingredients: recipe!.ingredients,
           instructions: recipe!.instructions,
           cuisine: recipe!.cuisine,
           allergens: recipe!.allergens,
@@ -57,26 +47,18 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
           category: recipe!.category || null
         }));
 
-      console.log('Prepared recipes for save:', recipes);
-
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('saved_meal_plans')
         .insert({
           user_id: user.id,
           title: title,
           recipes: recipes as any,
           is_public: false
-        })
-        .select();
+        });
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('Save successful:', data);
       setShowDialog(false);
-
       toast({
         title: "Meal plan saved!",
         description: "You can find it in your saved meal plans",
@@ -96,14 +78,13 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
   return (
     <>
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
         onClick={() => setShowDialog(true)}
         disabled={isSaving}
-        className="ml-2"
+        className="h-8 px-2"
       >
-        <Save className="w-4 h-4 mr-1" />
-        Save
+        <Save className="w-4 h-4" />
       </Button>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

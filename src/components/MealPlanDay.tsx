@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/hover-card";
 
 interface MealPlanDayProps {
-  day: DayOfWeek;
+  day: DayOfWeek | string;
   recipe: Recipe | null;
   onRemove: () => void;
   onDrop: (recipe: Recipe) => void;
-  onDragStart: (day: DayOfWeek, recipe: Recipe) => void;
+  onDragStart: (day: DayOfWeek | string, recipe: Recipe) => void;
 }
 
 export const MealPlanDay = ({ 
