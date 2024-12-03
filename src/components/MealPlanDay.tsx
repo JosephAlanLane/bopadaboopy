@@ -1,11 +1,6 @@
 import React from "react";
 import { X } from "lucide-react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
 interface MealPlanDayProps {
   day: DayOfWeek | string;
@@ -52,53 +47,26 @@ export const MealPlanDay = ({
 
   return (
     <div 
-      className="p-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
+      className="p-1.5 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-4 min-w-0 flex-1">
-        <p className="font-medium w-16 text-sm">{day}</p>
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <p className="font-medium w-14 text-sm">{day}</p>
         {recipe ? (
           <div
             draggable
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            className="flex-1 cursor-move min-w-0 pl-4 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200"
+            className="flex-1 cursor-move min-w-0 pl-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center justify-between pr-2"
           >
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <p className="text-sm text-gray-600 truncate dark:text-gray-300 pr-8">
-                  {recipe.title}
-                </p>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80 p-4">
-                <h3 className="font-semibold mb-2">{recipe.title}</h3>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium mb-1">Ingredients:</h4>
-                    <ul className="text-sm space-y-1">
-                      {recipe.ingredients.map((ing, idx) => (
-                        <li key={idx}>
-                          {ing.amount} {ing.unit} {ing.item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-medium mb-1">Instructions:</h4>
-                    <ol className="text-sm space-y-1 list-decimal list-inside">
-                      {recipe.instructions.map((step, idx) => (
-                        <li key={idx}>{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+              {recipe.title}
+            </p>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-4">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300 pl-2">
             No meal planned
           </p>
         )}
@@ -106,7 +74,7 @@ export const MealPlanDay = ({
       {recipe && (
         <button
           onClick={onRemove}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-2"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-1"
         >
           <X className="w-4 h-4" />
         </button>

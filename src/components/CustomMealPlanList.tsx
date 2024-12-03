@@ -21,10 +21,10 @@ export const CustomMealPlanList = ({
   onDragStart,
 }: CustomMealPlanListProps) => {
   return (
-    <div className="flex flex-col h-[calc(100vh-450px)]">
+    <div className="flex flex-col h-[calc(100vh-500px)]">
       <ScrollArea className="flex-1 pr-4">
-        <div className="space-y-2">
-          {meals.map((meal, index) => (
+        <div className="space-y-1">
+          {meals.slice(0, 5).map((meal, index) => (
             <MealPlanDay
               key={index}
               day={`Meal ${index + 1}`}
@@ -40,7 +40,8 @@ export const CustomMealPlanList = ({
         variant="outline"
         size="sm"
         onClick={onAddMeal}
-        className="w-full mt-4"
+        className="w-full mt-2"
+        disabled={meals.length >= 5}
       >
         <Plus className="w-4 h-4 mr-2" />
         Add Meal
