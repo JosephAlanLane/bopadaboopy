@@ -12,9 +12,15 @@ import { Label } from "./ui/label";
 
 interface SaveMealPlanButtonProps {
   mealPlan: MealPlan;
+  customMeals?: (Recipe | null)[];
+  activeTab?: "weekly" | "custom";
 }
 
-export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
+export const SaveMealPlanButton = ({ 
+  mealPlan, 
+  customMeals = [], 
+  activeTab = "weekly" 
+}: SaveMealPlanButtonProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [title, setTitle] = useState("My Weekly Meal Plan");
@@ -30,22 +36,43 @@ export const SaveMealPlanButton = ({ mealPlan }: SaveMealPlanButtonProps) => {
 
     setIsSaving(true);
     try {
-      const recipes = Object.values(mealPlan)
-        .filter(recipe => recipe !== null)
-        .map(recipe => ({
-          id: recipe!.id,
-          title: recipe!.title,
-          image: recipe!.image,
-          recipeUrl: recipe!.recipeUrl,
-          ingredients: recipe!.ingredients,
-          instructions: recipe!.instructions,
-          cuisine: recipe!.cuisine,
-          allergens: recipe!.allergens,
-          cook_time_minutes: recipe!.cook_time_minutes || null,
-          servings: recipe!.servings || null,
-          rating: recipe!.rating || null,
-          category: recipe!.category || null
-        }));
+      let recipes;
+      
+      if (activeTab === "weekly") {
+        recipes = Object.values(mealPlan)
+          .filter(recipe => recipe !== null)
+          .map(recipe => ({
+            id: recipe!.id,
+            title: recipe!.title,
+            image: recipe!.image,
+            recipeUrl: recipe!.recipeUrl,
+            ingredients: recipe!.ingredients,
+            instructions: recipe!.instructions,
+            cuisine: recipe!.cuisine,
+            allergens: recipe!.allergens,
+            cook_time_minutes: recipe!.cook_time_minutes || null,
+            servings: recipe!.servings || null,
+            rating: recipe!.rating || null,
+            category: recipe!.category || null
+          }));
+      } else {
+        recipes = customMeals
+          .filter(recipe => recipe !== null)
+          .map(recipe => ({
+            id: recipe!.id,
+            title: recipe!.title,
+            image: recipe!.image,
+            recipeUrl: recipe!.recipeUrl,
+            ingredients: recipe!.ingredients,
+            instructions: recipe!.instructions,
+            cuisine: recipe!.cuisine,
+            allergens: recipe!.allergens,
+            cook_time_minutes: recipe!.cook_time_minutes || null,
+            servings: recipe!.servings || null,
+            rating: recipe!.rating || null,
+            category: recipe!.category || null
+          }));
+      }
 
       const { error } = await supabase
         .from('saved_meal_plans')

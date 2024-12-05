@@ -53,7 +53,7 @@ export const MealPlanDay = ({
       onDrop={handleDrop}
     >
       <div className="flex items-center gap-2 min-w-0 flex-1">
-        <p className="font-medium w-16 text-sm shrink-0">{day}</p>
+        <p className="font-medium w-20 text-sm shrink-0">{day}</p>
         {recipe ? (
           <div
             draggable
@@ -61,12 +61,12 @@ export const MealPlanDay = ({
             onDragEnd={handleDragEnd}
             className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center pr-2"
           >
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 mr-2">
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 mr-4">
               {recipe.title}
             </p>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 mr-4">
             No meal planned
           </p>
         )}
