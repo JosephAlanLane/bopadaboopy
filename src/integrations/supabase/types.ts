@@ -251,7 +251,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
-          recipes: Json
+          recipes?: Json
           title: string
           user_id?: string | null
         }
