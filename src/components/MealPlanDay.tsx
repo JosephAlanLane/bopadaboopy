@@ -53,7 +53,7 @@ export const MealPlanDay = ({
       onDrop={handleDrop}
     >
       <div className="flex items-center gap-2 min-w-0 flex-1">
-        <p className="font-medium w-20 text-sm shrink-0">{day}</p>
+        <p className="font-medium w-24 text-sm shrink-0">{day}</p>
         {recipe ? (
           <div
             draggable
