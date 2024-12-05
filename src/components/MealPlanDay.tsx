@@ -52,28 +52,28 @@ export const MealPlanDay = ({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-2 min-w-0 flex-1">
-        <p className="font-medium w-24 text-sm shrink-0">{day}</p>
+      <div className="flex items-center gap-1 min-w-0 flex-1">
+        <p className="font-medium w-20 text-sm shrink-0">{day}</p>
         {recipe ? (
           <div
             draggable
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center pr-2"
+            className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center"
           >
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 mr-4">
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1">
               {recipe.title}
             </p>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 mr-4">
+          <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1">
             No meal planned
           </p>
         )}
         {recipe && (
           <button
             onClick={onRemove}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-2"
           >
             <X className="w-4 h-4" />
           </button>
