@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, PostgrestError } from '@supabase/supabase-js';
 
 // Get environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -10,6 +10,10 @@ console.log('Initializing Supabase with:', {
 });
 
 if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Environment variables:', {
+    VITE_SUPABASE_URL: supabaseUrl,
+    VITE_SUPABASE_ANON_KEY_LENGTH: supabaseAnonKey?.length || 0
+  });
   throw new Error('Missing Supabase environment variables');
 }
 
@@ -34,9 +38,9 @@ Promise.resolve(
   if (result.error) {
     console.error('Supabase connection error:', {
       error: result.error,
-      status: result.error.status,
       message: result.error.message,
-      details: result.error.details
+      details: result.error.details,
+      hint: result.error.hint
     });
   } else {
     console.log('Supabase connection successful');
