@@ -32,8 +32,9 @@ console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
 // Test the connection
-supabase.from('recipes').select('count').single()
-  .then((result) => {
+void (async () => {
+  try {
+    const result = await supabase.from('recipes').select('count').single();
     if (result.error) {
       console.error('Supabase connection error:', {
         error: result.error,
@@ -44,7 +45,7 @@ supabase.from('recipes').select('count').single()
     } else {
       console.log('Supabase connection successful');
     }
-  })
-  .catch((error: Error) => {
+  } catch (error) {
     console.error('Supabase connection error:', error);
-  });
+  }
+})();
