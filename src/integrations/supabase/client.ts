@@ -31,7 +31,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
-// Test the connection
+// Test the connection using async IIFE
 void (async () => {
   try {
     const result = await supabase.from('recipes').select('count').single();
