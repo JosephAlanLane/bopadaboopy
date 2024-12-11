@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get environment variables with fallbacks for development
-const supabaseUrl = 'https://geftfgjlqruwsbqcixxw.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnRmZ2pscXJ1d3NicWNpeHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4OTQyMzAsImV4cCI6MjAyMjQ3MDIzMH0.qgZBPp_QWvN7YfGbqKKCWRuE8nzqvyUbQE-ePPFGwto';
+// Get environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
 
 // Create the Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -18,7 +22,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
-// Test the connection with proper Promise handling
+// Test the connection
 Promise.resolve(
   supabase.from('recipes').select('count').single()
 ).then((result) => {
