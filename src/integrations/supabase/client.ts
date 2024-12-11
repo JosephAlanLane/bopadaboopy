@@ -19,14 +19,14 @@ console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
 // Test the connection with proper Promise handling
-void supabase.from('recipes').select('count').single()
-  .then((result) => {
-    if (result.error) {
-      console.error('Supabase connection error:', result.error);
-    } else {
-      console.log('Supabase connection successful');
-    }
-  })
-  .catch((error: Error) => {
-    console.error('Supabase connection error:', error);
-  });
+Promise.resolve(
+  supabase.from('recipes').select('count').single()
+).then((result) => {
+  if (result.error) {
+    console.error('Supabase connection error:', result.error);
+  } else {
+    console.log('Supabase connection successful');
+  }
+}).catch((error: Error) => {
+  console.error('Supabase connection error:', error);
+});
