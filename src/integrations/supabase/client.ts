@@ -1,4 +1,4 @@
-import { createClient, PostgrestError } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
 // Get environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -32,19 +32,19 @@ console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
 // Test the connection
-Promise.resolve(
-  supabase.from('recipes').select('count').single()
-).then((result) => {
-  if (result.error) {
-    console.error('Supabase connection error:', {
-      error: result.error,
-      message: result.error.message,
-      details: result.error.details,
-      hint: result.error.hint
-    });
-  } else {
-    console.log('Supabase connection successful');
-  }
-}).catch((error: Error) => {
-  console.error('Supabase connection error:', error);
-});
+supabase.from('recipes').select('count').single()
+  .then((result) => {
+    if (result.error) {
+      console.error('Supabase connection error:', {
+        error: result.error,
+        message: result.error.message,
+        details: result.error.details,
+        hint: result.error.hint
+      });
+    } else {
+      console.log('Supabase connection successful');
+    }
+  })
+  .catch((error: Error) => {
+    console.error('Supabase connection error:', error);
+  });
