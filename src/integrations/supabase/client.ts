@@ -18,8 +18,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 console.log('Supabase client initialized with URL:', supabaseUrl);
 console.log('Testing Supabase connection...');
 
-// Test the connection and properly handle the Promise chain
-supabase.from('recipes').select('count').single()
+// Test the connection with proper Promise handling
+void supabase.from('recipes').select('count').single()
   .then((result) => {
     if (result.error) {
       console.error('Supabase connection error:', result.error);
@@ -27,6 +27,6 @@ supabase.from('recipes').select('count').single()
       console.log('Supabase connection successful');
     }
   })
-  .catch((error) => {
+  .catch((error: Error) => {
     console.error('Supabase connection error:', error);
   });
