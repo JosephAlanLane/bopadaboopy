@@ -4,16 +4,13 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log('Initializing Supabase with:', {
-  url: supabaseUrl,
-  keyLength: supabaseAnonKey?.length || 0
+console.log('Checking Supabase environment variables:', {
+  url: supabaseUrl ? 'defined' : 'undefined',
+  key: supabaseAnonKey ? 'defined' : 'undefined'
 });
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Environment variables:', {
-    VITE_SUPABASE_URL: supabaseUrl,
-    VITE_SUPABASE_ANON_KEY_LENGTH: supabaseAnonKey?.length || 0
-  });
+  console.error('Missing Supabase environment variables. Please check your .env file.');
   throw new Error('Missing Supabase environment variables');
 }
 
@@ -27,25 +24,5 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Add console logs to help with debugging
-console.log('Supabase client initialized with URL:', supabaseUrl);
-console.log('Testing Supabase connection...');
-
-// Test the connection using async IIFE
-void (async () => {
-  try {
-    const result = await supabase.from('recipes').select('count').single();
-    if (result.error) {
-      console.error('Supabase connection error:', {
-        error: result.error,
-        message: result.error.message,
-        details: result.error.details,
-        hint: result.error.hint
-      });
-    } else {
-      console.log('Supabase connection successful');
-    }
-  } catch (error) {
-    console.error('Supabase connection error:', error);
-  }
-})();
+// Test the connection
+console.log('Supabase client initialized');
