@@ -4,6 +4,11 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+console.log('Initializing Supabase with:', {
+  url: supabaseUrl,
+  keyLength: supabaseAnonKey?.length || 0
+});
+
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
@@ -27,7 +32,12 @@ Promise.resolve(
   supabase.from('recipes').select('count').single()
 ).then((result) => {
   if (result.error) {
-    console.error('Supabase connection error:', result.error);
+    console.error('Supabase connection error:', {
+      error: result.error,
+      status: result.error.status,
+      message: result.error.message,
+      details: result.error.details
+    });
   } else {
     console.log('Supabase connection successful');
   }
