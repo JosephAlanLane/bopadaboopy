@@ -56,30 +56,33 @@ export const SaveMealPlanButton = ({
             category: recipe!.category || null
           }));
       } else {
+        // For custom meals, filter out null values and map all recipes
         recipes = customMeals
-          .filter(recipe => recipe !== null)
+          .filter((recipe): recipe is Recipe => recipe !== null)
           .map(recipe => ({
-            id: recipe!.id,
-            title: recipe!.title,
-            image: recipe!.image,
-            recipeUrl: recipe!.recipeUrl,
-            ingredients: recipe!.ingredients,
-            instructions: recipe!.instructions,
-            cuisine: recipe!.cuisine,
-            allergens: recipe!.allergens,
-            cook_time_minutes: recipe!.cook_time_minutes || null,
-            servings: recipe!.servings || null,
-            rating: recipe!.rating || null,
-            category: recipe!.category || null
+            id: recipe.id,
+            title: recipe.title,
+            image: recipe.image,
+            recipeUrl: recipe.recipeUrl,
+            ingredients: recipe.ingredients,
+            instructions: recipe.instructions,
+            cuisine: recipe.cuisine,
+            allergens: recipe.allergens,
+            cook_time_minutes: recipe.cook_time_minutes || null,
+            servings: recipe.servings || null,
+            rating: recipe.rating || null,
+            category: recipe.category || null
           }));
       }
+
+      console.log('Saving meal plan with recipes:', recipes);
 
       const { error } = await supabase
         .from('saved_meal_plans')
         .insert({
           user_id: user.id,
           title: title,
-          recipes: recipes as any,
+          recipes: recipes,
           is_public: false
         });
 

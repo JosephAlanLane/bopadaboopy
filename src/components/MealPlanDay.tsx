@@ -47,27 +47,27 @@ export const MealPlanDay = ({
 
   return (
     <div 
-      className="py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200 w-full"
+      className="py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200 w-full max-w-full"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       <div className="flex items-center gap-1 min-w-0 w-full">
-        <p className="font-medium w-20 text-sm shrink-0">{day}</p>
-        <div className="flex-1 min-w-0 flex items-center">
+        <p className="font-medium w-20 text-sm shrink-0 overflow-hidden text-ellipsis">{day}</p>
+        <div className="flex-1 min-w-0 flex items-center overflow-hidden">
           {recipe ? (
             <div
               draggable
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center"
+              className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center overflow-hidden"
             >
-              <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1">
+              <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 overflow-hidden text-ellipsis">
                 {recipe.title}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1">
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 overflow-hidden text-ellipsis">
               No meal planned
             </p>
           )}
