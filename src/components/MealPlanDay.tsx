@@ -8,7 +8,7 @@ interface MealPlanDayProps {
   onRemove: () => void;
   onDrop: (recipe: Recipe) => void;
   onDragStart: (day: DayOfWeek | string, recipe: Recipe) => void;
-  className?: string; // Added className prop
+  className?: string;
 }
 
 export const MealPlanDay = memo(({ 
@@ -17,7 +17,7 @@ export const MealPlanDay = memo(({
   onRemove, 
   onDrop,
   onDragStart,
-  className = '' // Added default value
+  className = ''
 }: MealPlanDayProps) => {
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
