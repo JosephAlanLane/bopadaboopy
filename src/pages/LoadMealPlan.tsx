@@ -11,15 +11,21 @@ const LoadMealPlan = () => {
   useEffect(() => {
     const loadMealPlan = async () => {
       try {
+        console.log('Loading meal plan with slug:', slug);
+        
         const { data: mealPlan, error } = await supabase
           .from('saved_meal_plans')
           .select('*')
           .eq('slug', slug)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching meal plan:', error);
+          throw error;
+        }
 
         if (!mealPlan) {
+          console.log('No meal plan found for slug:', slug);
           toast({
             title: "Meal plan not found",
             description: "The requested meal plan could not be found.",
@@ -28,6 +34,8 @@ const LoadMealPlan = () => {
           navigate('/');
           return;
         }
+
+        console.log('Successfully loaded meal plan:', mealPlan);
 
         // Store the meal plan data in localStorage with the is_weekly flag
         localStorage.setItem('selectedMealPlan', JSON.stringify({
@@ -53,7 +61,7 @@ const LoadMealPlan = () => {
     }
   }, [slug, navigate, toast]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default LoadMealPlan;

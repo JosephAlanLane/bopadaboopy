@@ -29,9 +29,13 @@ export const MealPlanDialog = ({
   const handleLoadMeals = () => {
     if (slug) {
       // If we have a slug, use the new URL format
-      navigate(`/meal-plans/${slug}`);
+      const baseUrl = 'https://bopadaboopy.lovable.app';
+      const mealPlanUrl = `${baseUrl}/meal-plans/${slug}`;
+      console.log('Navigating to meal plan URL:', mealPlanUrl);
+      window.location.href = mealPlanUrl;
     } else {
       // Otherwise, use the existing direct loading mechanism
+      console.log('Using direct loading mechanism');
       onLoadMeals();
     }
     onOpenChange(false);
