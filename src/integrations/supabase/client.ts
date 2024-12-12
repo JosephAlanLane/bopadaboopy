@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Hardcode the values for now
-const supabaseUrl = "https://geftfgjlqruwsbqcixxw.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnRmZ2pscXJ1d3NicWNpeHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE3MjgzMTIsImV4cCI6MjA0NzMwNDMxMn0.E9DAIHQ2ZJnPJCCeweKj7RCAhK9lu5rPL4vGgPjEPxg";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
+  throw new Error('Missing Supabase environment variables');
+}
 
 // Create the Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -13,3 +17,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     flowType: 'pkce',
   },
 });
+
+// Add error handling for requests
+supabase.handleError = (error: any) => {
+  console.error('Supabase error:', error);
+  throw error;
+};
