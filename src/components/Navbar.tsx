@@ -29,6 +29,10 @@ export const Navbar = () => {
                 src="/nonna-logo.png"
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
+                onError={(e) => {
+                  console.error('Logo failed to load:', e);
+                  e.currentTarget.src = '/placeholder.svg';
+                }}
               />
               <div className="text-center mt-1">
                 <h1 className="website-title text-primary">Bopada Boopy!</h1>
@@ -59,6 +63,10 @@ export const Navbar = () => {
             src="/nonna-logo.png"
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
+            onError={(e) => {
+              console.error('Logo failed to load:', e);
+              e.currentTarget.src = '/placeholder.svg';
+            }}
           />
           <div className="flex flex-col">
             <h1 className="website-title text-primary">Bopada Boopy!</h1>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
@@ -59,11 +59,13 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleAddRecipe = async (recipe: Recipe) => {
+  const handleAddRecipe = useCallback(async (recipe: Recipe) => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
-      const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
+      // Find the first available day that doesn't have a meal
+      const availableDays = DAYS.filter(day => !mealPlan[day]);
+      const nextAvailableDay = availableDays[0];
       
       if (!nextAvailableDay) {
         toast({
@@ -74,11 +76,10 @@ const Index = () => {
         return;
       }
 
-      setMealPlan((prev) => {
-        const newPlan = { ...prev };
-        newPlan[nextAvailableDay] = recipe;
-        return newPlan;
-      });
+      setMealPlan(prev => ({
+        ...prev,
+        [nextAvailableDay]: recipe
+      }));
 
       toast({
         title: "Meal added",
@@ -98,11 +99,10 @@ const Index = () => {
         const nextAvailableIndex = prevMeals.findIndex(meal => meal === null);
         if (nextAvailableIndex === -1) {
           return [...prevMeals, recipe];
-        } else {
-          const newMeals = [...prevMeals];
-          newMeals[nextAvailableIndex] = recipe;
-          return newMeals;
         }
+        const newMeals = [...prevMeals];
+        newMeals[nextAvailableIndex] = recipe;
+        return newMeals;
       });
 
       toast({
@@ -110,19 +110,19 @@ const Index = () => {
         description: `${recipe.title} added to custom meal plan`,
       });
     }
-  };
+  }, [activeTab, mealPlan, customMeals, toast]);
 
-  const handleRemoveMeal = (day: DayOfWeek) => {
-    setMealPlan((prev) => {
+  const handleRemoveMeal = useCallback((day: DayOfWeek) => {
+    setMealPlan(prev => {
       const newPlan = { ...prev };
       delete newPlan[day];
       return newPlan;
     });
-  };
+  }, []);
 
-  const handleUpdateMealPlan = (newMealPlan: MealPlan) => {
+  const handleUpdateMealPlan = useCallback((newMealPlan: MealPlan) => {
     setMealPlan(newMealPlan);
-  };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
