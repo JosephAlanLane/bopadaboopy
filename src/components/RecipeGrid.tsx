@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/recipe";
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { Plus, Clock, Users, Star } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -20,14 +20,14 @@ interface RecipeGridProps {
   isFetchingNextPage?: boolean;
 }
 
-export const RecipeGrid = ({ 
+export const RecipeGrid = memo(({ 
   recipes, 
   onAddRecipe, 
   servings = 1,
   onSortChange,
   onDirectionChange,
-  sortBy = "rating",  // Default to rating
-  isAscending = true,  // Changed to true so that when inverted by the sort function, highest ratings appear first
+  sortBy = "rating",
+  isAscending = true,
   hasMore,
   onLoadMore,
   isLoading,
@@ -44,13 +44,18 @@ export const RecipeGrid = ({
     onLoadMore();
   }
 
-  const adjustAmount = (amount: string) => {
+  const adjustAmount = useCallback((amount: string) => {
     const numericAmount = parseFloat(amount);
     if (!isNaN(numericAmount)) {
       return (numericAmount * servings).toFixed(1);
     }
     return amount;
-  };
+  }, [servings]);
+
+  const handleAddRecipe = useCallback((recipe: Recipe, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddRecipe(recipe);
+  }, [onAddRecipe]);
 
   return (
     <>
@@ -93,7 +98,7 @@ export const RecipeGrid = ({
                   />
                   <button
                     className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-200"
-                    onClick={() => onAddRecipe(recipe)}
+                    onClick={(e) => handleAddRecipe(recipe, e)}
                   >
                     <Plus className="w-8 h-8 text-white" />
                   </button>
@@ -130,7 +135,6 @@ export const RecipeGrid = ({
             ))}
           </div>
           
-          {/* Infinite scroll trigger with minimal loading indicator */}
           <div 
             ref={ref} 
             className="h-16 flex items-center justify-center mt-4"
@@ -175,4 +179,6 @@ export const RecipeGrid = ({
       </Dialog>
     </>
   );
-};
+});
+
+RecipeGrid.displayName = 'RecipeGrid';

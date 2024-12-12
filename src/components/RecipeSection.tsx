@@ -12,7 +12,7 @@ interface RecipeSectionProps {
   onAddRecipe: (recipe: Recipe) => void;
 }
 
-export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
+export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) => {
   const { toast } = useToast();
   const { sortBy, isAscending, handleSortChange, handleDirectionChange } = useRecipeSorting();
 
@@ -46,7 +46,6 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
       await refetch();
     } catch (error) {
       console.error('Error tracking recipe usage:', error);
-      // Still add the recipe even if tracking fails
       onAddRecipe(recipe);
     }
   }, [onAddRecipe, refetch]);
@@ -70,4 +69,6 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
       </div>
     </div>
   );
-};
+});
+
+RecipeSection.displayName = 'RecipeSection';

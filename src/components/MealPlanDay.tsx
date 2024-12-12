@@ -51,7 +51,7 @@ export const MealPlanDay = memo(({
     <div 
       className={`
         relative group
-        py-2 px-3 
+        py-1.5 px-2.5 
         bg-white dark:bg-gray-800 
         rounded-lg border border-gray-200 dark:border-gray-700
         transition-all duration-200
@@ -63,22 +63,22 @@ export const MealPlanDay = memo(({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center space-x-3 w-full">
+      <div className="flex items-center space-x-2 w-full">
         <div className="flex-shrink-0">
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700">
             <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
               {typeof day === 'string' && day.startsWith('Meal') ? day.slice(5) : day.slice(0, 2)}
             </span>
           </span>
         </div>
         
-        <div className="flex-1 min-w-0 pr-8">
+        <div className="flex-1 min-w-0 pr-6">
           {recipe ? (
             <div
               draggable
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              className="cursor-move group-hover:bg-gray-50 dark:group-hover:bg-gray-700/50 rounded-md py-1 transition-colors duration-200 overflow-hidden"
+              className="cursor-move group-hover:bg-gray-50 dark:group-hover:bg-gray-700/50 rounded py-0.5 transition-colors duration-200 overflow-hidden"
             >
               <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                 {recipe.title}
@@ -94,10 +94,10 @@ export const MealPlanDay = memo(({
         {recipe && (
           <button
             onClick={onRemove}
-            className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
+            className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
                      hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
           >
-            <X className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <X className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
           </button>
         )}
       </div>
