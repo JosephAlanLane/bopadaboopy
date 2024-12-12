@@ -7,6 +7,8 @@ import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { SubscriptionButton } from "./SubscriptionButton";
 
+const LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
+
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -20,15 +22,21 @@ export const Navbar = () => {
   };
 
   const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error('Logo failed to load:', e);
+    console.error('Logo failed to load in DOM:', e);
     setLogoError(true);
+  };
+
+  const handleLogoLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.log('Logo loaded successfully in DOM');
+    setLogoLoaded(true);
+    setLogoError(false);
   };
 
   useEffect(() => {
     // Preload the logo image
     const img = new Image();
     img.onload = () => {
-      console.log('Logo loaded successfully');
+      console.log('Logo preloaded successfully');
       setLogoLoaded(true);
       setLogoError(false);
     };
@@ -36,7 +44,7 @@ export const Navbar = () => {
       console.error('Failed to preload logo:', e);
       setLogoError(true);
     };
-    img.src = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
+    img.src = LOGO_URL;
   }, []);
 
   return (
@@ -47,10 +55,13 @@ export const Navbar = () => {
           <div className="flex flex-col items-center relative">
             <div className="flex flex-col items-center">
               <img 
-                src={logoError ? '/placeholder.svg' : 'https://i.ibb.co/JrR24V4/nonna-logo.png'}
+                src={logoError ? '/placeholder.svg' : LOGO_URL}
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
                 onError={handleLogoError}
+                onLoad={handleLogoLoad}
+                loading="eager"
+                crossOrigin="anonymous"
               />
               <div className="text-center mt-1">
                 <h1 className="website-title text-primary">Bopada Boopy!</h1>
@@ -77,10 +88,13 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src={logoError ? '/placeholder.svg' : 'https://i.ibb.co/JrR24V4/nonna-logo.png'}
+            src={logoError ? '/placeholder.svg' : LOGO_URL}
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
             onError={handleLogoError}
+            onLoad={handleLogoLoad}
+            loading="eager"
+            crossOrigin="anonymous"
           />
           <div className="flex flex-col">
             <h1 className="website-title text-primary">Bopada Boopy!</h1>
