@@ -17,6 +17,13 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
   const { sortBy, isAscending, handleSortChange, handleDirectionChange } = useRecipeSorting();
 
   const {
+    searchQuery,
+    filteredRecipes,
+    filtersApplied,
+    handleApplyFilters
+  } = useRecipeFilters([]);
+
+  const {
     recipes,
     isLoading,
     hasMore,
@@ -24,13 +31,6 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     refetch,
     isFetchingNextPage
   } = usePaginatedRecipes(searchQuery, sortBy, isAscending);
-
-  const {
-    searchQuery,
-    filteredRecipes,
-    filtersApplied,
-    handleApplyFilters
-  } = useRecipeFilters(recipes);
 
   // Memoize filtered recipes to prevent unnecessary recalculations
   const currentFilteredRecipes = useMemo(() => {
