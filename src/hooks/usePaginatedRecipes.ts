@@ -45,13 +45,13 @@ export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rati
     // Handle sorting at the database level
     switch (sortBy) {
       case 'rating':
-        query = query.order('rating', { ascending: isAscending, nullsLast: true });
+        query = query.order('rating', { ascending: !isAscending, nullsFirst: isAscending });
         break;
       case 'cookTime':
-        query = query.order('cook_time_minutes', { ascending: isAscending, nullsLast: true });
+        query = query.order('cook_time_minutes', { ascending: isAscending, nullsFirst: !isAscending });
         break;
       case 'servings':
-        query = query.order('servings', { ascending: isAscending, nullsLast: true });
+        query = query.order('servings', { ascending: isAscending, nullsFirst: !isAscending });
         break;
       case 'name':
         query = query.order('title', { ascending: isAscending });
