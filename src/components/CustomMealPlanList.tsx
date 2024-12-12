@@ -20,17 +20,25 @@ export const CustomMealPlanList = ({
     <div className="h-[250px]">
       <ScrollArea className="h-full pr-4">
         <div className="space-y-1">
-          {meals.map((meal, index) => (
-            <MealPlanDay
-              key={index}
-              day={`Meal ${index + 1}`}
-              recipe={meal}
-              onRemove={() => onRemoveMeal(index)}
-              onDrop={(recipe) => onDrop(index, recipe)}
-              onDragStart={(_, recipe) => onDragStart(index, recipe)}
-              className="w-full"
-            />
-          ))}
+          {meals.map((meal, index) => {
+            // If there's a meal, create a new recipe object with truncated title
+            const truncatedMeal = meal ? {
+              ...meal,
+              title: meal.title.length > 20 ? `${meal.title.slice(0, 20)}...` : meal.title
+            } : null;
+
+            return (
+              <MealPlanDay
+                key={index}
+                day={`Meal ${index + 1}`}
+                recipe={truncatedMeal}
+                onRemove={() => onRemoveMeal(index)}
+                onDrop={(recipe) => onDrop(index, recipe)}
+                onDragStart={(_, recipe) => onDragStart(index, recipe)}
+                className="w-full"
+              />
+            );
+          })}
         </div>
       </ScrollArea>
     </div>
