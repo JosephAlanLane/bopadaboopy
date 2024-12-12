@@ -4,18 +4,35 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { Menu } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SubscriptionButton } from "./SubscriptionButton";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/");
   };
+
+  const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.error('Logo failed to load:', e);
+    setLogoError(true);
+    e.currentTarget.src = '/placeholder.svg';
+  };
+
+  useEffect(() => {
+    // Preload the logo image
+    const img = new Image();
+    img.src = '/nonna-logo.png';
+    img.onerror = () => {
+      console.error('Failed to preload logo');
+      setLogoError(true);
+    };
+  }, []);
 
   return (
     <nav className="w-full bg-gray-50 dark:bg-gray-800 border-b border-gray-200 px-4 py-2.5 shadow-sm">
@@ -23,16 +40,12 @@ export const Navbar = () => {
         {/* Mobile Layout */}
         <div className="w-full md:hidden">
           <div className="flex flex-col items-center relative">
-            {/* Logo and Text Container */}
             <div className="flex flex-col items-center">
               <img 
-                src="/nonna-logo.png"
+                src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
-                onError={(e) => {
-                  console.error('Logo failed to load:', e);
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
+                onError={handleLogoError}
               />
               <div className="text-center mt-1">
                 <h1 className="website-title text-primary">Bopada Boopy!</h1>
@@ -43,7 +56,6 @@ export const Navbar = () => {
               </div>
             </div>
             
-            {/* Buttons Container */}
             <div className="w-full flex justify-between items-center absolute bottom-0">
               <ThemeToggle />
               <Button 
@@ -60,13 +72,10 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src="/nonna-logo.png"
+            src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
-            onError={(e) => {
-              console.error('Logo failed to load:', e);
-              e.currentTarget.src = '/placeholder.svg';
-            }}
+            onError={handleLogoError}
           />
           <div className="flex flex-col">
             <h1 className="website-title text-primary">Bopada Boopy!</h1>

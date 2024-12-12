@@ -59,15 +59,14 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleAddRecipe = useCallback(async (recipe: Recipe) => {
+  const handleAddRecipe = useCallback((recipe: Recipe) => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
-      // Find the first available day that doesn't have a meal
-      const availableDays = DAYS.filter(day => !mealPlan[day]);
-      const nextAvailableDay = availableDays[0];
+      // Find the first empty slot
+      const emptyDay = DAYS.find(day => !mealPlan[day]);
       
-      if (!nextAvailableDay) {
+      if (!emptyDay) {
         toast({
           title: "Weekly plan is full",
           description: "Remove a meal before adding a new one.",
@@ -78,14 +77,15 @@ const Index = () => {
 
       setMealPlan(prev => ({
         ...prev,
-        [nextAvailableDay]: recipe
+        [emptyDay]: recipe
       }));
 
       toast({
         title: "Meal added",
-        description: `${recipe.title} added to ${nextAvailableDay}`,
+        description: `${recipe.title} added to ${emptyDay}`,
       });
     } else {
+      // Handle custom meals
       if (customMeals.length >= 50) {
         toast({
           title: "Custom plan is full",
@@ -96,13 +96,13 @@ const Index = () => {
       }
 
       setCustomMeals(prevMeals => {
-        const nextAvailableIndex = prevMeals.findIndex(meal => meal === null);
-        if (nextAvailableIndex === -1) {
+        const emptyIndex = prevMeals.findIndex(meal => meal === null);
+        if (emptyIndex === -1) {
           return [...prevMeals, recipe];
         }
-        const newMeals = [...prevMeals];
-        newMeals[nextAvailableIndex] = recipe;
-        return newMeals;
+        return prevMeals.map((meal, index) => 
+          index === emptyIndex ? recipe : meal
+        );
       });
 
       toast({
