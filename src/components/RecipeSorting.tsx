@@ -38,7 +38,7 @@ export const RecipeSorting = ({
         onClick={onDirectionChange}
         className="h-8 px-2"
       >
-        {isAscending ? (
+        {!isAscending ? (
           <ArrowUp className="h-4 w-4" />
         ) : (
           <ArrowDown className="h-4 w-4" />

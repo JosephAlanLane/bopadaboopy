@@ -49,6 +49,7 @@ const Index = () => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
+      // Find the first empty day
       const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
       
       if (!nextAvailableDay) {
@@ -60,10 +61,11 @@ const Index = () => {
         return;
       }
 
-      setMealPlan((prev) => ({
-        ...prev,
-        [nextAvailableDay]: recipe,
-      }));
+      setMealPlan((prev) => {
+        const newPlan = { ...prev };
+        newPlan[nextAvailableDay] = recipe;
+        return newPlan;
+      });
 
       toast({
         title: "Meal added",
@@ -80,16 +82,18 @@ const Index = () => {
         return;
       }
 
-      const nextAvailableIndex = customMeals.findIndex(meal => meal === null);
-      if (nextAvailableIndex === -1) {
-        // No empty slot found, add new one
-        setCustomMeals([...customMeals, recipe]);
-      } else {
-        // Fill empty slot
-        const newMeals = [...customMeals];
-        newMeals[nextAvailableIndex] = recipe;
-        setCustomMeals(newMeals);
-      }
+      setCustomMeals(prevMeals => {
+        const nextAvailableIndex = prevMeals.findIndex(meal => meal === null);
+        if (nextAvailableIndex === -1) {
+          // No empty slot found, add to the end
+          return [...prevMeals, recipe];
+        } else {
+          // Fill the first empty slot
+          const newMeals = [...prevMeals];
+          newMeals[nextAvailableIndex] = recipe;
+          return newMeals;
+        }
+      });
 
       toast({
         title: "Meal added",
