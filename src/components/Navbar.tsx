@@ -26,7 +26,7 @@ export const Navbar = () => {
             {/* Logo and Text Container */}
             <div className="flex flex-col items-center">
               <img 
-                src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
+                src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/nonna-logo.png"
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
               />
