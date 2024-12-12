@@ -37,15 +37,20 @@ const LoadMealPlan = () => {
 
         console.log('Successfully loaded meal plan:', mealPlan);
 
-        // Store the meal plan data in localStorage with the is_weekly flag
+        // Store the meal plan data in localStorage with the tab_context
         localStorage.setItem('selectedMealPlan', JSON.stringify({
           meals: mealPlan.recipes,
           is_weekly: mealPlan.is_weekly,
-          title: mealPlan.title
+          title: mealPlan.title,
+          tab_context: mealPlan.tab_context
         }));
 
-        // Navigate to home page where the meal plan will be loaded
-        navigate('/');
+        // Navigate based on tab_context
+        if (mealPlan.tab_context === 'custom') {
+          navigate('/custom');
+        } else {
+          navigate('/');
+        }
 
         toast({
           title: "Meal plan loaded",

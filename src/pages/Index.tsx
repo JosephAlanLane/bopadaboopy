@@ -19,11 +19,11 @@ const Index = () => {
     const savedMealPlan = localStorage.getItem('selectedMealPlan');
     if (savedMealPlan) {
       try {
-        const { meals, is_weekly, title } = JSON.parse(savedMealPlan);
-        console.log('Loading meal plan:', { meals, is_weekly, title, mealsLength: meals.length });
+        const { meals, is_weekly, title, tab_context } = JSON.parse(savedMealPlan);
+        console.log('Loading meal plan:', { meals, is_weekly, title, tab_context, mealsLength: meals.length });
         
-        // Set the active tab based on the is_weekly flag
-        setActiveTab(is_weekly ? "weekly" : "custom");
+        // Set the active tab based on the tab_context
+        setActiveTab(tab_context || (is_weekly ? "weekly" : "custom"));
         
         if (is_weekly) {
           console.log('Loading weekly meal plan');
@@ -36,6 +36,11 @@ const Index = () => {
           setMealPlan(weeklyPlan);
           // Reset custom meals when loading a weekly plan
           setCustomMeals([null]);
+
+          toast({
+            title: "Weekly meal plan loaded",
+            description: `"${title}" has been loaded into the weekly planner.`,
+          });
         } else {
           console.log('Loading custom meal plan');
           // For custom plans, create an array of the exact size needed
@@ -47,6 +52,11 @@ const Index = () => {
           setCustomMeals(customPlanMeals);
           // Reset weekly plan when loading a custom plan
           setMealPlan({});
+
+          toast({
+            title: "Custom meal plan loaded",
+            description: `"${title}" has been loaded into the custom planner.`,
+          });
         }
         
         localStorage.removeItem('selectedMealPlan');
