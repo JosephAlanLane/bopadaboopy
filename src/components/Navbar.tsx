@@ -24,7 +24,7 @@ export const Navbar = () => {
   const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.error('Logo failed to load in DOM:', e);
     setLogoError(true);
-    e.currentTarget.src = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
+    e.currentTarget.src = LOGO_URL;
   };
 
   const handleLogoLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -56,7 +56,7 @@ export const Navbar = () => {
           <div className="flex flex-col items-center relative">
             <div className="flex flex-col items-center">
               <img 
-                src={logoError ? '/placeholder.svg' : LOGO_URL}
+                src={logoError ? LOGO_URL : LOGO_URL}
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
                 onError={handleLogoError}
@@ -89,7 +89,7 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src={logoError ? '/placeholder.svg' : LOGO_URL}
+            src={logoError ? LOGO_URL : LOGO_URL}
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
             onError={handleLogoError}

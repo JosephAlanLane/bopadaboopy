@@ -98,7 +98,7 @@ export const usePaginatedRecipes = (
       throw error;
     }
 
-    console.log('Fetched recipes:', recipes);
+    console.log('Raw recipes data from Supabase:', recipes);
 
     // Fetch recipe usage stats for popularity sorting - using a single query for all recipes
     const { data: usageStats, error: usageError } = await supabase
@@ -114,16 +114,24 @@ export const usePaginatedRecipes = (
       return acc;
     }, {});
 
-    let recipesWithPopularity = recipes.map((recipe: any) => ({
-      ...recipe,
-      popularity: usageCount?.[recipe.id] || 0,
-      ingredients: recipe.recipe_ingredients.map((ing: any) => ({
-        amount: ing.amount,
-        unit: ing.unit || '',
-        item: ing.item,
-      })),
-      image: recipe.image || LOGO_URL
-    }));
+    let recipesWithPopularity = recipes.map((recipe: any) => {
+      // Log each recipe's ingredients before transformation
+      console.log(`Processing recipe ${recipe.id} - ${recipe.title}:`, recipe.recipe_ingredients);
+      
+      return {
+        ...recipe,
+        popularity: usageCount?.[recipe.id] || 0,
+        ingredients: recipe.recipe_ingredients.map((ing: any) => ({
+          amount: ing.amount,
+          unit: ing.unit || '',
+          item: ing.item,
+        })),
+        image: recipe.image || LOGO_URL
+      };
+    });
+
+    // Log transformed recipes
+    console.log('Transformed recipes with ingredients:', recipesWithPopularity);
 
     // Filter by max ingredients after fetching (since we need the full ingredients list)
     if (filters?.maxIngredients) {
