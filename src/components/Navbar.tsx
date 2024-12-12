@@ -12,6 +12,7 @@ export const Navbar = () => {
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoError, setLogoError] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -27,11 +28,16 @@ export const Navbar = () => {
   useEffect(() => {
     // Preload the logo image
     const img = new Image();
-    img.src = '/nonna-logo.png';
-    img.onerror = () => {
-      console.error('Failed to preload logo');
+    img.onload = () => {
+      console.log('Logo loaded successfully');
+      setLogoLoaded(true);
+      setLogoError(false);
+    };
+    img.onerror = (e) => {
+      console.error('Failed to preload logo:', e);
       setLogoError(true);
     };
+    img.src = '/nonna-logo.png';
   }, []);
 
   return (
@@ -41,12 +47,21 @@ export const Navbar = () => {
         <div className="w-full md:hidden">
           <div className="flex flex-col items-center relative">
             <div className="flex flex-col items-center">
-              <img 
-                src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
-                alt="Italian Nonna" 
-                className="w-32 h-32 object-contain mt-2"
-                onError={handleLogoError}
-              />
+              {logoLoaded ? (
+                <img 
+                  src="/nonna-logo.png"
+                  alt="Italian Nonna" 
+                  className="w-32 h-32 object-contain mt-2"
+                  onError={handleLogoError}
+                />
+              ) : (
+                <img 
+                  src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
+                  alt="Italian Nonna" 
+                  className="w-32 h-32 object-contain mt-2"
+                  onError={handleLogoError}
+                />
+              )}
               <div className="text-center mt-1">
                 <h1 className="website-title text-primary">Bopada Boopy!</h1>
                 <div className="text-[11px] text-gray-600 dark:text-gray-400">
@@ -71,12 +86,21 @@ export const Navbar = () => {
 
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
-          <img 
-            src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
-            alt="Italian Nonna" 
-            className="w-28 h-28 object-contain"
-            onError={handleLogoError}
-          />
+          {logoLoaded ? (
+            <img 
+              src="/nonna-logo.png"
+              alt="Italian Nonna" 
+              className="w-28 h-28 object-contain"
+              onError={handleLogoError}
+            />
+          ) : (
+            <img 
+              src={logoError ? '/placeholder.svg' : '/nonna-logo.png'}
+              alt="Italian Nonna" 
+              className="w-28 h-28 object-contain"
+              onError={handleLogoError}
+            />
+          )}
           <div className="flex flex-col">
             <h1 className="website-title text-primary">Bopada Boopy!</h1>
             <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">

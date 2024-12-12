@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
@@ -63,54 +63,58 @@ const Index = () => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
-      // Find the first empty slot
-      const emptyDay = DAYS.find(day => !mealPlan[day]);
-      
-      if (!emptyDay) {
+      // Find the first empty slot using memoization
+      setMealPlan(prevPlan => {
+        const newPlan = { ...prevPlan };
+        const emptyDay = DAYS.find(day => !newPlan[day]);
+        
+        if (!emptyDay) {
+          toast({
+            title: "Weekly plan is full",
+            description: "Remove a meal before adding a new one.",
+            variant: "destructive",
+          });
+          return prevPlan;
+        }
+
+        newPlan[emptyDay] = recipe;
+        
         toast({
-          title: "Weekly plan is full",
-          description: "Remove a meal before adding a new one.",
-          variant: "destructive",
+          title: "Meal added",
+          description: `${recipe.title} added to ${emptyDay}`,
         });
-        return;
-      }
-
-      setMealPlan(prev => ({
-        ...prev,
-        [emptyDay]: recipe
-      }));
-
-      toast({
-        title: "Meal added",
-        description: `${recipe.title} added to ${emptyDay}`,
+        
+        return newPlan;
       });
     } else {
-      // Handle custom meals
-      if (customMeals.length >= 50) {
-        toast({
-          title: "Custom plan is full",
-          description: "Maximum of 50 meals reached.",
-          variant: "destructive",
-        });
-        return;
-      }
-
+      // Handle custom meals with optimized state updates
       setCustomMeals(prevMeals => {
+        if (prevMeals.length >= 50) {
+          toast({
+            title: "Custom plan is full",
+            description: "Maximum of 50 meals reached.",
+            variant: "destructive",
+          });
+          return prevMeals;
+        }
+
         const emptyIndex = prevMeals.findIndex(meal => meal === null);
         if (emptyIndex === -1) {
           return [...prevMeals, recipe];
         }
-        return prevMeals.map((meal, index) => 
-          index === emptyIndex ? recipe : meal
-        );
-      });
-
-      toast({
-        title: "Meal added",
-        description: `${recipe.title} added to custom meal plan`,
+        
+        const newMeals = [...prevMeals];
+        newMeals[emptyIndex] = recipe;
+        
+        toast({
+          title: "Meal added",
+          description: `${recipe.title} added to custom meal plan`,
+        });
+        
+        return newMeals;
       });
     }
-  }, [activeTab, mealPlan, customMeals, toast]);
+  }, [activeTab, toast]);
 
   const handleRemoveMeal = useCallback((day: DayOfWeek) => {
     setMealPlan(prev => {
