@@ -20,8 +20,10 @@ const Index = () => {
     if (savedMealPlan) {
       try {
         const { meals, is_weekly } = JSON.parse(savedMealPlan);
+        console.log('Loading meal plan:', { meals, is_weekly });
         
         if (is_weekly) {
+          console.log('Loading weekly meal plan');
           const weeklyPlan: MealPlan = {};
           meals.forEach((recipe: Recipe, index: number) => {
             if (index < DAYS.length) {
@@ -31,7 +33,10 @@ const Index = () => {
           setMealPlan(weeklyPlan);
           setActiveTab("weekly");
         } else {
-          setCustomMeals(meals.map((recipe: Recipe) => recipe));
+          console.log('Loading custom meal plan');
+          // For custom plans, ensure we have at least as many slots as meals
+          const customPlanMeals = meals.map((recipe: Recipe) => recipe);
+          setCustomMeals(customPlanMeals);
           setActiveTab("custom");
         }
         
@@ -39,10 +44,15 @@ const Index = () => {
         
         toast({
           title: "Meal plan loaded",
-          description: "Your selected meal plan has been loaded into the planner.",
+          description: `Your selected ${is_weekly ? 'weekly' : 'custom'} meal plan has been loaded into the planner.`,
         });
       } catch (error) {
         console.error('Error loading meal plan:', error);
+        toast({
+          title: "Error loading meal plan",
+          description: "There was an error loading your meal plan. Please try again.",
+          variant: "destructive",
+        });
       }
     }
   }, []);
