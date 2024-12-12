@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 
 const RECIPES_PER_PAGE = 20;
-const LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
+const LOGO_URL = 'https://bopadaboopy.lovable.app/nonna-logo.png';
 
 interface FetchRecipesParams {
   pageParam?: number;

@@ -11,7 +11,7 @@ export const MealPlanRecipeGrid = ({ recipes }: MealPlanRecipeGridProps) => {
       {recipes.map((recipe: Recipe, index: number) => (
         <div key={index} className="relative aspect-square">
           <img
-            src={recipe.image || 'https://i.ibb.co/JrR24V4/nonna-logo.png'}
+            src={recipe.image || 'https://bopadaboopy.lovable.app/nonna-logo.png'}
             alt={recipe.title}
             className="w-full h-full object-cover rounded-md"
           />

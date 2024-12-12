@@ -53,7 +53,7 @@ export const MealPlanDialog = ({
               {recipes.map((recipe, index) => (
                 <div key={index} className="flex items-center gap-4 p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <img 
-                    src={recipe.image || 'https://i.ibb.co/JrR24V4/nonna-logo.png'} 
+                    src={recipe.image || 'https://bopadaboopy.lovable.app/nonna-logo.png'} 
                     alt={recipe.title} 
                     className="w-16 h-16 object-cover rounded-md"
                   />
