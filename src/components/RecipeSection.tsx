@@ -31,7 +31,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     isAscending,
     handleSortChange,
     handleDirectionChange
-  } = useSortedRecipes(filteredRecipes);
+  } = useSortedRecipes(filtersApplied ? filteredRecipes : recipes);
 
   React.useEffect(() => {
     if (!filtersApplied) {
@@ -54,7 +54,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
   }) => {
     console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
     let filtered = [...recipes];
-    setFiltersApplied(true);
+    setFiltersApplied(Boolean(search || cuisines.length || allergens.length || category));
 
     if (search) {
       filtered = filtered.filter((recipe) =>
@@ -105,7 +105,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
           onDirectionChange={handleDirectionChange}
           sortBy={sortBy}
           isAscending={isAscending}
-          hasMore={hasMore}
+          hasMore={!filtersApplied && hasMore}
           onLoadMore={loadMore}
           isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}

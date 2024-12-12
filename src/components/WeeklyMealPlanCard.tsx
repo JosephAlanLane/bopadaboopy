@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from '@/contexts/AuthContext';
 import { HeartButton } from './HeartButton';
 import { MealPlanRecipeGrid } from './MealPlanRecipeGrid';
+import { Share2, Trash2 } from 'lucide-react';
 
 interface WeeklyMealPlanCardProps {
   id: string;
@@ -18,6 +19,7 @@ interface WeeklyMealPlanCardProps {
   showHeart?: boolean;
   isSaved?: boolean;
   onToggleSave?: () => void;
+  onDelete?: () => void;
 }
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -29,7 +31,8 @@ export const WeeklyMealPlanCard = ({
   description,
   showHeart,
   isSaved: initialIsSaved,
-  onToggleSave
+  onToggleSave,
+  onDelete
 }: WeeklyMealPlanCardProps) => {
   const [showDialog, setShowDialog] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -84,6 +87,66 @@ export const WeeklyMealPlanCard = ({
     
     localStorage.setItem('selectedMealPlan', JSON.stringify(mealPlanObject));
     navigate('/');
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('saved_meal_plans')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Meal plan deleted",
+        description: "The meal plan has been removed from your saved plans",
+      });
+
+      if (onDelete) {
+        onDelete();
+      }
+    } catch (error) {
+      console.error('Error deleting meal plan:', error);
+      toast({
+        title: "Error deleting meal plan",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const shareData = {
+        title: 'Check out this meal plan!',
+        text: `${title} - A weekly meal plan`,
+        url: window.location.href
+      };
+      
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied to clipboard",
+          description: "You can now share this meal plan with others",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
   const handleToggleSave = async (e: React.MouseEvent) => {
@@ -181,13 +244,33 @@ export const WeeklyMealPlanCard = ({
         onClick={() => setShowDialog(true)}
         className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] cursor-pointer border border-gray-200 dark:border-gray-700"
       >
-        {showHeart && (
-          <HeartButton 
-            isSaved={isSaved}
-            isLoading={isLoading}
-            onClick={handleToggleSave}
-          />
-        )}
+        <div className="absolute top-2 right-2 z-10 flex gap-2">
+          {showHeart && (
+            <HeartButton 
+              isSaved={isSaved}
+              isLoading={isLoading}
+              onClick={handleToggleSave}
+            />
+          )}
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800"
+            onClick={handleShare}
+          >
+            <Share2 className="w-4 h-4" />
+          </Button>
+          {isSaved && (
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 hover:text-red-500"
+              onClick={handleDelete}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
         
         <div className="p-4">
           <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{title}</h3>
