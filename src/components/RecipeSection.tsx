@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Recipe } from '@/types/recipe';
 import { RecipeFilters } from './RecipeFilters';
 import { RecipeGrid } from './RecipeGrid';
@@ -28,13 +28,14 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     isFetchingNextPage
   } = usePaginatedRecipes(searchQuery, sortBy, isAscending);
 
-  React.useEffect(() => {
-    if (!filtersApplied) {
-      setFilteredRecipes(recipes);
-    }
-  }, [recipes, filtersApplied]);
+  // Memoize filtered recipes to prevent unnecessary recalculations
+  const currentFilteredRecipes = useMemo(() => {
+    if (!filtersApplied) return recipes;
+    return filteredRecipes;
+  }, [recipes, filteredRecipes, filtersApplied]);
 
-  const handleApplyFilters = ({
+  // Memoize the filter application function
+  const handleApplyFilters = useCallback(({
     search,
     cuisines,
     allergens,
@@ -50,55 +51,61 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
     setSearchQuery(search);
     
-    let filtered = [...recipes];
-    setFiltersApplied(Boolean(cuisines.length || allergens.length || category));
+    const shouldApplyFilters = cuisines.length > 0 || allergens.length > 0 || category;
+    setFiltersApplied(shouldApplyFilters);
 
-    if (cuisines.length > 0) {
-      filtered = filtered.filter((recipe) => 
-        recipe.cuisine && cuisines.includes(recipe.cuisine)
-      );
+    if (!shouldApplyFilters) {
+      setFilteredRecipes([]);
+      return;
     }
 
-    if (allergens.length > 0) {
-      filtered = filtered.filter(
-        (recipe) => !allergens.some(allergen => 
-          recipe.allergens && recipe.allergens.includes(allergen)
-        )
-      );
-    }
-
-    if (category && category !== 'all') {
-      filtered = filtered.filter((recipe) => recipe.category === category);
-    }
-
-    filtered = filtered.filter(
-      (recipe) => recipe.ingredients.length <= maxIngredients
-    );
+    const filtered = recipes.filter(recipe => {
+      if (cuisines.length > 0 && (!recipe.cuisine || !cuisines.includes(recipe.cuisine))) {
+        return false;
+      }
+      if (allergens.length > 0 && recipe.allergens?.some(allergen => allergens.includes(allergen))) {
+        return false;
+      }
+      if (category && category !== 'all' && recipe.category !== category) {
+        return false;
+      }
+      if (recipe.ingredients.length > maxIngredients) {
+        return false;
+      }
+      return true;
+    });
 
     console.log('Filtered recipes count:', filtered.length);
     setFilteredRecipes(filtered);
-  };
+  }, [recipes]);
 
-  const handleAddRecipeWithTracking = async (recipe: Recipe) => {
-    await trackRecipeUsage(recipe.id);
-    await refetch();
-    onAddRecipe(recipe);
-  };
+  // Memoize the add recipe handler
+  const handleAddRecipeWithTracking = useCallback(async (recipe: Recipe) => {
+    try {
+      await trackRecipeUsage(recipe.id);
+      onAddRecipe(recipe);
+      await refetch();
+    } catch (error) {
+      console.error('Error tracking recipe usage:', error);
+      // Still add the recipe even if tracking fails
+      onAddRecipe(recipe);
+    }
+  }, [onAddRecipe, refetch]);
 
-  const handleSortChange = (value: string) => {
+  const handleSortChange = useCallback((value: string) => {
     setSortBy(value);
-  };
+  }, []);
 
-  const handleDirectionChange = () => {
-    setIsAscending(!isAscending);
-  };
+  const handleDirectionChange = useCallback(() => {
+    setIsAscending(prev => !prev);
+  }, []);
 
   return (
     <div className="flex-1 min-w-0 space-y-4">
       <RecipeFilters onApplyFilters={handleApplyFilters} />
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
         <RecipeGrid 
-          recipes={filtersApplied ? filteredRecipes : recipes}
+          recipes={currentFilteredRecipes}
           onAddRecipe={handleAddRecipeWithTracking}
           onSortChange={handleSortChange}
           onDirectionChange={handleDirectionChange}

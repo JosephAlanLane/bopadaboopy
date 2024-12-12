@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, memo } from "react";
 import { X } from "lucide-react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
 
@@ -10,40 +10,40 @@ interface MealPlanDayProps {
   onDragStart: (day: DayOfWeek | string, recipe: Recipe) => void;
 }
 
-export const MealPlanDay = ({ 
+export const MealPlanDay = memo(({ 
   day, 
   recipe, 
   onRemove, 
   onDrop,
   onDragStart 
 }: MealPlanDayProps) => {
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.currentTarget.classList.add('bg-gray-100', 'dark:bg-gray-600');
-  };
+  }, []);
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.currentTarget.classList.remove('bg-gray-100', 'dark:bg-gray-600');
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.currentTarget.classList.remove('bg-gray-100', 'dark:bg-gray-600');
     const recipeData = JSON.parse(e.dataTransfer.getData("recipe"));
     onDrop(recipeData);
-  };
+  }, [onDrop]);
 
-  const handleDragStart = (e: React.DragEvent) => {
+  const handleDragStart = useCallback((e: React.DragEvent) => {
     if (recipe) {
       e.dataTransfer.setData("recipe", JSON.stringify(recipe));
       onDragStart(day, recipe);
       e.currentTarget.classList.add('opacity-50');
     }
-  };
+  }, [recipe, day, onDragStart]);
 
-  const handleDragEnd = (e: React.DragEvent) => {
+  const handleDragEnd = useCallback((e: React.DragEvent) => {
     e.currentTarget.classList.remove('opacity-50');
-  };
+  }, []);
 
   return (
     <div 
@@ -83,4 +83,6 @@ export const MealPlanDay = ({
       </div>
     </div>
   );
-};
+});
+
+MealPlanDay.displayName = 'MealPlanDay';
