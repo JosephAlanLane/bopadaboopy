@@ -3,6 +3,7 @@ import { Recipe, DayOfWeek } from '@/types/recipe';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
+import { useNavigate } from 'react-router-dom';
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -12,6 +13,7 @@ interface MealPlanDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLoadMeals: () => void;
+  slug?: string;
 }
 
 export const MealPlanDialog = ({
@@ -20,7 +22,21 @@ export const MealPlanDialog = ({
   open,
   onOpenChange,
   onLoadMeals,
+  slug,
 }: MealPlanDialogProps) => {
+  const navigate = useNavigate();
+
+  const handleLoadMeals = () => {
+    if (slug) {
+      // If we have a slug, use the new URL format
+      navigate(`/meal-plans/${slug}`);
+    } else {
+      // Otherwise, use the existing direct loading mechanism
+      onLoadMeals();
+    }
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -47,7 +63,7 @@ export const MealPlanDialog = ({
               ))}
             </div>
             <div className="flex justify-end pt-4">
-              <Button onClick={onLoadMeals}>
+              <Button onClick={handleLoadMeals}>
                 Load Meals into Planner
               </Button>
             </div>
