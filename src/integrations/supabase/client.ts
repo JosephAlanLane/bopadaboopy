@@ -4,7 +4,10 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing required environment variables');
+  console.error('Environment variables check:', {
+    url: supabaseUrl ? 'defined' : 'undefined',
+    key: supabaseAnonKey ? 'defined' : 'undefined'
+  });
   throw new Error('Missing Supabase environment variables. Please check your .env file.');
 }
 
@@ -18,4 +21,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Safe logging that doesn't expose sensitive data
-console.log('Supabase client initialized successfully');
+console.log('Supabase client initialized with URL:', supabaseUrl.substring(0, 20) + '...');
