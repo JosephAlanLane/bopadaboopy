@@ -28,6 +28,7 @@ export const CustomMealPlanList = ({
               onRemove={() => onRemoveMeal(index)}
               onDrop={(recipe) => onDrop(index, recipe)}
               onDragStart={(_, recipe) => onDragStart(index, recipe)}
+              className="w-full" // Added to match weekly plan width
             />
           ))}
         </div>
