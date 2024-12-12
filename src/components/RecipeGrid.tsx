@@ -26,8 +26,8 @@ export const RecipeGrid = ({
   servings = 1,
   onSortChange,
   onDirectionChange,
-  sortBy,
-  isAscending,
+  sortBy = "rating",
+  isAscending = false,  // Changed default to false for "Top Rated"
   hasMore,
   onLoadMore,
   isLoading,

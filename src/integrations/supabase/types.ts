@@ -242,7 +242,9 @@ export type Database = {
           description: string | null
           id: string
           is_public: boolean | null
+          is_weekly: boolean | null
           recipes: Json
+          slug: string | null
           title: string
           user_id: string | null
         }
@@ -251,7 +253,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          is_weekly?: boolean | null
           recipes?: Json
+          slug?: string | null
           title: string
           user_id?: string | null
         }
@@ -260,7 +264,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean | null
+          is_weekly?: boolean | null
           recipes?: Json
+          slug?: string | null
           title?: string
           user_id?: string | null
         }

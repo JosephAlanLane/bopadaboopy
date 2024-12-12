@@ -19,8 +19,22 @@ const Index = () => {
     const savedMealPlan = localStorage.getItem('selectedMealPlan');
     if (savedMealPlan) {
       try {
-        const parsedMealPlan = JSON.parse(savedMealPlan);
-        setMealPlan(parsedMealPlan);
+        const { meals, is_weekly } = JSON.parse(savedMealPlan);
+        
+        if (is_weekly) {
+          const weeklyPlan: MealPlan = {};
+          meals.forEach((recipe: Recipe, index: number) => {
+            if (index < DAYS.length) {
+              weeklyPlan[DAYS[index]] = recipe;
+            }
+          });
+          setMealPlan(weeklyPlan);
+          setActiveTab("weekly");
+        } else {
+          setCustomMeals(meals.map((recipe: Recipe) => recipe));
+          setActiveTab("custom");
+        }
+        
         localStorage.removeItem('selectedMealPlan');
         
         toast({
@@ -49,7 +63,6 @@ const Index = () => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
-      // Find the first empty day
       const nextAvailableDay = DAYS.find((day) => !mealPlan[day]);
       
       if (!nextAvailableDay) {
@@ -72,7 +85,6 @@ const Index = () => {
         description: `${recipe.title} added to ${nextAvailableDay}`,
       });
     } else {
-      // Handle custom tab
       if (customMeals.length >= 50) {
         toast({
           title: "Custom plan is full",
@@ -85,10 +97,8 @@ const Index = () => {
       setCustomMeals(prevMeals => {
         const nextAvailableIndex = prevMeals.findIndex(meal => meal === null);
         if (nextAvailableIndex === -1) {
-          // No empty slot found, add to the end
           return [...prevMeals, recipe];
         } else {
-          // Fill the first empty slot
           const newMeals = [...prevMeals];
           newMeals[nextAvailableIndex] = recipe;
           return newMeals;
