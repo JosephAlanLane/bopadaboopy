@@ -24,6 +24,7 @@ export const Navbar = () => {
   const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.error('Logo failed to load in DOM:', e);
     setLogoError(true);
+    e.currentTarget.src = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
   };
 
   const handleLogoLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {

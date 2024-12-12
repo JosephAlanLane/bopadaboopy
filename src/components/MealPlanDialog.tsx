@@ -53,7 +53,7 @@ export const MealPlanDialog = ({
               {recipes.map((recipe, index) => (
                 <div key={index} className="flex items-center gap-4 p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <img 
-                    src={recipe.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&auto=format&fit=crop'} 
+                    src={recipe.image || 'https://i.ibb.co/JrR24V4/nonna-logo.png'} 
                     alt={recipe.title} 
                     className="w-16 h-16 object-cover rounded-md"
                   />

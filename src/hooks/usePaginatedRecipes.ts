@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 const RECIPES_PER_PAGE = 20;
+const LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
 
 interface FetchRecipesParams {
   pageParam?: number;
@@ -121,6 +122,7 @@ export const usePaginatedRecipes = (
         unit: ing.unit || '',
         item: ing.item,
       })),
+      image: recipe.image || LOGO_URL
     }));
 
     // Filter by max ingredients after fetching (since we need the full ingredients list)
