@@ -26,8 +26,8 @@ export const RecipeGrid = ({
   servings = 1,
   onSortChange,
   onDirectionChange,
-  sortBy = "rating",  // Changed default to rating
-  isAscending = false,  // Changed default to false for "Top Rated"
+  sortBy = "rating",  // Default to rating
+  isAscending = true,  // Changed to true so that when inverted by the sort function, highest ratings appear first
   hasMore,
   onLoadMore,
   isLoading,
@@ -36,7 +36,7 @@ export const RecipeGrid = ({
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: '400px', // Load earlier for smoother experience
+    rootMargin: '400px',
   });
 
   // Effect to handle infinite scroll
