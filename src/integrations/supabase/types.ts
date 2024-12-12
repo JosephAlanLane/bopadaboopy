@@ -245,6 +245,7 @@ export type Database = {
           is_weekly: boolean | null
           recipes: Json
           slug: string | null
+          tab_context: string
           title: string
           user_id: string | null
         }
@@ -256,6 +257,7 @@ export type Database = {
           is_weekly?: boolean | null
           recipes?: Json
           slug?: string | null
+          tab_context?: string
           title: string
           user_id?: string | null
         }
@@ -267,6 +269,7 @@ export type Database = {
           is_weekly?: boolean | null
           recipes?: Json
           slug?: string | null
+          tab_context?: string
           title?: string
           user_id?: string | null
         }
