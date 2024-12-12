@@ -10,7 +10,6 @@ import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
 import MealPlans from "./pages/MealPlans";
-import CustomMealPlans from "./pages/CustomMealPlans";
 import SubscriptionSuccess from "./pages/subscription/Success";
 import SubscriptionCancel from "./pages/subscription/Cancel";
 import LoadMealPlan from "./pages/LoadMealPlan";
@@ -40,7 +39,6 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/meal-plans" element={<MealPlans />} />
-                <Route path="/custom" element={<CustomMealPlans />} />
                 <Route path="/meal-plans/:slug" element={<LoadMealPlan />} />
                 <Route path="/subscription/success" element={<SubscriptionSuccess />} />
                 <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
