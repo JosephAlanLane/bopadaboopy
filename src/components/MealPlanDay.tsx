@@ -56,7 +56,7 @@ export const MealPlanDay = memo(({
     >
       <div className="flex items-center gap-1 min-w-0 w-full">
         <p className="font-medium w-20 text-sm shrink-0 overflow-hidden text-ellipsis">{day}</p>
-        <div className="flex-1 min-w-0 flex items-center overflow-hidden">
+        <div className="flex-1 min-w-0 flex items-center overflow-hidden pr-2">
           {recipe ? (
             <div
               draggable
