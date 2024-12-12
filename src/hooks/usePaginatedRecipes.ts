@@ -41,17 +41,7 @@ export const usePaginatedRecipes = (
     let query = supabase
       .from('recipes')
       .select(`
-        id,
-        title,
-        image,
-        cuisine,
-        instructions,
-        allergens,
-        cook_time_minutes,
-        servings,
-        rating,
-        category,
-        created_at,
+        *,
         recipe_ingredients (
           amount,
           unit,
@@ -102,7 +92,12 @@ export const usePaginatedRecipes = (
     const { data: recipes, error, count } = await query
       .range(start, start + RECIPES_PER_PAGE - 1);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching recipes:', error);
+      throw error;
+    }
+
+    console.log('Fetched recipes:', recipes);
 
     // Fetch recipe usage stats for popularity sorting - using a single query for all recipes
     const { data: usageStats, error: usageError } = await supabase
