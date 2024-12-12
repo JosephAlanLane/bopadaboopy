@@ -26,7 +26,7 @@ export const Navbar = () => {
             {/* Logo and Text Container */}
             <div className="flex flex-col items-center">
               <img 
-                src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/nonna-logo.png"
+                src="/nonna-logo.png"
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
               />
@@ -56,7 +56,7 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src="https://raw.githubusercontent.com/JosephAlanLane/meal-planner-portal/main/nonna-logo.png"
+            src="/nonna-logo.png"
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
           />
@@ -101,7 +101,6 @@ export const Navbar = () => {
             )}
           </div>
         </div>
-
       </div>
     </nav>
   );
