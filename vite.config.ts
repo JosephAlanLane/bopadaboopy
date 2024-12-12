@@ -18,8 +18,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    // Using direct environment variables without process.env
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(import.meta.env.VITE_SUPABASE_URL),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(import.meta.env.VITE_SUPABASE_ANON_KEY),
+    // Using process.env for build time
+    'import.meta.env.VITE_SUPABASE_URL': `"${process.env.VITE_SUPABASE_URL}"`,
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': `"${process.env.VITE_SUPABASE_ANON_KEY}"`,
   }
 }));
