@@ -52,7 +52,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     setSearchQuery(search);
     
     const shouldApplyFilters = cuisines.length > 0 || allergens.length > 0 || category;
-    setFiltersApplied(shouldApplyFilters);
+    setFiltersApplied(Boolean(shouldApplyFilters));
 
     if (!shouldApplyFilters) {
       setFilteredRecipes([]);
