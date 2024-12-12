@@ -63,10 +63,9 @@ const Index = () => {
     console.log('Adding recipe to tab:', activeTab);
     
     if (activeTab === "weekly") {
-      // Find the first empty slot using memoization
       setMealPlan(prevPlan => {
-        const newPlan = { ...prevPlan };
-        const emptyDay = DAYS.find(day => !newPlan[day]);
+        // Find the first empty slot without modifying state
+        const emptyDay = DAYS.find(day => !prevPlan[day]);
         
         if (!emptyDay) {
           toast({
@@ -77,6 +76,8 @@ const Index = () => {
           return prevPlan;
         }
 
+        // Create new plan only if we found an empty slot
+        const newPlan = { ...prevPlan };
         newPlan[emptyDay] = recipe;
         
         toast({
@@ -87,7 +88,6 @@ const Index = () => {
         return newPlan;
       });
     } else {
-      // Handle custom meals with optimized state updates
       setCustomMeals(prevMeals => {
         if (prevMeals.length >= 50) {
           toast({
