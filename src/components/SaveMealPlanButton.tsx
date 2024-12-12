@@ -87,7 +87,9 @@ export const SaveMealPlanButton = ({
           title: title,
           description: description,
           recipes: recipes,
-          is_public: isPublic
+          is_public: isPublic,
+          is_weekly: activeTab === "weekly",
+          tab_context: activeTab
         });
 
       if (error) throw error;

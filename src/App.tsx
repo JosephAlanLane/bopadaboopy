@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
 import MealPlans from "./pages/MealPlans";
+import CustomMealPlans from "./pages/CustomMealPlans";
 import SubscriptionSuccess from "./pages/subscription/Success";
 import SubscriptionCancel from "./pages/subscription/Cancel";
 import LoadMealPlan from "./pages/LoadMealPlan";
@@ -35,6 +36,7 @@ const App = () => {
               <Sonner />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/custom" element={<CustomMealPlans />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy" element={<Privacy />} />
