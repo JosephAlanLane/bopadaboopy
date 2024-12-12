@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { useNavigate } from 'react-router-dom';
+import { toast } from './ui/use-toast';
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -15,6 +16,7 @@ interface MealPlanDialogProps {
   onLoadMeals: () => void;
   slug?: string;
   is_weekly?: boolean;
+  tabContext?: string;
 }
 
 export const MealPlanDialog = ({
@@ -25,16 +27,19 @@ export const MealPlanDialog = ({
   onLoadMeals,
   slug,
   is_weekly = true,
+  tabContext = 'weekly'
 }: MealPlanDialogProps) => {
   const navigate = useNavigate();
 
   const handleLoadMeals = () => {
     if (slug) {
-      // If we have a slug, use the new URL format
-      console.log('Loading meal plan with slug:', slug);
+      console.log('Loading meal plan with slug:', slug, 'tab context:', tabContext);
       navigate(`/meal-plans/${slug}`);
+      toast({
+        title: "Loading Meal Plan",
+        description: `Loading plan created in: ${tabContext === 'weekly' ? 'Weekly Meal Plan' : 'Custom Tab'}`,
+      });
     } else {
-      // Otherwise, use the existing direct loading mechanism
       console.log('Using direct loading mechanism');
       onLoadMeals();
     }
