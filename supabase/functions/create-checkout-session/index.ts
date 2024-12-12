@@ -25,11 +25,6 @@ Deno.serve(async (req) => {
       throw new Error('Missing required fields: priceId, userId, or tierId')
     }
 
-    if (!Deno.env.get('STRIPE_SECRET_KEY')) {
-      console.error('STRIPE_SECRET_KEY is not set')
-      throw new Error('Stripe secret key is not configured')
-    }
-
     console.log('Creating Stripe checkout session...')
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],

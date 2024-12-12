@@ -86,7 +86,7 @@ export function SubscriptionButton() {
     <Button 
       onClick={handleSubscribe}
       variant="ghost"
-      className="border border-gray-200 dark:border-gray-700 text-foreground hover:bg-[linear-gradient(-45deg,#008C45_25%,#F4F9FF_50%,#CD212A_75%)] hover:text-gray-700 hover:border-transparent transition-all duration-700"
+      className="border border-gray-200 dark:border-gray-700"
     >
       {user ? "Upgrade to Premium" : "Join the Family for $1/month!"}
     </Button>
