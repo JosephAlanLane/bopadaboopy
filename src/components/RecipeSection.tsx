@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { Recipe } from '@/types/recipe';
 import { RecipeFilters } from './RecipeFilters';
 import { RecipeGrid } from './RecipeGrid';
 import { usePaginatedRecipes } from '@/hooks/usePaginatedRecipes';
-import { useRecipeFilters } from '@/hooks/useRecipeFilters';
 import { useRecipeSorting } from '@/hooks/useRecipeSorting';
 import { useToast } from './ui/use-toast';
 import { trackRecipeUsage } from '@/utils/recipeUtils';
@@ -15,13 +14,13 @@ interface RecipeSectionProps {
 export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) => {
   const { toast } = useToast();
   const { sortBy, isAscending, handleSortChange, handleDirectionChange } = useRecipeSorting();
-
-  const {
-    searchQuery,
-    filteredRecipes,
-    filtersApplied,
-    handleApplyFilters
-  } = useRecipeFilters([]);
+  const [filters, setFilters] = React.useState({
+    search: '',
+    cuisines: [] as string[],
+    allergens: [] as string[],
+    maxIngredients: 20,
+    category: undefined as string | undefined,
+  });
 
   const {
     recipes,
@@ -30,13 +29,17 @@ export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) =>
     loadMore,
     refetch,
     isFetchingNextPage
-  } = usePaginatedRecipes(searchQuery, sortBy, isAscending);
-
-  // Memoize filtered recipes to prevent unnecessary recalculations
-  const currentFilteredRecipes = useMemo(() => {
-    if (!filtersApplied) return recipes;
-    return filteredRecipes;
-  }, [recipes, filteredRecipes, filtersApplied]);
+  } = usePaginatedRecipes(
+    filters.search,
+    sortBy,
+    isAscending,
+    {
+      cuisines: filters.cuisines,
+      allergens: filters.allergens,
+      maxIngredients: filters.maxIngredients,
+      category: filters.category,
+    }
+  );
 
   // Memoize the add recipe handler
   const handleAddRecipeWithTracking = useCallback(async (recipe: Recipe) => {
@@ -50,18 +53,23 @@ export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) =>
     }
   }, [onAddRecipe, refetch]);
 
+  const handleApplyFilters = useCallback((newFilters: typeof filters) => {
+    console.log('Applying filters:', newFilters);
+    setFilters(newFilters);
+  }, []);
+
   return (
     <div className="flex-1 min-w-0 space-y-4">
       <RecipeFilters onApplyFilters={handleApplyFilters} />
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
         <RecipeGrid 
-          recipes={currentFilteredRecipes}
+          recipes={recipes}
           onAddRecipe={handleAddRecipeWithTracking}
           onSortChange={handleSortChange}
           onDirectionChange={handleDirectionChange}
           sortBy={sortBy}
           isAscending={isAscending}
-          hasMore={!filtersApplied && hasMore}
+          hasMore={hasMore}
           onLoadMore={loadMore}
           isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}

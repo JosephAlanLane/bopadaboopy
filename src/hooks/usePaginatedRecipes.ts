@@ -9,11 +9,33 @@ interface FetchRecipesParams {
   searchQuery?: string;
   sortBy: string;
   isAscending: boolean;
+  filters?: {
+    cuisines: string[];
+    allergens: string[];
+    maxIngredients: number;
+    category?: string;
+  };
 }
 
-export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rating', isAscending: boolean = false) => {
-  const fetchRecipesPage = async ({ pageParam = 0, searchQuery, sortBy, isAscending }: FetchRecipesParams) => {
-    console.log('Fetching recipes page:', { pageParam, searchQuery, sortBy, isAscending });
+export const usePaginatedRecipes = (
+  searchQuery?: string, 
+  sortBy: string = 'rating', 
+  isAscending: boolean = false,
+  filters?: {
+    cuisines: string[];
+    allergens: string[];
+    maxIngredients: number;
+    category?: string;
+  }
+) => {
+  const fetchRecipesPage = async ({ 
+    pageParam = 0, 
+    searchQuery, 
+    sortBy, 
+    isAscending,
+    filters 
+  }: FetchRecipesParams) => {
+    console.log('Fetching recipes page:', { pageParam, searchQuery, sortBy, isAscending, filters });
     const start = pageParam * RECIPES_PER_PAGE;
     
     let query = supabase
@@ -42,6 +64,21 @@ export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rati
       query = query.ilike('title', `%${searchQuery}%`);
     }
 
+    // Apply cuisine filter
+    if (filters?.cuisines.length > 0) {
+      query = query.in('cuisine', filters.cuisines);
+    }
+
+    // Apply allergens filter (exclude recipes that contain any of the selected allergens)
+    if (filters?.allergens.length > 0) {
+      query = query.not('allergens', 'cs', `{${filters.allergens.join(',')}}`);
+    }
+
+    // Apply category filter
+    if (filters?.category && filters.category !== 'all') {
+      query = query.eq('category', filters.category);
+    }
+
     // Handle sorting at the database level
     switch (sortBy) {
       case 'rating':
@@ -57,7 +94,6 @@ export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rati
         query = query.order('title', { ascending: isAscending });
         break;
       case 'popular':
-        // For popularity, we'll still need to sort after fetching since it's based on usage stats
         query = query.order('created_at', { ascending: false });
         break;
     }
@@ -92,6 +128,13 @@ export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rati
       })),
     }));
 
+    // Filter by max ingredients after fetching (since we need the full ingredients list)
+    if (filters?.maxIngredients) {
+      recipesWithPopularity = recipesWithPopularity.filter(
+        recipe => recipe.ingredients.length <= filters.maxIngredients
+      );
+    }
+
     // Handle popularity sorting after fetching
     if (sortBy === 'popular') {
       recipesWithPopularity.sort((a, b) => {
@@ -116,8 +159,14 @@ export const usePaginatedRecipes = (searchQuery?: string, sortBy: string = 'rati
     isLoading,
     refetch
   } = useInfiniteQuery({
-    queryKey: ['recipes', searchQuery, sortBy, isAscending],
-    queryFn: ({ pageParam }) => fetchRecipesPage({ pageParam, searchQuery, sortBy, isAscending }),
+    queryKey: ['recipes', searchQuery, sortBy, isAscending, filters],
+    queryFn: ({ pageParam }) => fetchRecipesPage({ 
+      pageParam, 
+      searchQuery, 
+      sortBy, 
+      isAscending,
+      filters 
+    }),
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 0,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
