@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,7 +20,10 @@ const Index = () => {
     if (savedMealPlan) {
       try {
         const { meals, is_weekly } = JSON.parse(savedMealPlan);
-        console.log('Loading meal plan:', { meals, is_weekly });
+        console.log('Loading meal plan:', { meals, is_weekly, mealsLength: meals.length });
+        
+        // Set the active tab based on the is_weekly flag
+        setActiveTab(is_weekly ? "weekly" : "custom");
         
         if (is_weekly) {
           console.log('Loading weekly meal plan');
@@ -31,7 +34,8 @@ const Index = () => {
             }
           });
           setMealPlan(weeklyPlan);
-          setActiveTab("weekly");
+          // Reset custom meals when loading a weekly plan
+          setCustomMeals([null]);
         } else {
           console.log('Loading custom meal plan');
           // For custom plans, create an array of the exact size needed
@@ -41,14 +45,15 @@ const Index = () => {
           });
           console.log('Setting custom meals:', customPlanMeals);
           setCustomMeals(customPlanMeals);
-          setActiveTab("custom");
+          // Reset weekly plan when loading a custom plan
+          setMealPlan({});
         }
         
         localStorage.removeItem('selectedMealPlan');
         
         toast({
           title: "Meal plan loaded",
-          description: `Your selected ${is_weekly ? 'weekly' : 'custom'} meal plan has been loaded into the planner.`,
+          description: `Your ${is_weekly ? 'weekly' : 'custom'} meal plan has been loaded into the planner.`,
         });
       } catch (error) {
         console.error('Error loading meal plan:', error);
