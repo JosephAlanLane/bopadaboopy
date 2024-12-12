@@ -34,8 +34,12 @@ const Index = () => {
           setActiveTab("weekly");
         } else {
           console.log('Loading custom meal plan');
-          // For custom plans, ensure we have at least as many slots as meals
-          const customPlanMeals = meals.map((recipe: Recipe) => recipe);
+          // For custom plans, create an array of the exact size needed
+          const customPlanMeals = Array(meals.length).fill(null);
+          meals.forEach((recipe: Recipe, index: number) => {
+            customPlanMeals[index] = recipe;
+          });
+          console.log('Setting custom meals:', customPlanMeals);
           setCustomMeals(customPlanMeals);
           setActiveTab("custom");
         }
