@@ -8,6 +8,7 @@ interface MealPlanDayProps {
   onRemove: () => void;
   onDrop: (recipe: Recipe) => void;
   onDragStart: (day: DayOfWeek | string, recipe: Recipe) => void;
+  className?: string; // Added className prop
 }
 
 export const MealPlanDay = memo(({ 
@@ -15,7 +16,8 @@ export const MealPlanDay = memo(({
   recipe, 
   onRemove, 
   onDrop,
-  onDragStart 
+  onDragStart,
+  className = '' // Added default value
 }: MealPlanDayProps) => {
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ export const MealPlanDay = memo(({
 
   return (
     <div 
-      className="py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200 w-full max-w-full"
+      className={`py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200 ${className}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
