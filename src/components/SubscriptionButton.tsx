@@ -52,13 +52,13 @@ export function SubscriptionButton() {
       })
 
       if (error) {
-        console.error('Error response:', error)
+        console.error('Error creating checkout session:', error)
         throw error
       }
 
       if (!data?.url) {
-        console.error('No URL in response:', data)
-        throw new Error('No checkout URL returned')
+        console.error('No checkout URL returned:', data)
+        throw new Error('No checkout URL returned from server')
       }
 
       console.log('Redirecting to checkout URL:', data.url)
@@ -67,7 +67,7 @@ export function SubscriptionButton() {
       console.error('Subscription error:', error)
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to start subscription process",
+        description: "Failed to start subscription process. Please try again.",
         variant: "destructive",
       })
     }
