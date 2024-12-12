@@ -8,7 +8,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-// Create the Supabase client
+// Create the Supabase client with global error handling
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -16,10 +16,22 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     flowType: 'pkce',
   },
+  global: {
+    headers: {
+      'x-my-custom-header': 'my-app-name',
+    },
+  },
+  // Add default error handling through callbacks
+  db: {
+    schema: 'public',
+  },
 });
 
-// Add error handling for requests
-supabase.handleError = (error: any) => {
-  console.error('Supabase error:', error);
-  throw error;
-};
+// Add error logging middleware
+supabase.rest.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Supabase error:', error);
+    return Promise.reject(error);
+  }
+);
