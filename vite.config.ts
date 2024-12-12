@@ -16,10 +16,5 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  define: {
-    // Using process.env for build time
-    'import.meta.env.VITE_SUPABASE_URL': `"${process.env.VITE_SUPABASE_URL}"`,
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': `"${process.env.VITE_SUPABASE_ANON_KEY}"`,
   }
 }));
