@@ -9,7 +9,7 @@ import { SubscriptionButton } from "./SubscriptionButton";
 
 // Define logo URLs as constants
 const PRIMARY_LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
-const FALLBACK_LOGO_URL = '/placeholder.svg';
+const FALLBACK_LOGO_URL = '/nonna-logo.png';
 
 export const Navbar = () => {
   const navigate = useNavigate();
