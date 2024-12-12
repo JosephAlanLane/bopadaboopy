@@ -14,6 +14,7 @@ interface MealPlanDialogProps {
   onOpenChange: (open: boolean) => void;
   onLoadMeals: () => void;
   slug?: string;
+  is_weekly?: boolean;
 }
 
 export const MealPlanDialog = ({
@@ -23,6 +24,7 @@ export const MealPlanDialog = ({
   onOpenChange,
   onLoadMeals,
   slug,
+  is_weekly = true,
 }: MealPlanDialogProps) => {
   const navigate = useNavigate();
 
@@ -58,7 +60,7 @@ export const MealPlanDialog = ({
                   <div>
                     <h4 className="font-medium">{recipe.title}</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {index < DAYS.length ? DAYS[index] : `Meal ${index + 1}`}: {recipe.cuisine}
+                      {is_weekly && index < DAYS.length ? DAYS[index] : `Meal ${index + 1}`}: {recipe.cuisine}
                     </p>
                   </div>
                 </div>

@@ -19,8 +19,8 @@ const Index = () => {
     const savedMealPlan = localStorage.getItem('selectedMealPlan');
     if (savedMealPlan) {
       try {
-        const { meals, is_weekly } = JSON.parse(savedMealPlan);
-        console.log('Loading meal plan:', { meals, is_weekly, mealsLength: meals.length });
+        const { meals, is_weekly, title } = JSON.parse(savedMealPlan);
+        console.log('Loading meal plan:', { meals, is_weekly, title, mealsLength: meals.length });
         
         // Set the active tab based on the is_weekly flag
         setActiveTab(is_weekly ? "weekly" : "custom");
@@ -50,11 +50,6 @@ const Index = () => {
         }
         
         localStorage.removeItem('selectedMealPlan');
-        
-        toast({
-          title: "Meal plan loaded",
-          description: `Your ${is_weekly ? 'weekly' : 'custom'} meal plan has been loaded into the planner.`,
-        });
       } catch (error) {
         console.error('Error loading meal plan:', error);
         toast({
@@ -64,7 +59,7 @@ const Index = () => {
         });
       }
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;

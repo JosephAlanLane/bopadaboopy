@@ -40,11 +40,17 @@ const LoadMealPlan = () => {
         // Store the meal plan data in localStorage with the is_weekly flag
         localStorage.setItem('selectedMealPlan', JSON.stringify({
           meals: mealPlan.recipes,
-          is_weekly: mealPlan.is_weekly
+          is_weekly: mealPlan.is_weekly,
+          title: mealPlan.title
         }));
 
         // Navigate to home page where the meal plan will be loaded
         navigate('/');
+
+        toast({
+          title: "Meal plan loaded",
+          description: `"${mealPlan.title}" has been loaded into the ${mealPlan.is_weekly ? 'weekly' : 'custom'} planner.`,
+        });
       } catch (error) {
         console.error('Error loading meal plan:', error);
         toast({
