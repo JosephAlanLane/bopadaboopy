@@ -1,16 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Hardcode the values for now
+const supabaseUrl = "https://geftfgjlqruwsbqcixxw.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnRmZ2pscXJ1d3NicWNpeHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE3MjgzMTIsImV4cCI6MjA0NzMwNDMxMn0.E9DAIHQ2ZJnPJCCeweKj7RCAhK9lu5rPL4vGgPjEPxg";
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Environment variables check:', {
-    url: supabaseUrl ? 'defined' : 'undefined',
-    key: supabaseAnonKey ? 'defined' : 'undefined'
-  });
-  throw new Error('Missing Supabase environment variables. Please check your .env file.');
-}
-
+// Create the Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -19,6 +13,3 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     flowType: 'pkce',
   },
 });
-
-// Safe logging that doesn't expose sensitive data
-console.log('Supabase client initialized with URL:', supabaseUrl.substring(0, 20) + '...');
