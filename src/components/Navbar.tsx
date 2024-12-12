@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { SubscriptionButton } from "./SubscriptionButton";
 
 const LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
+const FALLBACK_LOGO = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="gray"/></svg>';
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -22,13 +23,15 @@ export const Navbar = () => {
   };
 
   const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error('Logo failed to load in DOM:', e);
+    console.error('Logo failed to load:', e);
     setLogoError(true);
-    e.currentTarget.src = LOGO_URL;
+    if (e.currentTarget.src !== FALLBACK_LOGO) {
+      e.currentTarget.src = FALLBACK_LOGO;
+    }
   };
 
   const handleLogoLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.log('Logo loaded successfully in DOM');
+    console.log('Logo loaded successfully');
     setLogoLoaded(true);
     setLogoError(false);
   };
@@ -56,7 +59,7 @@ export const Navbar = () => {
           <div className="flex flex-col items-center relative">
             <div className="flex flex-col items-center">
               <img 
-                src={logoError ? LOGO_URL : LOGO_URL}
+                src={LOGO_URL}
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
                 onError={handleLogoError}
@@ -89,7 +92,7 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src={logoError ? LOGO_URL : LOGO_URL}
+            src={LOGO_URL}
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
             onError={handleLogoError}

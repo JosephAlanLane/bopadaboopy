@@ -1,6 +1,6 @@
 import { Recipe } from '@/types/recipe';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
 
 const RECIPES_PER_PAGE = 20;
 const LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
@@ -60,7 +60,7 @@ export const usePaginatedRecipes = (
       query = query.in('cuisine', filters.cuisines);
     }
 
-    // Apply allergens filter (exclude recipes that contain any of the selected allergens)
+    // Apply allergens filter
     if (filters?.allergens.length > 0) {
       query = query.not('allergens', 'cs', `{${filters.allergens.join(',')}}`);
     }
@@ -70,7 +70,7 @@ export const usePaginatedRecipes = (
       query = query.eq('category', filters.category);
     }
 
-    // Handle sorting at the database level
+    // Handle sorting
     switch (sortBy) {
       case 'rating':
         query = query.order('rating', { ascending: !isAscending, nullsFirst: isAscending });
@@ -100,7 +100,7 @@ export const usePaginatedRecipes = (
 
     console.log('Raw recipes data from Supabase:', recipes);
 
-    // Fetch recipe usage stats for popularity sorting - using a single query for all recipes
+    // Fetch recipe usage stats
     const { data: usageStats, error: usageError } = await supabase
       .from('recipe_usage_stats')
       .select('recipe_id, used_at')
@@ -108,39 +108,38 @@ export const usePaginatedRecipes = (
 
     if (usageError) throw usageError;
 
-    // Create a map of recipe_id to usage count for efficient lookup
     const usageCount = usageStats?.reduce((acc: { [key: string]: number }, stat) => {
       acc[stat.recipe_id] = (acc[stat.recipe_id] || 0) + 1;
       return acc;
     }, {});
 
     let recipesWithPopularity = recipes.map((recipe: any) => {
-      // Log each recipe's ingredients before transformation
       console.log(`Processing recipe ${recipe.id} - ${recipe.title}:`, recipe.recipe_ingredients);
       
       return {
         ...recipe,
         popularity: usageCount?.[recipe.id] || 0,
-        ingredients: recipe.recipe_ingredients.map((ing: any) => ({
-          amount: ing.amount,
-          unit: ing.unit || '',
-          item: ing.item,
-        })),
+        ingredients: Array.isArray(recipe.recipe_ingredients) 
+          ? recipe.recipe_ingredients.map((ing: any) => ({
+              amount: ing.amount,
+              unit: ing.unit || '',
+              item: ing.item,
+            }))
+          : [],
         image: recipe.image || LOGO_URL
       };
     });
 
-    // Log transformed recipes
     console.log('Transformed recipes with ingredients:', recipesWithPopularity);
 
-    // Filter by max ingredients after fetching (since we need the full ingredients list)
+    // Filter by max ingredients
     if (filters?.maxIngredients) {
       recipesWithPopularity = recipesWithPopularity.filter(
         recipe => recipe.ingredients.length <= filters.maxIngredients
       );
     }
 
-    // Handle popularity sorting after fetching
+    // Handle popularity sorting
     if (sortBy === 'popular') {
       recipesWithPopularity.sort((a, b) => {
         const comparison = (b.popularity || 0) - (a.popularity || 0);
