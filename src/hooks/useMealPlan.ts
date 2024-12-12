@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Recipe } from '@/types/recipe';
 import { useMealPlanState } from './useMealPlanState';
 import { useMealPlanActions } from './useMealPlanActions';
@@ -26,7 +27,7 @@ export const useMealPlan = (
     handleLoadMeals,
     handleShare,
     handleDelete
-  } = useMealPlanActions(id, title, recipes, is_weekly, slug, onToggleSave);
+  } = useMealPlanActions(id, title, recipes, is_weekly, slug, onDelete);
 
   const handleToggleSave = useMealPlanToggle(
     title,

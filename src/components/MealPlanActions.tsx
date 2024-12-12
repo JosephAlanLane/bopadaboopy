@@ -37,7 +37,7 @@ export const MealPlanActions = ({
       >
         <Share2 className="w-4 h-4" />
       </Button>
-      {isSaved && onDelete && (
+      {onDelete && (
         <Button
           variant="outline"
           size="icon"

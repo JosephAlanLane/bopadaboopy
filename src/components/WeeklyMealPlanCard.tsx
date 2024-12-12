@@ -37,16 +37,22 @@ export const WeeklyMealPlanCard = ({
     onDelete
   );
 
+  // Only show heart in discover tab (when showHeart is true and not saved)
+  const shouldShowHeart = showHeart && !isSaved;
+  
+  // Only show delete button for saved plans
+  const shouldShowDelete = isSaved;
+
   return (
     <>
       <div className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] cursor-pointer border border-gray-200 dark:border-gray-700">
         <MealPlanActions
-          showHeart={showHeart}
+          showHeart={shouldShowHeart}
           isSaved={isSaved}
           isLoading={isLoading}
           onToggleSave={handleToggleSave}
           onShare={handleShare}
-          onDelete={handleDelete}
+          onDelete={shouldShowDelete ? handleDelete : undefined}
         />
         
         <div className="p-4">
