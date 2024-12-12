@@ -40,14 +40,19 @@ export function SubscriptionButton() {
     }
 
     try {
-      console.log('Creating checkout session for user:', user.id)
+      console.log('Starting subscription process for user:', user.id)
       console.log('Using subscription tier:', subscriptionTier)
       
+      if (!subscriptionTier?.price_id) {
+        console.error('No price ID found in subscription tier')
+        throw new Error('Subscription configuration error')
+      }
+
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: {
-          priceId: subscriptionTier?.price_id,
+          priceId: subscriptionTier.price_id,
           userId: user.id,
-          tierId: subscriptionTier?.id
+          tierId: subscriptionTier.id
         }
       })
 
@@ -66,8 +71,8 @@ export function SubscriptionButton() {
     } catch (error) {
       console.error('Subscription error:', error)
       toast({
-        title: "Error",
-        description: "Failed to start subscription process. Please try again.",
+        title: "Subscription Error",
+        description: error instanceof Error ? error.message : "Failed to start subscription process. Please try again.",
         variant: "destructive",
       })
     }

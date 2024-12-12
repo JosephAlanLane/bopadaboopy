@@ -16,14 +16,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session ? 'Session found' : 'No session')
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
+    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event)
       setUser(session?.user ?? null);
       setLoading(false);
     });
