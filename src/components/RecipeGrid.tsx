@@ -17,6 +17,7 @@ interface RecipeGridProps {
   hasMore?: boolean;
   onLoadMore?: () => void;
   isLoading?: boolean;
+  isFetchingNextPage?: boolean;
 }
 
 export const RecipeGrid = ({ 
@@ -29,17 +30,19 @@ export const RecipeGrid = ({
   isAscending,
   hasMore,
   onLoadMore,
-  isLoading
+  isLoading,
+  isFetchingNextPage
 }: RecipeGridProps) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const { ref, inView } = useInView({
     threshold: 0,
-    onChange: (inView) => {
-      if (inView && hasMore && onLoadMore && !isLoading) {
-        onLoadMore();
-      }
-    }
+    rootMargin: '100px',
   });
+
+  // Effect to handle infinite scroll
+  if (inView && hasMore && onLoadMore && !isLoading && !isFetchingNextPage) {
+    onLoadMore();
+  }
 
   const adjustAmount = (amount: string) => {
     const numericAmount = parseFloat(amount);
@@ -61,7 +64,7 @@ export const RecipeGrid = ({
         />
       </div>
 
-      {recipes.length === 0 ? (
+      {recipes.length === 0 && !isFetchingNextPage ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <p className="text-lg text-gray-500 dark:text-gray-400">
             {isLoading ? 'Loading recipes...' : 'No recipes found'}
@@ -86,6 +89,7 @@ export const RecipeGrid = ({
                     src={recipe.image}
                     alt={recipe.title}
                     className="w-full aspect-square object-cover"
+                    loading="lazy"
                   />
                   <button
                     className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-200"
@@ -125,8 +129,18 @@ export const RecipeGrid = ({
               </div>
             ))}
           </div>
-          <div ref={ref} className="h-10 flex items-center justify-center">
-            {isLoading && <p className="text-gray-500">Loading more recipes...</p>}
+          
+          {/* Infinite scroll trigger */}
+          <div 
+            ref={ref} 
+            className="h-20 flex items-center justify-center mt-4"
+          >
+            {(isLoading || isFetchingNextPage) && (
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+                <p className="text-sm text-gray-500">Loading more recipes...</p>
+              </div>
+            )}
           </div>
         </>
       )}

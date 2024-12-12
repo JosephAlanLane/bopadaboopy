@@ -21,7 +21,8 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     isLoading,
     hasMore,
     loadMore,
-    refetch
+    refetch,
+    isFetchingNextPage
   } = usePaginatedRecipes();
 
   const {
@@ -107,6 +108,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
           hasMore={hasMore}
           onLoadMore={loadMore}
           isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
         />
       </div>
     </div>

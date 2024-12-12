@@ -1,14 +1,10 @@
-import { useState } from 'react';
 import { Recipe } from '@/types/recipe';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 const RECIPES_PER_PAGE = 20;
 
 export const usePaginatedRecipes = () => {
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-
   const fetchRecipesPage = async ({ pageParam = 0 }) => {
     console.log('Fetching recipes page:', pageParam);
     const start = pageParam * RECIPES_PER_PAGE;
@@ -61,32 +57,40 @@ export const usePaginatedRecipes = () => {
       })),
     }));
 
-    setHasMore(recipes.length === RECIPES_PER_PAGE);
-    return recipesWithPopularity;
+    const hasMore = recipes.length === RECIPES_PER_PAGE;
+    return {
+      recipes: recipesWithPopularity,
+      nextPage: hasMore ? pageParam + 1 : undefined,
+      hasMore
+    };
   };
 
   const {
-    data: recipes = [],
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     isLoading,
-    error,
     refetch
-  } = useQuery({
-    queryKey: ['recipes', page],
-    queryFn: () => fetchRecipesPage({ pageParam: page }),
+  } = useInfiniteQuery({
+    queryKey: ['recipes'],
+    queryFn: fetchRecipesPage,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 0,
   });
 
-  const loadMore = () => {
-    if (hasMore) {
-      setPage(prev => prev + 1);
-    }
-  };
+  const recipes = data?.pages.flatMap(page => page.recipes) ?? [];
 
   return {
     recipes,
     isLoading,
-    error,
-    hasMore,
-    loadMore,
-    refetch
+    hasMore: hasNextPage,
+    loadMore: () => {
+      if (!isFetchingNextPage && hasNextPage) {
+        fetchNextPage();
+      }
+    },
+    refetch,
+    isFetchingNextPage
   };
 };
