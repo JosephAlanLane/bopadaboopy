@@ -4,14 +4,12 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log('Checking Supabase environment variables:', {
-  url: supabaseUrl ? 'defined' : 'undefined',
-  key: supabaseAnonKey ? 'defined' : 'undefined'
-});
-
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables. Please check your .env file.');
-  throw new Error('Missing Supabase environment variables');
+  console.error('Environment variables check:', {
+    url: supabaseUrl ? 'defined' : 'undefined',
+    key: supabaseAnonKey ? 'defined' : 'undefined'
+  });
+  throw new Error('Missing Supabase environment variables. Please check your .env file.');
 }
 
 // Create the Supabase client
@@ -25,4 +23,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Test the connection
-console.log('Supabase client initialized');
+console.log('Supabase client initialized with URL:', supabaseUrl.substring(0, 20) + '...');
