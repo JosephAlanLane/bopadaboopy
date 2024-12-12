@@ -11,7 +11,7 @@ interface MealPlanDayProps {
   className?: string;
 }
 
-export const MealPlanDay = memo(({ 
+const MealPlanDay = memo(({ 
   day, 
   recipe, 
   onRemove, 
@@ -51,7 +51,7 @@ export const MealPlanDay = memo(({
     <div 
       className={`
         relative group
-        py-1.5 px-2.5 
+        py-1 px-2 
         bg-white dark:bg-gray-800 
         rounded-lg border border-gray-200 dark:border-gray-700
         transition-all duration-200
@@ -65,7 +65,7 @@ export const MealPlanDay = memo(({
     >
       <div className="flex items-center space-x-2 w-full">
         <div className="flex-shrink-0">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700">
+          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700">
             <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
               {typeof day === 'string' && day.startsWith('Meal') ? day.slice(5) : day.slice(0, 2)}
             </span>
@@ -97,7 +97,7 @@ export const MealPlanDay = memo(({
             className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
                      hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
           >
-            <X className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+            <X className="w-3 h-3 text-gray-500 dark:text-gray-400" />
           </button>
         )}
       </div>
@@ -106,3 +106,5 @@ export const MealPlanDay = memo(({
 });
 
 MealPlanDay.displayName = 'MealPlanDay';
+
+export default MealPlanDay;
