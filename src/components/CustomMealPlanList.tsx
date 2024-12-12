@@ -1,7 +1,7 @@
 import React from "react";
 import { Recipe } from "@/types/recipe";
 import { ScrollArea } from "./ui/scroll-area";
-import { MealPlanDay } from "./MealPlanDay";
+import MealPlanDay from "./MealPlanDay";
 
 interface CustomMealPlanListProps {
   meals: (Recipe | null)[];

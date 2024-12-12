@@ -3,7 +3,7 @@ import { Recipe, DayOfWeek, MealPlan } from "@/types/recipe";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { useToast } from "./ui/use-toast";
-import { MealPlanDay } from "./MealPlanDay";
+import MealPlanDay from "./MealPlanDay";
 import { SaveMealPlanButton } from "./SaveMealPlanButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { CustomMealPlanList } from "./CustomMealPlanList";
@@ -86,7 +86,7 @@ export const WeeklyPlanner = ({
                 <TabsTrigger value="weekly" className="flex-1">Weekly Meal Plan</TabsTrigger>
                 <TabsTrigger value="custom" className="flex-1">Custom</TabsTrigger>
               </TabsList>
-              <SaveMealPlanButton mealPlan={mealPlan} />
+              <SaveMealPlanButton mealPlan={mealPlan} customMeals={customMeals} activeTab={activeTab} />
             </div>
 
             <div className="mt-4">
