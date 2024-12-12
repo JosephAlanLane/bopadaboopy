@@ -120,10 +120,12 @@ const MealPlans = () => {
           </div>
           <div className="flex-1">
             <Tabs defaultValue="discover" value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className="w-full">
-                <TabsTrigger value="discover" className="flex-1">Discover Meal Plans</TabsTrigger>
-                <TabsTrigger value="saved" className="flex-1">My Saved Meals</TabsTrigger>
-              </TabsList>
+
+<TabsList className="w-full">
+  <TabsTrigger value="discover" className="flex-1">Discover Meal Plans</TabsTrigger>
+  <TabsTrigger value="saved" className="flex-1">My Favorite Meals</TabsTrigger>
+</TabsList>
+
             </Tabs>
           </div>
         </div>
@@ -148,7 +150,7 @@ const MealPlans = () => {
                     key={plan.id}
                     {...plan}
                     onToggleSave={fetchMealPlans}
-                    showHeart={activeTab === 'discover'}
+                    showHeart
                     isSaved={savedMealPlans.some(saved => saved.id === plan.id)}
                   />
                 ))}

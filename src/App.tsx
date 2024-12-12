@@ -1,69 +1,52 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
-import About from "./pages/About";
 import Login from "./pages/Login";
-import MealPlans from "./pages/MealPlans";
+import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
-import Success from "./pages/subscription/Success";
-import Cancel from "./pages/subscription/Cancel";
-import { Toaster } from "./components/ui/toaster";
-import { useEffect } from "react";
-import { supabase } from "./integrations/supabase/client";
+import MealPlans from "./pages/MealPlans";
+import SubscriptionSuccess from "./pages/subscription/Success";
+import SubscriptionCancel from "./pages/subscription/Cancel";
 
-const SharedMealPlanLoader = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
-  useEffect(() => {
-    const loadSharedMealPlan = async () => {
-      if (!slug) return;
-
-      try {
-        console.log('Loading shared meal plan with slug:', slug);
-        const { data: mealPlan, error } = await supabase
-          .from('saved_meal_plans')
-          .select('*')
-          .eq('slug', slug)
-          .single();
-
-        if (error) throw error;
-
-        if (mealPlan) {
-          console.log('Found meal plan:', mealPlan);
-          localStorage.setItem('selectedMealPlan', JSON.stringify({
-            meals: mealPlan.recipes,
-            is_weekly: mealPlan.is_weekly
-          }));
-          navigate('/');
-        }
-      } catch (error) {
-        console.error('Error loading shared meal plan:', error);
-        navigate('/');
-      }
-    };
-
-    loadSharedMealPlan();
-  }, [slug, navigate]);
-
-  return null;
-};
-
-function App() {
+const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/meal-plans" element={<MealPlans />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/subscription/success" element={<Success />} />
-        <Route path="/subscription/cancel" element={<Cancel />} />
-        <Route path="/shared/:slug" element={<SharedMealPlanLoader />} />
-      </Routes>
-      <Toaster />
-    </Router>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/meal-plans" element={<MealPlans />} />
+                <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+                <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
+              </Routes>
+            </TooltipProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
-}
+};
 
 export default App;

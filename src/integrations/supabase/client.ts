@@ -1,14 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Hardcode the values for now
+const supabaseUrl = "https://geftfgjlqruwsbqcixxw.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnRmZ2pscXJ1d3NicWNpeHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE3MjgzMTIsImV4cCI6MjA0NzMwNDMxMn0.E9DAIHQ2ZJnPJCCeweKj7RCAhK9lu5rPL4vGgPjEPxg";
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables');
-  throw new Error('Missing Supabase environment variables');
-}
-
-// Create the Supabase client with global error handling
+// Create the Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -16,22 +12,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     flowType: 'pkce',
   },
-  global: {
-    headers: {
-      'x-my-custom-header': 'my-app-name',
-    },
-  },
-  // Add default error handling through callbacks
-  db: {
-    schema: 'public',
-  },
 });
-
-// Add error logging middleware
-supabase.rest.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('Supabase error:', error);
-    return Promise.reject(error);
-  }
-);
