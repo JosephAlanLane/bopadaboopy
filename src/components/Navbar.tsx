@@ -36,7 +36,7 @@ export const Navbar = () => {
       console.error('Failed to preload logo:', e);
       setLogoError(true);
     };
-    img.src = 'https://ibb.co/qmM9fKf';
+    img.src = 'https://i.ibb.co/qmM9fKf/nonna-logo.png';
   }, []);
 
   return (
@@ -47,7 +47,7 @@ export const Navbar = () => {
           <div className="flex flex-col items-center relative">
             <div className="flex flex-col items-center">
               <img 
-                src={logoError ? '/placeholder.svg' : 'https://ibb.co/qmM9fKf'}
+                src={logoError ? '/placeholder.svg' : 'https://i.ibb.co/qmM9fKf/nonna-logo.png'}
                 alt="Italian Nonna" 
                 className="w-32 h-32 object-contain mt-2"
                 onError={handleLogoError}
@@ -77,7 +77,7 @@ export const Navbar = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center space-x-2 md:space-x-4">
           <img 
-            src={logoError ? '/placeholder.svg' : 'https://ibb.co/qmM9fKf'}
+            src={logoError ? '/placeholder.svg' : 'https://i.ibb.co/qmM9fKf/nonna-logo.png'}
             alt="Italian Nonna" 
             className="w-28 h-28 object-contain"
             onError={handleLogoError}
