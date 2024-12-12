@@ -49,39 +49,56 @@ export const MealPlanDay = memo(({
 
   return (
     <div 
-      className={`py-1 px-2 bg-gray-50 rounded border flex items-center justify-between dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200 ${className}`}
+      className={`
+        relative group
+        py-2 px-3 
+        bg-white dark:bg-gray-800 
+        rounded-lg border border-gray-200 dark:border-gray-700
+        transition-all duration-200
+        hover:shadow-sm
+        ${className}
+      `}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-1 min-w-0 w-full pr-2">
-        <p className="font-medium w-20 text-sm shrink-0 overflow-hidden text-ellipsis">{day}</p>
-        <div className="flex-1 min-w-0 flex items-center gap-2">
+      <div className="flex items-center space-x-3">
+        <div className="flex-shrink-0">
+          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20">
+            <span className="text-xs font-medium text-primary">
+              {typeof day === 'string' && day.startsWith('Meal') ? day.slice(5) : day.slice(0, 2)}
+            </span>
+          </span>
+        </div>
+        
+        <div className="flex-1 min-w-0">
           {recipe ? (
             <div
               draggable
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center"
+              className="cursor-move group-hover:bg-gray-50 dark:group-hover:bg-gray-700/50 rounded-md py-1 px-2 transition-colors duration-200"
             >
-              <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                 {recipe.title}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300">
+            <p className="text-sm text-gray-500 dark:text-gray-400 italic px-2">
               No meal planned
             </p>
           )}
-          {recipe && (
-            <button
-              onClick={onRemove}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
         </div>
+
+        {recipe && (
+          <button
+            onClick={onRemove}
+            className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
+                     hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
+          >
+            <X className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        )}
       </div>
     </div>
   );
