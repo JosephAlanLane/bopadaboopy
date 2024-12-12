@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Recipe } from '@/types/recipe';
 import { RecipeFilters } from './RecipeFilters';
 import { RecipeGrid } from './RecipeGrid';
@@ -12,8 +12,9 @@ interface RecipeSectionProps {
 }
 
 export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
-  const [filteredRecipes, setFilteredRecipes] = React.useState<Recipe[]>([]);
-  const [filtersApplied, setFiltersApplied] = React.useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const { toast } = useToast();
 
   const {
@@ -23,7 +24,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     loadMore,
     refetch,
     isFetchingNextPage
-  } = usePaginatedRecipes();
+  } = usePaginatedRecipes(searchQuery);
 
   const {
     sortedRecipes,
@@ -53,14 +54,10 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     category?: string;
   }) => {
     console.log('Applying filters:', { search, cuisines, allergens, maxIngredients, category });
+    setSearchQuery(search);
+    
     let filtered = [...recipes];
-    setFiltersApplied(Boolean(search || cuisines.length || allergens.length || category));
-
-    if (search) {
-      filtered = filtered.filter((recipe) =>
-        recipe.title.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+    setFiltersApplied(Boolean(cuisines.length || allergens.length || category));
 
     if (cuisines.length > 0) {
       filtered = filtered.filter((recipe) => 
