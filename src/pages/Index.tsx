@@ -59,13 +59,23 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Memoize empty slot finding logic
+  const findEmptySlot = useCallback((plan: MealPlan): DayOfWeek | null => {
+    return DAYS.find(day => !plan[day]) || null;
+  }, []);
+
+  // Memoize custom meals empty slot finding
+  const findCustomEmptySlot = useCallback((meals: (Recipe | null)[]): number => {
+    return meals.findIndex(meal => meal === null);
+  }, []);
+
   const handleAddRecipe = useCallback((recipe: Recipe) => {
     console.log('Adding recipe to tab:', activeTab);
+    const startTime = performance.now();
     
     if (activeTab === "weekly") {
       setMealPlan(prevPlan => {
-        // Find the first empty slot without modifying state
-        const emptyDay = DAYS.find(day => !prevPlan[day]);
+        const emptyDay = findEmptySlot(prevPlan);
         
         if (!emptyDay) {
           toast({
@@ -76,9 +86,11 @@ const Index = () => {
           return prevPlan;
         }
 
-        // Create new plan only if we found an empty slot
         const newPlan = { ...prevPlan };
         newPlan[emptyDay] = recipe;
+        
+        const endTime = performance.now();
+        console.log(`Recipe added to ${emptyDay} in ${endTime - startTime}ms`);
         
         toast({
           title: "Meal added",
@@ -98,13 +110,17 @@ const Index = () => {
           return prevMeals;
         }
 
-        const emptyIndex = prevMeals.findIndex(meal => meal === null);
+        const emptyIndex = findCustomEmptySlot(prevMeals);
+        const newMeals = [...prevMeals];
+        
         if (emptyIndex === -1) {
-          return [...prevMeals, recipe];
+          newMeals.push(recipe);
+        } else {
+          newMeals[emptyIndex] = recipe;
         }
         
-        const newMeals = [...prevMeals];
-        newMeals[emptyIndex] = recipe;
+        const endTime = performance.now();
+        console.log(`Recipe added to custom meals in ${endTime - startTime}ms`);
         
         toast({
           title: "Meal added",
@@ -114,7 +130,7 @@ const Index = () => {
         return newMeals;
       });
     }
-  }, [activeTab, toast]);
+  }, [activeTab, findEmptySlot, findCustomEmptySlot, toast]);
 
   const handleRemoveMeal = useCallback((day: DayOfWeek) => {
     setMealPlan(prev => {
