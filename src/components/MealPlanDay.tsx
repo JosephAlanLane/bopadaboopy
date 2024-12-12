@@ -54,29 +54,29 @@ export const MealPlanDay = memo(({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="flex items-center gap-1 min-w-0 w-full">
+      <div className="flex items-center gap-1 min-w-0 w-full pr-2">
         <p className="font-medium w-20 text-sm shrink-0 overflow-hidden text-ellipsis">{day}</p>
-        <div className="flex-1 min-w-0 flex items-center overflow-hidden pr-2">
+        <div className="flex-1 min-w-0 flex items-center gap-2">
           {recipe ? (
             <div
               draggable
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center overflow-hidden"
+              className="flex-1 cursor-move min-w-0 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors duration-200 flex items-center"
             >
-              <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 overflow-hidden text-ellipsis">
+              <p className="text-sm text-gray-600 truncate dark:text-gray-300">
                 {recipe.title}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-600 truncate dark:text-gray-300 flex-1 overflow-hidden text-ellipsis">
+            <p className="text-sm text-gray-600 truncate dark:text-gray-300">
               No meal planned
             </p>
           )}
           {recipe && (
             <button
               onClick={onRemove}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0 ml-2"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex-shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
