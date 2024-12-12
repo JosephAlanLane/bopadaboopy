@@ -15,6 +15,8 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [sortBy, setSortBy] = useState<string>('rating');
+  const [isAscending, setIsAscending] = useState(false);
   const { toast } = useToast();
 
   const {
@@ -24,15 +26,7 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     loadMore,
     refetch,
     isFetchingNextPage
-  } = usePaginatedRecipes(searchQuery);
-
-  const {
-    sortedRecipes,
-    sortBy,
-    isAscending,
-    handleSortChange,
-    handleDirectionChange
-  } = useSortedRecipes(filtersApplied ? filteredRecipes : recipes);
+  } = usePaginatedRecipes(searchQuery, sortBy, isAscending);
 
   React.useEffect(() => {
     if (!filtersApplied) {
@@ -91,12 +85,20 @@ export const RecipeSection = ({ onAddRecipe }: RecipeSectionProps) => {
     onAddRecipe(recipe);
   };
 
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+  };
+
+  const handleDirectionChange = () => {
+    setIsAscending(!isAscending);
+  };
+
   return (
     <div className="flex-1 min-w-0 space-y-4">
       <RecipeFilters onApplyFilters={handleApplyFilters} />
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
         <RecipeGrid 
-          recipes={sortedRecipes}
+          recipes={filtersApplied ? filteredRecipes : recipes}
           onAddRecipe={handleAddRecipeWithTracking}
           onSortChange={handleSortChange}
           onDirectionChange={handleDirectionChange}

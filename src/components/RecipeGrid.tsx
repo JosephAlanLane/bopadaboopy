@@ -36,7 +36,7 @@ export const RecipeGrid = ({
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: '100px',
+    rootMargin: '400px', // Load earlier for smoother experience
   });
 
   // Effect to handle infinite scroll
@@ -130,16 +130,13 @@ export const RecipeGrid = ({
             ))}
           </div>
           
-          {/* Infinite scroll trigger */}
+          {/* Infinite scroll trigger with minimal loading indicator */}
           <div 
             ref={ref} 
-            className="h-20 flex items-center justify-center mt-4"
+            className="h-16 flex items-center justify-center mt-4"
           >
             {(isLoading || isFetchingNextPage) && (
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
-                <p className="text-sm text-gray-500">Loading more recipes...</p>
-              </div>
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             )}
           </div>
         </>
