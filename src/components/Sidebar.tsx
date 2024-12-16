@@ -13,6 +13,7 @@ interface SidebarProps {
   setActiveTab: (tab: "weekly" | "custom") => void;
   customMeals: (Recipe | null)[];
   setCustomMeals: (meals: (Recipe | null)[]) => void;
+  className?: string;
 }
 
 export const Sidebar = ({ 
@@ -25,6 +26,7 @@ export const Sidebar = ({
   setActiveTab,
   customMeals,
   setCustomMeals,
+  className = ''
 }: SidebarProps) => {
   return (
     <>
@@ -41,6 +43,7 @@ export const Sidebar = ({
           h-[calc(100vh-73px)]
           z-50
           -mr-[1px]
+          ${className}
         `}
       >
         <div className="p-4">
