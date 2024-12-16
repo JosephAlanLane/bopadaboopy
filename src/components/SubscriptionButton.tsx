@@ -61,6 +61,14 @@ export function SubscriptionButton() {
       }
 
       console.log('Using subscription tier:', subscriptionTier)
+      
+      // If price_id is a URL, redirect directly to it
+      if (subscriptionTier.price_id.startsWith('http')) {
+        window.location.href = subscriptionTier.price_id
+        return
+      }
+
+      // Otherwise, use the original Stripe checkout flow
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: {
           priceId: subscriptionTier.price_id,
@@ -126,8 +134,7 @@ export function SubscriptionButton() {
   return (
     <Button 
       onClick={handleSubscribe}
-      variant="ghost"
-      className="border border-gray-200 dark:border-gray-700"
+      className="bg-gradient-to-r from-primary to-secondary text-white hover:from-primary/90 hover:to-secondary/90"
     >
       {user ? "Upgrade to Premium" : "Join the Family for $1/month!"}
     </Button>
