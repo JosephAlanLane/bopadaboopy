@@ -13,6 +13,7 @@ export interface Recipe {
   category?: string;
   created_at?: string;
   popularity?: number;
+  user_id?: string;  // Added this field
 }
 
 export interface Ingredient {
