@@ -10,7 +10,7 @@ export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const { data: subscriptionTier, isLoading, error } = useQuery<SubscriptionTier>({
+  const { data: subscriptionTier, isLoading } = useQuery<SubscriptionTier>({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
       console.log('Fetching subscription tier')
@@ -35,13 +35,18 @@ export function SubscriptionButton() {
     },
     retry: 2,
     retryDelay: 1000,
-    onError: (error) => {
-      console.error('Subscription tier fetch error:', error)
-      toast({
-        title: "Error loading subscription",
-        description: "There was an error loading the subscription details. Please try again later.",
-        variant: "destructive",
-      })
+    meta: {
+      errorMessage: "Error loading subscription details. Please try again later."
+    },
+    onSettled: (data, error) => {
+      if (error) {
+        console.error('Subscription tier fetch error:', error)
+        toast({
+          title: "Error loading subscription",
+          description: "There was an error loading the subscription details. Please try again later.",
+          variant: "destructive",
+        })
+      }
     }
   })
 
