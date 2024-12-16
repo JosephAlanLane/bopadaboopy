@@ -37,18 +37,38 @@ function AuthCallback() {
     if (params.has('code')) {
       console.log('Auth callback detected, handling session...');
       // Handle the callback and redirect to home
-      supabase.auth.getSession().then(() => {
-        console.log('Session handled, redirecting to home...');
+      supabase.auth.getSession().then(({ data: { session }}) => {
+        console.log('Session handled, redirecting to home...', session);
         // Get the current hostname
         const hostname = window.location.hostname;
         // If we're on the portal subdomain, redirect to the main domain
         if (hostname.includes('meal-planner-portal')) {
           const mainDomain = hostname.replace('meal-planner-portal', 'bopadaboopy');
-          window.location.href = `https://${mainDomain}/`;
+          // Store the session in localStorage before redirecting
+          if (session) {
+            localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+          }
+          window.location.href = `https://${mainDomain}/?refresh_session=true`;
         } else {
           navigate('/', { replace: true });
         }
       });
+    }
+
+    // Check for refresh_session parameter
+    if (location.search.includes('refresh_session=true')) {
+      console.log('Refreshing session after redirect...');
+      const storedSession = localStorage.getItem('supabase.auth.token');
+      if (storedSession) {
+        console.log('Found stored session, restoring...');
+        supabase.auth.setSession(JSON.parse(storedSession)).then(() => {
+          console.log('Session restored successfully');
+          // Clean up
+          localStorage.removeItem('supabase.auth.token');
+          // Remove the refresh_session parameter
+          navigate('/', { replace: true });
+        });
+      }
     }
   }, [location, navigate]);
 
