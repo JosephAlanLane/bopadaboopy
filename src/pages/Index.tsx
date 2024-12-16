@@ -178,12 +178,12 @@ const Index = () => {
         <div className="max-w-[1800px] mx-auto py-6 px-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              © {new Date().getFullYear()} Meal Planner. All rights reserved.
+              © {new Date().getFullYear()} Bopada Boopy. All rights reserved.
             </div>
             <div className="flex gap-6">
-              <Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Privacy Policy</Link>
+              <Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 font-medium">Privacy Policy</Link>
               <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">About</Link>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Contact</a>
+              <a href="mailto:support@bopadaboopy.com" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Contact</a>
             </div>
           </div>
         </div>
