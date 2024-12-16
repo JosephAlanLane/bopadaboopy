@@ -46,13 +46,8 @@ export const WeeklyMealPlanCard = ({
     onDelete
   );
 
-  // Only show heart in discover tab (when showHeart is true and not saved)
   const shouldShowHeart = showHeart && !isSaved;
-  
-  // Only show delete button for saved plans
   const shouldShowDelete = isSaved;
-
-  // Only show public toggle for user's own meal plans in the saved tab
   const shouldShowPublicToggle = isSaved && user?.id === recipes[0]?.user_id;
 
   const handlePublicToggle = async () => {
@@ -95,32 +90,34 @@ export const WeeklyMealPlanCard = ({
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
               )}
             </div>
-            <div className="flex items-center gap-4">
-              {shouldShowPublicToggle && (
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id={`public-${id}`}
-                    checked={is_public}
-                    onCheckedChange={handlePublicToggle}
-                  />
-                  <Label htmlFor={`public-${id}`} className="text-sm">
-                    Share Publicly
-                  </Label>
-                </div>
-              )}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleLoadMeals}
-              >
-                Load
-              </Button>
-            </div>
           </div>
+          
           <MealPlanPreview 
             recipes={recipes}
             onClick={() => setShowDialog(true)}
           />
+
+          <div className="flex justify-end items-center gap-4 mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+            {shouldShowPublicToggle && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id={`public-${id}`}
+                  checked={is_public}
+                  onCheckedChange={handlePublicToggle}
+                />
+                <Label htmlFor={`public-${id}`} className="text-sm">
+                  Share Publicly
+                </Label>
+              </div>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleLoadMeals}
+            >
+              Load
+            </Button>
+          </div>
         </div>
         <MealPlanActions
           showHeart={shouldShowHeart}
