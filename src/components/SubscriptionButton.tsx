@@ -24,15 +24,17 @@ export function SubscriptionButton() {
         throw error
       }
 
+      console.log('Raw subscription tier data:', data)
+      
       if (!data) {
         console.error('No subscription tier found')
         throw new Error('No subscription tier found')
       }
 
-      console.log('Fetched subscription tier:', data)
       return data as SubscriptionTier
     },
     enabled: !!user,
+    retry: false
   })
 
   const handleSubscribe = async () => {
@@ -47,6 +49,7 @@ export function SubscriptionButton() {
 
     try {
       console.log('Starting subscription process for user:', user.id)
+      console.log('Using subscription tier:', subscriptionTier)
       
       if (!subscriptionTier?.price_id) {
         console.error('No subscription tier found')
@@ -58,8 +61,6 @@ export function SubscriptionButton() {
         return
       }
 
-      console.log('Using subscription tier:', subscriptionTier)
-      
       // If price_id is a URL, redirect directly to it
       if (subscriptionTier.price_id.startsWith('http')) {
         window.location.href = subscriptionTier.price_id
