@@ -34,7 +34,15 @@ export function SubscriptionButton() {
       return data as SubscriptionTier
     },
     retry: 2,
-    retryDelay: 1000
+    retryDelay: 1000,
+    onError: (error) => {
+      console.error('Subscription tier fetch error:', error)
+      toast({
+        title: "Error loading subscription",
+        description: "There was an error loading the subscription details. Please try again later.",
+        variant: "destructive",
+      })
+    }
   })
 
   const handleSubscribe = async () => {
@@ -109,19 +117,6 @@ export function SubscriptionButton() {
     }
   }
 
-  if (error) {
-    console.error('Subscription tier fetch error:', error)
-    return (
-      <Button 
-        onClick={() => window.location.reload()}
-        variant="ghost"
-        className="border border-gray-200 dark:border-gray-700"
-      >
-        Retry Loading Subscription
-      </Button>
-    )
-  }
-
   if (isLoading) {
     return (
       <Button disabled>
@@ -131,6 +126,7 @@ export function SubscriptionButton() {
     )
   }
 
+  // Always show the main button, even if there was an error
   return (
     <Button 
       onClick={handleSubscribe}
