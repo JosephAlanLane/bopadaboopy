@@ -34,27 +34,39 @@ function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       const params = new URLSearchParams(location.search);
-      if (params.has('code')) {
+      if (params.has('code') || params.has('access_token')) {
         console.log('Auth callback detected, handling session...');
-        const { data: { session }} = await supabase.auth.getSession();
-        console.log('Session handled:', session);
-
-        const hostname = window.location.hostname;
-        if (hostname.includes('meal-planner-portal')) {
-          console.log('On portal subdomain, redirecting to main domain...');
-          const mainDomain = hostname.replace('meal-planner-portal', 'bopadaboopy');
+        try {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (error) throw error;
           
-          // Store the session data before redirect
-          if (session) {
-            localStorage.setItem('supabase.auth.token', JSON.stringify(session));
-            console.log('Session stored in localStorage');
+          console.log('Session obtained:', session);
+          
+          const hostname = window.location.hostname;
+          if (hostname.includes('meal-planner-portal')) {
+            console.log('On portal subdomain, preparing redirect to main domain...');
+            
+            if (session) {
+              // Store full session data
+              const sessionData = {
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                expires_at: session.expires_at,
+                user: session.user
+              };
+              localStorage.setItem('supabase.auth.token', JSON.stringify(sessionData));
+              console.log('Session data stored in localStorage');
+            }
+            
+            const mainDomain = hostname.replace('meal-planner-portal', 'bopadaboopy');
+            window.location.href = `https://${mainDomain}/?refresh_session=true`;
+          } else {
+            console.log('Already on main domain, navigating to home...');
+            navigate('/', { replace: true });
           }
-          
-          // Redirect to main domain with refresh flag
-          window.location.href = `https://${mainDomain}/?refresh_session=true`;
-        } else {
-          console.log('Already on main domain, navigating to home...');
-          navigate('/', { replace: true });
+        } catch (error) {
+          console.error('Error in auth callback:', error);
+          navigate('/login', { replace: true });
         }
       }
     };
@@ -62,19 +74,26 @@ function AuthCallback() {
     const handleSessionRefresh = async () => {
       if (location.search.includes('refresh_session=true')) {
         console.log('Detected refresh_session parameter...');
-        const storedSession = localStorage.getItem('supabase.auth.token');
-        
-        if (storedSession) {
-          console.log('Found stored session, restoring...');
-          try {
-            await supabase.auth.setSession(JSON.parse(storedSession));
+        try {
+          const storedSession = localStorage.getItem('supabase.auth.token');
+          if (storedSession) {
+            console.log('Found stored session, attempting to restore...');
+            const sessionData = JSON.parse(storedSession);
+            
+            const { error } = await supabase.auth.setSession({
+              access_token: sessionData.access_token,
+              refresh_token: sessionData.refresh_token
+            });
+            
+            if (error) throw error;
+            
             console.log('Session restored successfully');
             localStorage.removeItem('supabase.auth.token');
             navigate('/', { replace: true });
-          } catch (error) {
-            console.error('Error restoring session:', error);
-            navigate('/login', { replace: true });
           }
+        } catch (error) {
+          console.error('Error restoring session:', error);
+          navigate('/login', { replace: true });
         }
       }
     };
