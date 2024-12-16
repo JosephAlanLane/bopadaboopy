@@ -35,9 +35,19 @@ function AuthCallback() {
     // If we have a code parameter, we're in the auth callback
     const params = new URLSearchParams(location.search);
     if (params.has('code')) {
+      console.log('Auth callback detected, handling session...');
       // Handle the callback and redirect to home
       supabase.auth.getSession().then(() => {
-        navigate('/', { replace: true });
+        console.log('Session handled, redirecting to home...');
+        // Get the current hostname
+        const hostname = window.location.hostname;
+        // If we're on the portal subdomain, redirect to the main domain
+        if (hostname.includes('meal-planner-portal')) {
+          const mainDomain = hostname.replace('meal-planner-portal', 'bopadaboopy');
+          window.location.href = `https://${mainDomain}/`;
+        } else {
+          navigate('/', { replace: true });
+        }
       });
     }
   }, [location, navigate]);
