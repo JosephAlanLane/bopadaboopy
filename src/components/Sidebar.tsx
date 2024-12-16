@@ -2,6 +2,7 @@ import { DayOfWeek, MealPlan, Recipe } from "@/types/recipe";
 import { WeeklyPlanner } from "./WeeklyPlanner";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -28,11 +29,25 @@ export const Sidebar = ({
   setCustomMeals,
   className = ''
 }: SidebarProps) => {
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const navbarHeight = 73; // Height of the navbar
+      setHasScrolled(scrollPosition > navbarHeight);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
       <div 
         className={`
-          fixed md:sticky md:top-[73px]
+          fixed md:sticky 
+          ${hasScrolled ? 'top-0' : 'md:top-[73px]'}
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
