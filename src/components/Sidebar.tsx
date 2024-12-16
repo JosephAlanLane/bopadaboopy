@@ -30,20 +30,17 @@ export const Sidebar = ({
     <>
       <div 
         className={`
-          fixed md:sticky md:top-[73px]
+          fixed top-[73px]
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
-          md:border-r dark:md:border-gray-800
-          border-r-0
-          top-[73px]
+          border-r dark:border-gray-800
           h-[calc(100vh-73px)]
           z-50
-          -mr-[1px]
         `}
       >
-        <div className="p-4">
+        <div className="p-4 h-full overflow-y-auto">
           <WeeklyPlanner 
             mealPlan={mealPlan} 
             onRemoveMeal={onRemoveMeal}
