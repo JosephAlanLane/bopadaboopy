@@ -11,6 +11,7 @@ export interface MealPlanCardProps {
   onDelete?: () => void;
   is_weekly?: boolean;
   slug?: string;
+  is_public?: boolean;
 }
 
 export interface MealPlanHookResult {
