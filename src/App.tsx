@@ -32,44 +32,55 @@ function AuthCallback() {
   const location = useLocation();
 
   useEffect(() => {
-    // If we have a code parameter, we're in the auth callback
-    const params = new URLSearchParams(location.search);
-    if (params.has('code')) {
-      console.log('Auth callback detected, handling session...');
-      // Handle the callback and redirect to home
-      supabase.auth.getSession().then(({ data: { session }}) => {
-        console.log('Session handled, redirecting to home...', session);
-        // Get the current hostname
+    const handleAuthCallback = async () => {
+      const params = new URLSearchParams(location.search);
+      if (params.has('code')) {
+        console.log('Auth callback detected, handling session...');
+        const { data: { session }} = await supabase.auth.getSession();
+        console.log('Session handled:', session);
+
         const hostname = window.location.hostname;
-        // If we're on the portal subdomain, redirect to the main domain
         if (hostname.includes('meal-planner-portal')) {
+          console.log('On portal subdomain, redirecting to main domain...');
           const mainDomain = hostname.replace('meal-planner-portal', 'bopadaboopy');
-          // Store the session in localStorage before redirecting
+          
+          // Store the session data before redirect
           if (session) {
             localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+            console.log('Session stored in localStorage');
           }
+          
+          // Redirect to main domain with refresh flag
           window.location.href = `https://${mainDomain}/?refresh_session=true`;
         } else {
+          console.log('Already on main domain, navigating to home...');
           navigate('/', { replace: true });
         }
-      });
-    }
-
-    // Check for refresh_session parameter
-    if (location.search.includes('refresh_session=true')) {
-      console.log('Refreshing session after redirect...');
-      const storedSession = localStorage.getItem('supabase.auth.token');
-      if (storedSession) {
-        console.log('Found stored session, restoring...');
-        supabase.auth.setSession(JSON.parse(storedSession)).then(() => {
-          console.log('Session restored successfully');
-          // Clean up
-          localStorage.removeItem('supabase.auth.token');
-          // Remove the refresh_session parameter
-          navigate('/', { replace: true });
-        });
       }
-    }
+    };
+
+    const handleSessionRefresh = async () => {
+      if (location.search.includes('refresh_session=true')) {
+        console.log('Detected refresh_session parameter...');
+        const storedSession = localStorage.getItem('supabase.auth.token');
+        
+        if (storedSession) {
+          console.log('Found stored session, restoring...');
+          try {
+            await supabase.auth.setSession(JSON.parse(storedSession));
+            console.log('Session restored successfully');
+            localStorage.removeItem('supabase.auth.token');
+            navigate('/', { replace: true });
+          } catch (error) {
+            console.error('Error restoring session:', error);
+            navigate('/login', { replace: true });
+          }
+        }
+      }
+    };
+
+    handleAuthCallback();
+    handleSessionRefresh();
   }, [location, navigate]);
 
   return null;
