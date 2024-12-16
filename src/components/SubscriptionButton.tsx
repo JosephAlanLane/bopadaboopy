@@ -3,14 +3,13 @@ import { useToast } from "./ui/use-toast"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabase } from "@/integrations/supabase/client"
 import { useQuery } from "@tanstack/react-query"
-import { Loader2 } from "lucide-react"
 import type { SubscriptionTier } from "@/integrations/supabase/types/subscription"
 
 export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const { data: subscriptionTier, isLoading } = useQuery({
+  const { data: subscriptionTier } = useQuery({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
       console.log('Fetching subscription tier')
@@ -33,11 +32,7 @@ export function SubscriptionButton() {
       console.log('Fetched subscription tier:', data)
       return data as SubscriptionTier
     },
-    retry: 2,
-    retryDelay: 1000,
-    gcTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-    throwOnError: true
+    enabled: !!user,
   })
 
   const handleSubscribe = async () => {
@@ -110,15 +105,6 @@ export function SubscriptionButton() {
         variant: "destructive",
       })
     }
-  }
-
-  if (isLoading) {
-    return (
-      <Button disabled>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Loading...
-      </Button>
-    )
   }
 
   return (
