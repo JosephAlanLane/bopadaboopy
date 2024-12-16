@@ -47,11 +47,12 @@ const MealPlans = () => {
     try {
       console.log('Fetching meal plans');
       
-      // Fetch public meal plans
+      // Fetch all public meal plans
       const { data: publicData, error: publicError } = await supabase
         .from('saved_meal_plans')
         .select('*')
-        .eq('is_public', true);
+        .eq('is_public', true)
+        .order('created_at', { ascending: false });
       
       if (publicError) throw publicError;
       console.log('Fetched public meal plans:', publicData);
@@ -62,7 +63,8 @@ const MealPlans = () => {
         const { data: savedData, error: savedError } = await supabase
           .from('saved_meal_plans')
           .select('*')
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
         
         if (savedError) throw savedError;
         console.log('Fetched saved meal plans:', savedData);
@@ -90,7 +92,7 @@ const MealPlans = () => {
   const getCurrentTabPlans = () => {
     const filteredPlans = filterMealPlans(
       activeTab === 'discover' 
-        ? publicMealPlans.filter(plan => plan.user_id !== user?.id)  // Filter out user's own plans
+        ? publicMealPlans  // Show all public meal plans, including user's own
         : savedMealPlans
     );
     return filteredPlans;
