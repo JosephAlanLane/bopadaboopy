@@ -47,7 +47,7 @@ export const Sidebar = ({
       <div 
         className={`
           fixed md:sticky 
-          ${hasScrolled ? 'top-0 -mt-[73px]' : 'md:top-[73px]'}
+          ${hasScrolled ? 'top-0' : 'md:top-[73px]'}
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
