@@ -9,9 +9,10 @@ import { trackRecipeUsage } from '@/utils/recipeUtils';
 
 interface RecipeSectionProps {
   onAddRecipe: (recipe: Recipe) => void;
+  className?: string; // Added className prop
 }
 
-export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) => {
+export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: RecipeSectionProps) => {
   const { toast } = useToast();
   const { sortBy, isAscending, handleSortChange, handleDirectionChange } = useRecipeSorting();
   const [filters, setFilters] = React.useState({
@@ -41,7 +42,6 @@ export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) =>
     }
   );
 
-  // Memoize the add recipe handler
   const handleAddRecipeWithTracking = useCallback(async (recipe: Recipe) => {
     try {
       await trackRecipeUsage(recipe.id);
@@ -59,7 +59,7 @@ export const RecipeSection = React.memo(({ onAddRecipe }: RecipeSectionProps) =>
   }, []);
 
   return (
-    <div className="flex-1 min-w-0 space-y-4">
+    <div className={`flex-1 min-w-0 space-y-4 ${className}`}>
       <RecipeFilters onApplyFilters={handleApplyFilters} />
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
         <RecipeGrid 

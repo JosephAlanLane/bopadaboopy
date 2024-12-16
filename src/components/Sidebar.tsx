@@ -13,6 +13,7 @@ interface SidebarProps {
   setActiveTab: (tab: "weekly" | "custom") => void;
   customMeals: (Recipe | null)[];
   setCustomMeals: (meals: (Recipe | null)[]) => void;
+  className?: string; // Added className prop
 }
 
 export const Sidebar = ({ 
@@ -24,23 +25,28 @@ export const Sidebar = ({
   activeTab,
   setActiveTab,
   customMeals,
-  setCustomMeals
+  setCustomMeals,
+  className = '' // Added className with default empty string
 }: SidebarProps) => {
   return (
     <>
       <div 
         className={`
-          fixed top-[73px]
+          fixed md:sticky md:top-[73px]
           ${sidebarOpen ? 'w-[340px]' : 'w-0'}
           transition-all duration-300 
           overflow-hidden
           bg-white dark:bg-gray-900
-          border-r dark:border-gray-800
+          md:border-r dark:md:border-gray-800
+          border-r-0
+          top-[73px]
           h-[calc(100vh-73px)]
           z-50
+          -mr-[1px]
+          ${className}
         `}
       >
-        <div className="p-4 h-full overflow-y-auto">
+        <div className="p-4">
           <WeeklyPlanner 
             mealPlan={mealPlan} 
             onRemoveMeal={onRemoveMeal}

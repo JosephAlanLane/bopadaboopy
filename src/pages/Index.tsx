@@ -168,9 +168,13 @@ const Index = () => {
               setActiveTab={setActiveTab}
               customMeals={customMeals}
               setCustomMeals={setCustomMeals}
+              className="[&_button]:py-1.5" // This makes all buttons in Sidebar thinner
             />
             
-            <RecipeSection onAddRecipe={handleAddRecipe} />
+            <RecipeSection 
+              onAddRecipe={handleAddRecipe}
+              className="[&_button]:py-1.5" // This makes all buttons in RecipeSection thinner
+            />
           </div>
         </div>
       </main>
