@@ -10,7 +10,7 @@ export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const { data: subscriptionTier, isLoading } = useQuery<SubscriptionTier>({
+  const { data: subscriptionTier, isLoading } = useQuery({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
       console.log('Fetching subscription tier')
@@ -35,19 +35,9 @@ export function SubscriptionButton() {
     },
     retry: 2,
     retryDelay: 1000,
-    meta: {
-      errorMessage: "Error loading subscription details. Please try again later."
-    },
-    onSettled: (data, error) => {
-      if (error) {
-        console.error('Subscription tier fetch error:', error)
-        toast({
-          title: "Error loading subscription",
-          description: "There was an error loading the subscription details. Please try again later.",
-          variant: "destructive",
-        })
-      }
-    }
+    gcTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    throwOnError: true
   })
 
   const handleSubscribe = async () => {
@@ -131,7 +121,6 @@ export function SubscriptionButton() {
     )
   }
 
-  // Always show the main button, even if there was an error
   return (
     <Button 
       onClick={handleSubscribe}
