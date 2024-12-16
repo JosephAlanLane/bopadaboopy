@@ -10,7 +10,7 @@ export function SubscriptionButton() {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const { data: subscriptionTier, isLoading } = useQuery<SubscriptionTier>({
+  const { data: subscriptionTier, isLoading, error } = useQuery<SubscriptionTier>({
     queryKey: ['subscriptionTier'],
     queryFn: async () => {
       console.log('Fetching subscription tier')
@@ -24,11 +24,17 @@ export function SubscriptionButton() {
         console.error('Error fetching subscription tier:', error)
         throw error
       }
+
+      if (!data) {
+        console.error('No subscription tier found')
+        throw new Error('No subscription tier found')
+      }
+
       console.log('Fetched subscription tier:', data)
       return data as SubscriptionTier
     },
-    enabled: !!user,
-    retry: 1
+    retry: 2,
+    retryDelay: 1000
   })
 
   const handleSubscribe = async () => {
@@ -43,7 +49,6 @@ export function SubscriptionButton() {
 
     try {
       console.log('Starting subscription process for user:', user.id)
-      console.log('Using subscription tier:', subscriptionTier)
       
       if (!subscriptionTier?.price_id) {
         console.error('No subscription tier found')
@@ -55,6 +60,7 @@ export function SubscriptionButton() {
         return
       }
 
+      console.log('Using subscription tier:', subscriptionTier)
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: {
           priceId: subscriptionTier.price_id,
@@ -93,6 +99,19 @@ export function SubscriptionButton() {
         variant: "destructive",
       })
     }
+  }
+
+  if (error) {
+    console.error('Subscription tier fetch error:', error)
+    return (
+      <Button 
+        onClick={() => window.location.reload()}
+        variant="ghost"
+        className="border border-gray-200 dark:border-gray-700"
+      >
+        Retry Loading Subscription
+      </Button>
+    )
   }
 
   if (isLoading) {
