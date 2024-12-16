@@ -8,13 +8,30 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    // Check for existing session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Checking initial session:', session ? 'Session exists' : 'No session');
       if (session) {
+        console.log('Redirecting to home due to existing session');
         navigate("/");
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
+      if (event === 'SIGNED_IN' && session) {
+        console.log('User signed in, redirecting to home');
+        navigate("/");
+      }
+    });
+
+    return () => {
+      console.log('Cleaning up auth subscription');
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return (
