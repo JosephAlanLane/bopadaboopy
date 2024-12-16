@@ -9,6 +9,7 @@ import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './ui/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const WeeklyMealPlanCard = ({ 
   id,
@@ -24,6 +25,7 @@ export const WeeklyMealPlanCard = ({
   is_public = false
 }: MealPlanCardProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const {
     isLoading,
     isSaved,
@@ -49,6 +51,9 @@ export const WeeklyMealPlanCard = ({
   
   // Only show delete button for saved plans
   const shouldShowDelete = isSaved;
+
+  // Only show public toggle for user's own meal plans in the saved tab
+  const shouldShowPublicToggle = isSaved && user?.id === recipes[0]?.user_id;
 
   const handlePublicToggle = async () => {
     try {
@@ -82,15 +87,6 @@ export const WeeklyMealPlanCard = ({
   return (
     <>
       <div className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
-        <MealPlanActions
-          showHeart={shouldShowHeart}
-          isSaved={isSaved}
-          isLoading={isLoading}
-          onToggleSave={handleToggleSave}
-          onShare={handleShare}
-          onDelete={shouldShowDelete ? handleDelete : undefined}
-        />
-        
         <div className="p-4">
           <div className="flex justify-between items-start mb-4">
             <div>
@@ -100,7 +96,7 @@ export const WeeklyMealPlanCard = ({
               )}
             </div>
             <div className="flex items-center gap-4">
-              {isSaved && (
+              {shouldShowPublicToggle && (
                 <div className="flex items-center gap-2">
                   <Switch
                     id={`public-${id}`}
@@ -126,6 +122,14 @@ export const WeeklyMealPlanCard = ({
             onClick={() => setShowDialog(true)}
           />
         </div>
+        <MealPlanActions
+          showHeart={shouldShowHeart}
+          isSaved={isSaved}
+          isLoading={isLoading}
+          onToggleSave={handleToggleSave}
+          onShare={handleShare}
+          onDelete={shouldShowDelete ? handleDelete : undefined}
+        />
       </div>
 
       <MealPlanDialog

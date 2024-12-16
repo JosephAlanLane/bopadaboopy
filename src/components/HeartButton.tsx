@@ -12,7 +12,7 @@ export const HeartButton = ({ isSaved, isLoading, onClick }: HeartButtonProps) =
     <button
       onClick={onClick}
       disabled={isLoading}
-      className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+      className="p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 transition-colors"
     >
       <Heart 
         className={`w-5 h-5 transition-colors ${

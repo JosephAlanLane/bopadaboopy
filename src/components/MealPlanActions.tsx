@@ -21,22 +21,14 @@ export const MealPlanActions = ({
   onDelete
 }: MealPlanActionsProps) => {
   return (
-    <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+    <div className="absolute top-2 right-2 flex items-center gap-2">
       {showHeart && (
         <div className="relative">
-          <Button
-            variant="outline"
-            size="icon"
-            className="bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800"
+          <HeartButton 
+            isSaved={isSaved}
+            isLoading={isLoading}
             onClick={onToggleSave}
-            disabled={isLoading}
-          >
-            <HeartButton 
-              isSaved={isSaved}
-              isLoading={isLoading}
-              onClick={onToggleSave}
-            />
-          </Button>
+          />
         </div>
       )}
       <div className="relative">
