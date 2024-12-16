@@ -13,6 +13,7 @@ interface SidebarProps {
   setActiveTab: (tab: "weekly" | "custom") => void;
   customMeals: (Recipe | null)[];
   setCustomMeals: (meals: (Recipe | null)[]) => void;
+  className?: string; // Added className prop
 }
 
 export const Sidebar = ({ 
@@ -24,7 +25,8 @@ export const Sidebar = ({
   activeTab,
   setActiveTab,
   customMeals,
-  setCustomMeals
+  setCustomMeals,
+  className = '' // Added className with default empty string
 }: SidebarProps) => {
   return (
     <>
@@ -41,6 +43,7 @@ export const Sidebar = ({
           h-[calc(100vh-73px)]
           z-50
           -mr-[1px]
+          ${className}
         `}
       >
         <div className="p-4">
