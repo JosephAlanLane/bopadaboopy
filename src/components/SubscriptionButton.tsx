@@ -17,6 +17,7 @@ export function SubscriptionButton() {
       const { data, error } = await supabase
         .from('subscription_tiers')
         .select('*')
+        .eq('name', 'premium')
         .single()
       
       if (error) {
@@ -27,6 +28,7 @@ export function SubscriptionButton() {
       return data as SubscriptionTier
     },
     enabled: !!user,
+    retry: 1
   })
 
   const handleSubscribe = async () => {
@@ -44,8 +46,13 @@ export function SubscriptionButton() {
       console.log('Using subscription tier:', subscriptionTier)
       
       if (!subscriptionTier?.price_id) {
-        console.error('No price ID found in subscription tier')
-        throw new Error('Subscription configuration error')
+        console.error('No subscription tier found')
+        toast({
+          title: "Subscription Error",
+          description: "No subscription tier found. Please try again later.",
+          variant: "destructive",
+        })
+        return
       }
 
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
@@ -58,12 +65,22 @@ export function SubscriptionButton() {
 
       if (error) {
         console.error('Error creating checkout session:', error)
-        throw error
+        toast({
+          title: "Subscription Error",
+          description: "Failed to start subscription process. Please try again.",
+          variant: "destructive",
+        })
+        return
       }
 
       if (!data?.url) {
         console.error('No checkout URL returned:', data)
-        throw new Error('No checkout URL returned from server')
+        toast({
+          title: "Subscription Error",
+          description: "Failed to create checkout session. Please try again.",
+          variant: "destructive",
+        })
+        return
       }
 
       console.log('Redirecting to checkout URL:', data.url)
