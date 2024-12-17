@@ -55,17 +55,23 @@ serve(async (req) => {
         const session = event.data.object
         console.log('Checkout session completed:', session)
 
+        // Get subscription details
+        const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+        console.log('Retrieved subscription:', subscription)
+
         // Get subscription tier ID for premium tier
-        const { data: subscriptionTier } = await supabase
+        const { data: subscriptionTier, error: tierError } = await supabase
           .from('subscription_tiers')
           .select('id')
           .eq('name', 'Premium')
           .single()
 
-        if (!subscriptionTier) {
-          console.error('Premium subscription tier not found')
+        if (tierError || !subscriptionTier) {
+          console.error('Error fetching Premium subscription tier:', tierError)
           return new Response('Subscription tier not found', { status: 400 })
         }
+
+        console.log('Found subscription tier:', subscriptionTier)
 
         // Create or update user subscription
         const { error: upsertError } = await supabase
@@ -73,11 +79,11 @@ serve(async (req) => {
           .upsert({
             user_id: session.client_reference_id,
             subscription_tier_id: subscriptionTier.id,
-            stripe_subscription_id: session.subscription,
+            stripe_subscription_id: subscription.id,
             stripe_customer_id: session.customer,
-            status: 'active',
-            current_period_start: new Date(session.subscription_start * 1000).toISOString(),
-            current_period_end: new Date(session.subscription_end * 1000).toISOString(),
+            status: subscription.status,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
           }, {
             onConflict: 'user_id'
           })
@@ -87,6 +93,7 @@ serve(async (req) => {
           return new Response('Error creating subscription', { status: 500 })
         }
 
+        console.log('Successfully created/updated subscription')
         break
       }
 
@@ -111,6 +118,7 @@ serve(async (req) => {
           return new Response('Error updating subscription', { status: 500 })
         }
 
+        console.log('Successfully updated subscription status to:', status)
         break
       }
     }
