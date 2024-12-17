@@ -36,12 +36,17 @@ serve(async (req) => {
     const body = await req.text()
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')
     
+    if (!webhookSecret) {
+      console.error('Webhook secret not configured')
+      return new Response('Webhook secret not configured', { status: 500 })
+    }
+    
     let event
     try {
       event = stripe.webhooks.constructEvent(
         body,
         signature,
-        webhookSecret!
+        webhookSecret
       )
     } catch (err) {
       console.error(`Webhook signature verification failed: ${err.message}`)
@@ -58,6 +63,11 @@ serve(async (req) => {
         // Get subscription details
         const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
         console.log('Retrieved subscription:', subscription)
+
+        if (!subscription.metadata?.user_id) {
+          console.error('No user_id found in subscription metadata')
+          return new Response('No user_id in subscription metadata', { status: 400 })
+        }
 
         // Get subscription tier ID for premium tier
         const { data: subscriptionTier, error: tierError } = await supabase
@@ -102,6 +112,11 @@ serve(async (req) => {
         const subscription = event.data.object
         console.log('Subscription event:', event.type, subscription)
         
+        if (!subscription.metadata?.user_id) {
+          console.error('No user_id found in subscription metadata')
+          return new Response('No user_id in subscription metadata', { status: 400 })
+        }
+
         const status = event.type === 'customer.subscription.deleted' ? 'canceled' : subscription.status
 
         const { error: updateError } = await supabase
