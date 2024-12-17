@@ -4,7 +4,8 @@ import Stripe from 'https://esm.sh/stripe@12.18.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
@@ -23,23 +24,47 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
 
 serve(async (req) => {
   try {
+    // Log headers for debugging (excluding sensitive data)
+    console.log('Received request method:', req.method)
+    
+    // Handle CORS preflight
     if (req.method === 'OPTIONS') {
       return new Response('ok', { headers: corsHeaders })
     }
 
+    // Verify it's a POST request
+    if (req.method !== 'POST') {
+      console.error('Invalid request method:', req.method)
+      return new Response('Method not allowed', { 
+        status: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     const signature = req.headers.get('stripe-signature')
     if (!signature) {
-      console.error('No signature found in webhook request')
-      return new Response('No signature', { status: 400 })
+      console.error('Missing stripe-signature header')
+      return new Response(JSON.stringify({
+        error: 'Missing stripe-signature header. Please ensure webhook is configured correctly in Stripe dashboard.'
+      }), { 
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')
+    if (!webhookSecret) {
+      console.error('Webhook secret not configured')
+      return new Response(JSON.stringify({
+        error: 'Webhook secret not configured in environment variables'
+      }), { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
     }
 
     const body = await req.text()
-    const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')
-    
-    if (!webhookSecret) {
-      console.error('Webhook secret not configured')
-      return new Response('Webhook secret not configured', { status: 500 })
-    }
+    console.log('Processing webhook request, body length:', body.length)
     
     let event
     try {
@@ -50,7 +75,13 @@ serve(async (req) => {
       )
     } catch (err) {
       console.error(`Webhook signature verification failed: ${err.message}`)
-      return new Response(`Webhook Error: ${err.message}`, { status: 400 })
+      return new Response(JSON.stringify({
+        error: 'Webhook signature verification failed',
+        details: err instanceof Error ? err.message : 'Unknown error'
+      }), { 
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
     }
 
     console.log(`Processing webhook event: ${event.type}`)
@@ -66,7 +97,13 @@ serve(async (req) => {
 
         if (!subscription.metadata?.user_id) {
           console.error('No user_id found in subscription metadata')
-          return new Response('No user_id in subscription metadata', { status: 400 })
+          return new Response(JSON.stringify({
+            error: 'No user_id found in subscription metadata',
+            details: 'Please ensure user_id is included in subscription metadata when creating checkout session'
+          }), { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
 
         // Get subscription tier ID for premium tier
@@ -78,7 +115,13 @@ serve(async (req) => {
 
         if (tierError || !subscriptionTier) {
           console.error('Error fetching Premium subscription tier:', tierError)
-          return new Response('Subscription tier not found', { status: 400 })
+          return new Response(JSON.stringify({
+            error: 'Subscription tier not found',
+            details: tierError?.message || 'Premium tier not found in database'
+          }), { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
 
         console.log('Found subscription tier:', subscriptionTier)
@@ -100,7 +143,13 @@ serve(async (req) => {
 
         if (upsertError) {
           console.error('Error upserting subscription:', upsertError)
-          return new Response('Error creating subscription', { status: 500 })
+          return new Response(JSON.stringify({
+            error: 'Error creating subscription',
+            details: upsertError.message
+          }), { 
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
 
         console.log('Successfully created/updated subscription')
@@ -114,7 +163,13 @@ serve(async (req) => {
         
         if (!subscription.metadata?.user_id) {
           console.error('No user_id found in subscription metadata')
-          return new Response('No user_id in subscription metadata', { status: 400 })
+          return new Response(JSON.stringify({
+            error: 'No user_id in subscription metadata',
+            details: 'Please ensure user_id is included in subscription metadata'
+          }), { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
 
         const status = event.type === 'customer.subscription.deleted' ? 'canceled' : subscription.status
@@ -130,7 +185,13 @@ serve(async (req) => {
 
         if (updateError) {
           console.error('Error updating subscription:', updateError)
-          return new Response('Error updating subscription', { status: 500 })
+          return new Response(JSON.stringify({
+            error: 'Error updating subscription',
+            details: updateError.message
+          }), { 
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
         }
 
         console.log('Successfully updated subscription status to:', status)
@@ -143,6 +204,12 @@ serve(async (req) => {
     })
   } catch (err) {
     console.error('Error processing webhook:', err)
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 })
+    return new Response(JSON.stringify({
+      error: 'Webhook processing failed',
+      details: err instanceof Error ? err.message : 'Unknown error occurred'
+    }), { 
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
   }
 })
