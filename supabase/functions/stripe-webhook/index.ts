@@ -51,20 +51,12 @@ serve(async (req) => {
     console.log(`Processing webhook event: ${event.type}`)
 
     switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object
-        console.log('Checkout session completed:', session)
-        
-        // Extract user_id from metadata
-        const userId = session.metadata?.user_id
-        if (!userId) {
-          console.error('No user_id found in session metadata')
-          return new Response('No user_id in metadata', { status: 400 })
-        }
-        console.log('User ID from metadata:', userId)
+      case 'invoice.paid': {
+        const invoice = event.data.object
+        console.log('Processing invoice.paid event:', invoice)
 
         // Get subscription details
-        const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+        const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
         console.log('Retrieved subscription:', subscription)
 
         // Get subscription tier ID for premium tier
@@ -85,10 +77,10 @@ serve(async (req) => {
         const { error: upsertError } = await supabase
           .from('user_subscriptions')
           .upsert({
-            user_id: userId,
+            user_id: subscription.metadata.user_id,
             subscription_tier_id: subscriptionTier.id,
             stripe_subscription_id: subscription.id,
-            stripe_customer_id: session.customer,
+            stripe_customer_id: invoice.customer,
             status: subscription.status,
             current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
