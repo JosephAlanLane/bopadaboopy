@@ -1,4 +1,3 @@
-// Follow Deno and Edge Function conventions
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
 import Stripe from 'https://esm.sh/stripe@12.18.0'
@@ -31,6 +30,7 @@ serve(async (req) => {
 
     const signature = req.headers.get('stripe-signature')
     if (!signature) {
+      console.error('No signature found in webhook request')
       return new Response('No signature', { status: 400 })
     }
 
@@ -49,7 +49,7 @@ serve(async (req) => {
       return new Response(`Webhook Error: ${err.message}`, { status: 400 })
     }
 
-    console.log(`Event type: ${event.type}`)
+    console.log(`Processing webhook event: ${event.type}`)
 
     switch (event.type) {
       case 'checkout.session.completed': {
