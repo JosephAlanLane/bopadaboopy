@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Recipe, MealPlan, DayOfWeek } from "@/types/recipe";
 import { useToast } from "@/components/ui/use-toast";
@@ -168,12 +168,12 @@ const Index = () => {
               setActiveTab={setActiveTab}
               customMeals={customMeals}
               setCustomMeals={setCustomMeals}
-              className="[&_button]:py-1.5" // This makes all buttons in Sidebar thinner
+              className="[&_button]:py-1.5"
             />
             
             <RecipeSection 
               onAddRecipe={handleAddRecipe}
-              className="[&_button]:py-1.5" // This makes all buttons in RecipeSection thinner
+              className="[&_button]:py-1.5"
             />
           </div>
         </div>
@@ -184,10 +184,25 @@ const Index = () => {
             <div className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} Bopada Boopy. All rights reserved.
             </div>
-            <div className="flex gap-6">
-              <Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 font-medium">Privacy Policy</Link>
-              <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">About</Link>
-              <a href="mailto:support@bopadaboopy.com" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">Contact</a>
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <Link 
+                to="/privacy" 
+                className="text-sm text-primary hover:text-primary/80 dark:text-primary-foreground font-medium underline"
+              >
+                Privacy Policy
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                About
+              </Link>
+              <a 
+                href="mailto:support@bopadaboopy.com" 
+                className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                Contact
+              </a>
             </div>
           </div>
         </div>
