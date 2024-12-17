@@ -54,6 +54,14 @@ serve(async (req) => {
       case 'checkout.session.completed': {
         const session = event.data.object
         console.log('Checkout session completed:', session)
+        
+        // Extract user_id from metadata
+        const userId = session.metadata?.user_id
+        if (!userId) {
+          console.error('No user_id found in session metadata')
+          return new Response('No user_id in metadata', { status: 400 })
+        }
+        console.log('User ID from metadata:', userId)
 
         // Get subscription details
         const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
@@ -77,7 +85,7 @@ serve(async (req) => {
         const { error: upsertError } = await supabase
           .from('user_subscriptions')
           .upsert({
-            user_id: session.client_reference_id,
+            user_id: userId,
             subscription_tier_id: subscriptionTier.id,
             stripe_subscription_id: subscription.id,
             stripe_customer_id: session.customer,
