@@ -12,7 +12,7 @@ export type SubscriptionTier = {
 export type UserSubscription = {
   id: string;
   user_id: string;
-  subscription_tier_id: SubscriptionTier;
+  subscription_tier_id: string;
   stripe_subscription_id: string | null;
   stripe_customer_id: string | null;
   status: 'active' | 'canceled' | 'past_due' | 'trialing';

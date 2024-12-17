@@ -1,107 +1,123 @@
-import Stripe from 'https://esm.sh/stripe@11.1.0?target=deno'
+// Follow Deno and Edge Function conventions
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
+import Stripe from 'https://esm.sh/stripe@12.18.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
-  apiVersion: '2022-11-15',
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+  apiVersion: '2023-10-16',
   httpClient: Stripe.createFetchHttpClient(),
 })
 
-const cryptoProvider = Stripe.createSubtleCryptoProvider()
+const supabaseUrl = Deno.env.get('SUPABASE_URL')
+const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
-console.log('Stripe Webhook handler initialized')
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('Missing Supabase environment variables')
+}
 
-Deno.serve(async (request) => {
-  // Handle CORS preflight requests
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { 
-      status: 204,
-      headers: corsHeaders 
-    })
-  }
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
 
+serve(async (req) => {
   try {
-    const signature = request.headers.get('Stripe-Signature')
-    
+    // Handle CORS
+    if (req.method === 'OPTIONS') {
+      return new Response('ok', { headers: corsHeaders })
+    }
+
+    const signature = req.headers.get('stripe-signature')
     if (!signature) {
-      console.error('No Stripe signature found')
-      return new Response(JSON.stringify({ error: 'No Stripe signature' }), { 
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
+      return new Response('No signature', { status: 400 })
     }
 
-    const body = await request.text()
-    console.log('Received webhook body:', body.substring(0, 100) + '...') // Log first 100 chars for debugging
-
+    const body = await req.text()
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SIGNING_SECRET')
-    if (!webhookSecret) {
-      console.error('Missing STRIPE_WEBHOOK_SIGNING_SECRET')
-      return new Response(JSON.stringify({ error: 'Webhook secret missing' }), { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
+    
+    let event
+    try {
+      event = stripe.webhooks.constructEvent(
+        body,
+        signature,
+        webhookSecret!
+      )
+    } catch (err) {
+      console.error(`Webhook signature verification failed: ${err.message}`)
+      return new Response(`Webhook Error: ${err.message}`, { status: 400 })
     }
 
-    const event = await stripe.webhooks.constructEventAsync(
-      body,
-      signature,
-      webhookSecret,
-      undefined,
-      cryptoProvider
-    )
+    console.log(`Event type: ${event.type}`)
 
-    console.log(`🔔 Event received: ${event.id}, type: ${event.type}`)
-
-    // Handle specific event types
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session
-        console.log('Checkout session completed:', session.id)
-        
-        // Handle the completed checkout session
-        if (session.metadata?.user_id && session.metadata?.tier_id) {
-          // Add subscription handling logic here
-          console.log('Processing subscription for user:', session.metadata.user_id)
+        const session = event.data.object
+        console.log('Checkout session completed:', session)
+
+        // Get or create subscription tier
+        const { data: subscriptionTier } = await supabase
+          .from('subscription_tiers')
+          .select()
+          .eq('price_id', session.subscription)
+          .single()
+
+        if (!subscriptionTier) {
+          console.error('Subscription tier not found')
+          return new Response('Subscription tier not found', { status: 400 })
         }
+
+        // Create or update user subscription
+        const { error: upsertError } = await supabase
+          .from('user_subscriptions')
+          .upsert({
+            user_id: session.client_reference_id,
+            subscription_tier_id: subscriptionTier.id,
+            stripe_subscription_id: session.subscription,
+            stripe_customer_id: session.customer,
+            status: 'active',
+            current_period_start: new Date(session.subscription_start * 1000).toISOString(),
+            current_period_end: new Date(session.subscription_end * 1000).toISOString(),
+          })
+
+        if (upsertError) {
+          console.error('Error upserting subscription:', upsertError)
+          return new Response('Error creating subscription', { status: 500 })
+        }
+
         break
       }
 
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription
-        console.log('Subscription event:', subscription.id)
-        // Add subscription update/delete handling logic here
+        const subscription = event.data.object
+        
+        const status = event.type === 'customer.subscription.deleted' ? 'canceled' : subscription.status
+
+        const { error: updateError } = await supabase
+          .from('user_subscriptions')
+          .update({
+            status,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          })
+          .eq('stripe_subscription_id', subscription.id)
+
+        if (updateError) {
+          console.error('Error updating subscription:', updateError)
+          return new Response('Error updating subscription', { status: 500 })
+        }
+
         break
       }
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`)
     }
 
-    // Return a 200 response to acknowledge receipt of the event
-    return new Response(JSON.stringify({ received: true }), { 
-      status: 200,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      }
+    return new Response(JSON.stringify({ received: true }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
-
   } catch (err) {
     console.error('Error processing webhook:', err)
-    return new Response(
-      JSON.stringify({ error: err.message }), 
-      { 
-        status: 400,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
+    return new Response(`Webhook Error: ${err.message}`, { status: 400 })
   }
 })

@@ -10,7 +10,7 @@ const isValidStatus = (status: string): status is UserSubscription['status'] => 
 export function useSubscription() {
   const { user } = useAuth()
 
-  const { data: subscription, isLoading } = useQuery<UserSubscription>({
+  const { data: subscription, isLoading } = useQuery({
     queryKey: ['subscription', user?.id],
     queryFn: async () => {
       console.log('Fetching subscription for user:', user?.id)
@@ -25,37 +25,26 @@ export function useSubscription() {
           current_period_start,
           current_period_end,
           created_at,
-          subscription_tiers (
-            id,
-            name,
-            price_id,
-            price_amount,
-            features,
-            created_at
-          )
+          subscription_tier_id
         `)
         .eq('user_id', user?.id)
         .single()
 
       if (error) {
         console.error('Subscription fetch error:', error)
-        throw error
+        return null
       }
       
       console.log('Fetched subscription data:', data)
       
+      if (!data) return null
+
       if (!isValidStatus(data.status)) {
-        throw new Error(`Invalid subscription status: ${data.status}`)
+        console.error(`Invalid subscription status: ${data.status}`)
+        return null
       }
 
-      // Transform the data to match our UserSubscription type
-      const transformedData: UserSubscription = {
-        ...data,
-        status: data.status, // Now TypeScript knows this is a valid status
-        subscription_tier_id: data.subscription_tiers[0] // Get the first (and should be only) subscription tier
-      }
-
-      return transformedData
+      return data as UserSubscription
     },
     enabled: !!user,
   })

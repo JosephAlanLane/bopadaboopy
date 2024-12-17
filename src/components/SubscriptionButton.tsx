@@ -2,10 +2,12 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function SubscriptionButton() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleUpgradeClick = async () => {
     if (!user) {
@@ -14,6 +16,7 @@ export function SubscriptionButton() {
         description: "You need to be logged in to upgrade to premium.",
         variant: "destructive"
       });
+      navigate("/login");
       return;
     }
 
