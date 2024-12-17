@@ -23,7 +23,6 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
 
 serve(async (req) => {
   try {
-    // Handle CORS
     if (req.method === 'OPTIONS') {
       return new Response('ok', { headers: corsHeaders })
     }
@@ -56,15 +55,15 @@ serve(async (req) => {
         const session = event.data.object
         console.log('Checkout session completed:', session)
 
-        // Get or create subscription tier
+        // Get subscription tier ID for premium tier
         const { data: subscriptionTier } = await supabase
           .from('subscription_tiers')
-          .select()
-          .eq('price_id', session.subscription)
+          .select('id')
+          .eq('name', 'Premium')
           .single()
 
         if (!subscriptionTier) {
-          console.error('Subscription tier not found')
+          console.error('Premium subscription tier not found')
           return new Response('Subscription tier not found', { status: 400 })
         }
 
@@ -79,6 +78,8 @@ serve(async (req) => {
             status: 'active',
             current_period_start: new Date(session.subscription_start * 1000).toISOString(),
             current_period_end: new Date(session.subscription_end * 1000).toISOString(),
+          }, {
+            onConflict: 'user_id'
           })
 
         if (upsertError) {
@@ -92,6 +93,7 @@ serve(async (req) => {
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
         const subscription = event.data.object
+        console.log('Subscription event:', event.type, subscription)
         
         const status = event.type === 'customer.subscription.deleted' ? 'canceled' : subscription.status
 
