@@ -41,10 +41,20 @@ export const GroceryList = ({
     console.log('Updating grocery list with customPortions:', customPortions);
     const list = getGroceryList();
     console.log('Generated grocery list:', list);
-    setGroceryItems(list);
-  }, [getGroceryList]);
+    
+    // Apply global servings multiplier to all items
+    const adjustedList: typeof list = {};
+    Object.entries(list).forEach(([item, details]) => {
+      adjustedList[item] = {
+        ...details,
+        amount: details.amount * globalServings
+      };
+    });
+    
+    setGroceryItems(adjustedList);
+  }, [getGroceryList, globalServings]);
 
-  const calculateAmount = useCallback((amount: number, recipeId: string | undefined) => {
+  const calculateAmount = useCallback((amount: number) => {
     return amount;
   }, []);
 

@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useState } from "react";
+import React, { useCallback, memo, useState, useEffect } from "react";
 import { X, Users } from "lucide-react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
 import { Dialog, DialogContent } from "./ui/dialog";
@@ -23,10 +23,22 @@ const MealPlanDay = memo(({
   onDrop,
   onDragStart,
   onServingsChange,
+  customServings,
   className = ''
 }: MealPlanDayProps) => {
+  // Initialize with recipe's original serving size or custom serving size if provided
+  const [localServings, setLocalServings] = useState<number>(
+    customServings || (recipe?.servings || 1)
+  );
+
+  // Update local servings when recipe changes
+  useEffect(() => {
+    if (recipe?.servings && !customServings) {
+      setLocalServings(recipe.servings);
+    }
+  }, [recipe, customServings]);
+
   const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
-  const [customServings, setCustomServings] = useState<number>(recipe?.servings || 1);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -59,14 +71,14 @@ const MealPlanDay = memo(({
   const handleServingsChange = (value: string) => {
     const newServings = parseInt(value);
     if (!isNaN(newServings) && newServings > 0) {
-      setCustomServings(newServings);
+      setLocalServings(newServings);
     }
   };
 
   const handleUpdateServings = () => {
-    console.log('Updating servings to:', customServings);
+    console.log('Updating servings to:', localServings);
     if (onServingsChange && recipe) {
-      onServingsChange(customServings);
+      onServingsChange(localServings);
       setIsServingsDialogOpen(false);
     }
   };
@@ -125,7 +137,7 @@ const MealPlanDay = memo(({
                 >
                   <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {customServings}
+                    {localServings}
                   </span>
                 </button>
               </div>
@@ -149,7 +161,7 @@ const MealPlanDay = memo(({
                 type="number"
                 min="1"
                 max="99"
-                value={customServings}
+                value={localServings}
                 onChange={(e) => handleServingsChange(e.target.value)}
                 className="text-center"
               />
