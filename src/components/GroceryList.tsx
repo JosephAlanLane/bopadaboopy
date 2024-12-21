@@ -41,13 +41,17 @@ export const GroceryList = ({
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
     const list = getGroceryList();
     const text = Object.entries(list)
-      .map(([item, { amount, unit }]) => {
+      .map(([item, { amount, unit, recipeId }]) => {
         const hasCustomServing = Object.keys(customServings).some(
-          (recipeId) => list[item].recipeId === recipeId
+          (id) => list[item].recipeId === id
         );
-        const multiplier = hasCustomServing ? 1 : globalServings;
+        const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
+                      customMeals.find(r => r?.id === recipeId);
+        const originalServings = recipe?.servings || 1;
+        const customMultiplier = hasCustomServing ? 
+          (customServings[recipeId || ''] / originalServings) : 1;
+        const multiplier = hasCustomServing ? customMultiplier : globalServings;
         const adjustedAmount = (amount * multiplier).toFixed(1);
-        // Add asterisk for custom servings in shared text
         const itemName = hasCustomServing ? `${item}*` : item;
         return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${itemName}`;
       })
@@ -135,7 +139,13 @@ END:VCALENDAR`;
       <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
         {Object.entries(getGroceryList()).map(([item, { amount, unit, recipeId }]) => {
           const hasCustomServing = Object.keys(customServings).includes(recipeId || '');
-          const multiplier = hasCustomServing ? 1 : globalServings;
+          const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
+                        customMeals.find(r => r?.id === recipeId);
+          const originalServings = recipe?.servings || 1;
+          const customMultiplier = hasCustomServing ? 
+            (customServings[recipeId || ''] / originalServings) : 1;
+          const multiplier = hasCustomServing ? customMultiplier : globalServings;
+          
           return (
             <div key={item} className="flex justify-between py-1 text-sm">
               <span className="dark:text-gray-200">
