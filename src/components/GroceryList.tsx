@@ -47,7 +47,9 @@ export const GroceryList = ({
         );
         const multiplier = hasCustomServing ? 1 : globalServings;
         const adjustedAmount = (amount * multiplier).toFixed(1);
-        return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${item}`;
+        // Add asterisk for custom servings in shared text
+        const itemName = hasCustomServing ? `${item}*` : item;
+        return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${itemName}`;
       })
       .join("\n");
 
@@ -136,7 +138,12 @@ END:VCALENDAR`;
           const multiplier = hasCustomServing ? 1 : globalServings;
           return (
             <div key={item} className="flex justify-between py-1 text-sm">
-              <span className="dark:text-gray-200">{item}</span>
+              <span className="dark:text-gray-200">
+                {item}
+                {hasCustomServing && (
+                  <span className="text-primary dark:text-primary-foreground">*</span>
+                )}
+              </span>
               <span className="text-gray-600 dark:text-gray-400">
                 {(amount * multiplier).toFixed(1)}{unit ? ` ${unit}` : ''}
               </span>
