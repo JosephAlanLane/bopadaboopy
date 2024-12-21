@@ -1,32 +1,43 @@
 import { Recipe, MealPlan } from "@/types/recipe";
 import { GroceryItem } from "@/types/grocery";
 
-export const generateGroceryList = (mealPlan: MealPlan) => {
-  const groceries: { [key: string]: GroceryItem & { itemName: string } } = {};
+interface GroceryItemWithRecipe extends GroceryItem {
+  recipeId?: string;
+}
+
+export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: string]: number } = {}) => {
+  const groceries: { [key: string]: GroceryItemWithRecipe & { itemName: string } } = {};
   
   Object.values(mealPlan).forEach((recipe) => {
     if (!recipe) return;
+    
+    const servingMultiplier = customServings[recipe.id] 
+      ? customServings[recipe.id] / (recipe.servings || 1)
+      : 1;
+
     recipe.ingredients.forEach(({ amount, item, unit }) => {
       const key = `${item.toLowerCase()}_${unit || ''}`;
       const numericAmount = parseFloat(amount) || 0;
       
       if (groceries[key]) {
-        groceries[key].amount += numericAmount;
+        groceries[key].amount += numericAmount * servingMultiplier;
       } else {
         groceries[key] = { 
-          amount: numericAmount, 
+          amount: numericAmount * servingMultiplier, 
           unit,
-          itemName: item 
+          itemName: item,
+          recipeId: recipe.id
         };
       }
     });
   });
 
-  const displayList: { [key: string]: GroceryItem } = {};
+  const displayList: { [key: string]: GroceryItemWithRecipe } = {};
   Object.entries(groceries).forEach(([_key, value]) => {
     displayList[value.itemName] = {
       amount: Math.round(value.amount * 100) / 100,
-      unit: value.unit
+      unit: value.unit,
+      recipeId: value.recipeId
     };
   });
 

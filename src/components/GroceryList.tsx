@@ -11,15 +11,21 @@ interface GroceryListProps {
   mealPlan: MealPlan;
   customMeals: (Recipe | null)[];
   activeTab: "weekly" | "custom";
+  customServings?: { [key: string]: number };
 }
 
-export const GroceryList = ({ mealPlan, customMeals, activeTab }: GroceryListProps) => {
-  const [servings, setServings] = React.useState(1);
+export const GroceryList = ({ 
+  mealPlan, 
+  customMeals, 
+  activeTab,
+  customServings = {} 
+}: GroceryListProps) => {
+  const [globalServings, setGlobalServings] = React.useState(1);
   const { toast } = useToast();
 
   const getGroceryList = () => {
     if (activeTab === "weekly") {
-      return generateGroceryList(mealPlan);
+      return generateGroceryList(mealPlan, customServings);
     } else {
       // Convert custom meals to MealPlan format
       const customMealPlan: MealPlan = {};
@@ -28,7 +34,7 @@ export const GroceryList = ({ mealPlan, customMeals, activeTab }: GroceryListPro
           customMealPlan[`Custom${index}` as any] = meal;
         }
       });
-      return generateGroceryList(customMealPlan);
+      return generateGroceryList(customMealPlan, customServings);
     }
   };
 
@@ -36,7 +42,11 @@ export const GroceryList = ({ mealPlan, customMeals, activeTab }: GroceryListPro
     const list = getGroceryList();
     const text = Object.entries(list)
       .map(([item, { amount, unit }]) => {
-        const adjustedAmount = (amount * servings).toFixed(1);
+        const hasCustomServing = Object.keys(customServings).some(
+          (recipeId) => list[item].recipeId === recipeId
+        );
+        const multiplier = hasCustomServing ? 1 : globalServings;
+        const adjustedAmount = (amount * multiplier).toFixed(1);
         return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${item}`;
       })
       .join("\n");
@@ -110,25 +120,29 @@ END:VCALENDAR`;
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
           <Slider
-            value={[servings]}
-            onValueChange={(value) => setServings(value[0])}
+            value={[globalServings]}
+            onValueChange={(value) => setGlobalServings(value[0])}
             min={1}
             max={10}
             step={1}
             className="w-20"
           />
-          <span className="text-xs text-gray-500 min-w-[20px] dark:text-gray-400">{servings}x</span>
+          <span className="text-xs text-gray-500 min-w-[20px] dark:text-gray-400">{globalServings}x</span>
         </div>
       </div>
       <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
-        {Object.entries(getGroceryList()).map(([item, { amount, unit }]) => (
-          <div key={item} className="flex justify-between py-1 text-sm">
-            <span className="dark:text-gray-200">{item}</span>
-            <span className="text-gray-600 dark:text-gray-400">
-              {(amount * servings).toFixed(1)}{unit ? ` ${unit}` : ''}
-            </span>
-          </div>
-        ))}
+        {Object.entries(getGroceryList()).map(([item, { amount, unit, recipeId }]) => {
+          const hasCustomServing = Object.keys(customServings).includes(recipeId || '');
+          const multiplier = hasCustomServing ? 1 : globalServings;
+          return (
+            <div key={item} className="flex justify-between py-1 text-sm">
+              <span className="dark:text-gray-200">{item}</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                {(amount * multiplier).toFixed(1)}{unit ? ` ${unit}` : ''}
+              </span>
+            </div>
+          );
+        })}
       </ScrollArea>
       <div className="flex flex-col gap-2 mt-4">
         <div className="flex gap-2">
