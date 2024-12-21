@@ -3,6 +3,7 @@ import { X, Users } from "lucide-react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 interface MealPlanDayProps {
   day: DayOfWeek | string;
@@ -58,10 +59,14 @@ const MealPlanDay = memo(({
     const newServings = parseInt(value);
     if (!isNaN(newServings) && newServings > 0) {
       setCustomServings(newServings);
-      if (onServingsChange) {
-        onServingsChange(newServings);
-      }
     }
+  };
+
+  const handleUpdateServings = () => {
+    if (customServings && onServingsChange) {
+      onServingsChange(customServings);
+    }
+    setIsServingsDialogOpen(false);
   };
 
   return (
@@ -111,17 +116,24 @@ const MealPlanDay = memo(({
 
           {recipe && (
             <div className="absolute right-2 flex items-center space-x-2">
-              <button
-                onClick={() => setIsServingsDialogOpen(true)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 
-                         hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
-              >
+              <div className="flex items-center space-x-1">
                 <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-              </button>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {customServings || recipe.servings || 1}
+                </span>
+                <button
+                  onClick={() => setIsServingsDialogOpen(true)}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
+                >
+                  <span className="sr-only">Edit servings</span>
+                  <svg className="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+              </div>
               <button
                 onClick={onRemove}
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 
-                         hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
+                className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
               >
                 <X className="w-3 h-3 text-gray-500 dark:text-gray-400" />
               </button>
@@ -143,6 +155,12 @@ const MealPlanDay = memo(({
                 onChange={(e) => handleServingsChange(e.target.value)}
                 className="text-center"
               />
+              <Button 
+                onClick={handleUpdateServings}
+                className="w-full bg-red-500 hover:bg-red-600 text-white"
+              >
+                Update Servings
+              </Button>
             </div>
           </div>
         </DialogContent>
