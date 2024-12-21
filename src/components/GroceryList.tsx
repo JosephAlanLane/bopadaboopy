@@ -42,14 +42,12 @@ export const GroceryList = ({
     const list = getGroceryList();
     const text = Object.entries(list)
       .map(([item, { amount, unit, recipeId }]) => {
-        const hasCustomServing = Object.keys(customServings).some(
-          (id) => list[item].recipeId === id
-        );
         const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
                       customMeals.find(r => r?.id === recipeId);
         const originalServings = recipe?.servings || 1;
+        const hasCustomServing = recipeId && customServings[recipeId];
         const customMultiplier = hasCustomServing ? 
-          (customServings[recipeId || ''] / originalServings) : 1;
+          (customServings[recipeId] / originalServings) : 1;
         const multiplier = hasCustomServing ? customMultiplier : globalServings;
         const adjustedAmount = (amount * multiplier).toFixed(1);
         const itemName = hasCustomServing ? `${item}*` : item;
@@ -138,12 +136,12 @@ END:VCALENDAR`;
       </div>
       <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
         {Object.entries(getGroceryList()).map(([item, { amount, unit, recipeId }]) => {
-          const hasCustomServing = Object.keys(customServings).includes(recipeId || '');
           const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
                         customMeals.find(r => r?.id === recipeId);
           const originalServings = recipe?.servings || 1;
+          const hasCustomServing = recipeId && customServings[recipeId];
           const customMultiplier = hasCustomServing ? 
-            (customServings[recipeId || ''] / originalServings) : 1;
+            (customServings[recipeId] / originalServings) : 1;
           const multiplier = hasCustomServing ? customMultiplier : globalServings;
           
           return (
