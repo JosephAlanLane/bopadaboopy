@@ -12,6 +12,7 @@ interface MealPlanDayProps {
   onDrop: (recipe: Recipe) => void;
   onDragStart: (day: DayOfWeek | string, recipe: Recipe) => void;
   onServingsChange?: (servings: number) => void;
+  customServings?: number;
   className?: string;
 }
 

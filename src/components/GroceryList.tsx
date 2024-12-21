@@ -48,6 +48,35 @@ export const GroceryList = ({
     return amount;
   }, []);
 
+  const handleShare = async (method: "sms" | "email" | "copy" | "calendar") => {
+    const groceryText = Object.entries(groceryItems)
+      .map(([item, details]) => `${item}: ${details.amount}${details.unit ? ` ${details.unit}` : ''}`)
+      .join('\n');
+
+    switch (method) {
+      case "copy":
+        await navigator.clipboard.writeText(groceryText);
+        toast({
+          title: "Copied to clipboard",
+          description: "Your grocery list has been copied to your clipboard",
+        });
+        break;
+      case "email":
+        window.location.href = `mailto:?subject=Grocery List&body=${encodeURIComponent(groceryText)}`;
+        break;
+      case "sms":
+        window.location.href = `sms:?body=${encodeURIComponent(groceryText)}`;
+        break;
+      case "calendar":
+        // Add calendar functionality if needed
+        toast({
+          title: "Coming soon",
+          description: "Calendar integration will be available soon",
+        });
+        break;
+    }
+  };
+
   return (
     <div className="mt-4 px-3 pb-3">
       <GroceryListHeader 
