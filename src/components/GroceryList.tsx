@@ -44,7 +44,7 @@ export const GroceryList = ({
     const list = getGroceryList();
     console.log('New grocery list:', list);
     setGroceryItems(list);
-  }, [getGroceryList, customServings, globalServings]);
+  }, [getGroceryList, customServings]);
 
   const calculateAmount = useCallback((amount: number, recipeId: string | undefined) => {
     if (!recipeId) return amount * globalServings;
@@ -58,13 +58,14 @@ export const GroceryList = ({
     const hasCustomServing = customServings[recipeId];
     
     if (hasCustomServing) {
+      const multiplier = customServings[recipeId] / originalServings;
       console.log(`Calculating amount for recipe ${recipeId}:`, {
         amount,
         originalServings,
         customServing: customServings[recipeId],
-        multiplier: customServings[recipeId] / originalServings
+        multiplier
       });
-      return amount * (customServings[recipeId] / originalServings);
+      return amount * multiplier * globalServings;
     }
     
     return amount * globalServings;
