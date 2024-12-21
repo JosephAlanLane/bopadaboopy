@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Recipe, MealPlan } from "@/types/recipe";
-import { ScrollArea } from "./ui/scroll-area";
-import { Button } from "./ui/button";
-import { CalendarIcon } from "lucide-react";
-import { Slider } from "./ui/slider";
-import { generateGroceryList, getNextDate } from "@/utils/groceryUtils";
 import { useToast } from "./ui/use-toast";
+import { generateGroceryList, getNextDate } from "@/utils/groceryUtils";
+import { GroceryListHeader } from "./grocery/GroceryListHeader";
+import { GroceryListContent } from "./grocery/GroceryListContent";
+import { GroceryListActions } from "./grocery/GroceryListActions";
 
 interface GroceryListProps {
   mealPlan: MealPlan;
@@ -24,13 +23,9 @@ export const GroceryList = ({
   const [groceryItems, setGroceryItems] = useState<{[key: string]: any}>({});
   const { toast } = useToast();
 
-  useEffect(() => {
-    console.log('Updating grocery list with custom servings:', customServings);
-    const list = getGroceryList();
-    setGroceryItems(list);
-  }, [mealPlan, customMeals, customServings, globalServings]);
+  console.log('GroceryList render - customServings:', customServings);
 
-  const getGroceryList = () => {
+  const getGroceryList = useCallback(() => {
     if (activeTab === "weekly") {
       return generateGroceryList(mealPlan, customServings);
     } else {
@@ -42,21 +37,44 @@ export const GroceryList = ({
       });
       return generateGroceryList(customMealPlan, customServings);
     }
-  };
+  }, [mealPlan, customMeals, activeTab, customServings]);
+
+  useEffect(() => {
+    console.log('Updating grocery list - customServings:', customServings);
+    const list = getGroceryList();
+    console.log('New grocery list:', list);
+    setGroceryItems(list);
+  }, [getGroceryList, customServings, globalServings]);
+
+  const calculateAmount = useCallback((amount: number, recipeId: string | undefined) => {
+    if (!recipeId) return amount * globalServings;
+
+    const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
+                  customMeals.find(r => r?.id === recipeId);
+    
+    if (!recipe) return amount * globalServings;
+
+    const originalServings = recipe.servings || 1;
+    const hasCustomServing = customServings[recipeId];
+    
+    if (hasCustomServing) {
+      console.log(`Calculating amount for recipe ${recipeId}:`, {
+        amount,
+        originalServings,
+        customServing: customServings[recipeId],
+        multiplier: customServings[recipeId] / originalServings
+      });
+      return amount * (customServings[recipeId] / originalServings);
+    }
+    
+    return amount * globalServings;
+  }, [mealPlan, customMeals, customServings, globalServings]);
 
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
     const text = Object.entries(groceryItems)
       .map(([item, { amount, unit, recipeId }]) => {
-        const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
-                      customMeals.find(r => r?.id === recipeId);
-        const originalServings = recipe?.servings || 1;
-        const hasCustomServing = recipeId && customServings[recipeId];
-        const customMultiplier = hasCustomServing ? 
-          (customServings[recipeId] / originalServings) : 1;
-        const multiplier = hasCustomServing ? customMultiplier : globalServings;
-        const adjustedAmount = (amount * multiplier).toFixed(1);
-        const itemName = hasCustomServing ? `${item}*` : item;
-        return `${adjustedAmount}${unit ? ` ${unit}` : ''} ${itemName}`;
+        const adjustedAmount = calculateAmount(amount, recipeId);
+        return `${adjustedAmount.toFixed(1)}${unit ? ` ${unit}` : ''} ${item}`;
       })
       .join("\n");
 
@@ -124,79 +142,15 @@ END:VCALENDAR`;
 
   return (
     <div className="mt-4 px-3 pb-3">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="font-semibold inline-flex items-center">Grocery List</h2>
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Servings:</span>
-          <Slider
-            value={[globalServings]}
-            onValueChange={(value) => setGlobalServings(value[0])}
-            min={1}
-            max={10}
-            step={1}
-            className="w-20"
-          />
-          <span className="text-xs text-gray-500 min-w-[20px] dark:text-gray-400">{globalServings}x</span>
-        </div>
-      </div>
-      <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
-        {Object.entries(groceryItems).map(([item, { amount, unit, recipeId }]) => {
-          const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
-                        customMeals.find(r => r?.id === recipeId);
-          const originalServings = recipe?.servings || 1;
-          const hasCustomServing = recipeId && customServings[recipeId];
-          const customMultiplier = hasCustomServing ? 
-            (customServings[recipeId] / originalServings) : 1;
-          const multiplier = hasCustomServing ? customMultiplier : globalServings;
-          
-          return (
-            <div key={item} className="flex justify-between py-1 text-sm">
-              <span className="dark:text-gray-200">
-                {item}
-                {hasCustomServing && (
-                  <span className="text-primary dark:text-primary-foreground">*</span>
-                )}
-              </span>
-              <span className="text-gray-600 dark:text-gray-400">
-                {(amount * multiplier).toFixed(1)}{unit ? ` ${unit}` : ''}
-              </span>
-            </div>
-          );
-        })}
-      </ScrollArea>
-      <div className="flex flex-col gap-2 mt-4">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="flex-1 bg-[#008C45] hover:bg-[#007038] text-gray-200 border border-gray-300"
-            onClick={() => handleShare("sms")}
-          >
-            Text
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-gray-700"
-            onClick={() => handleShare("email")}
-          >
-            Email
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 bg-[#CD212A] hover:bg-[#B91C1C] text-gray-200 border border-gray-300"
-            onClick={() => handleShare("copy")}
-          >
-            Copy
-          </Button>
-        </div>
-        <Button
-          variant="outline"
-          className="w-full border border-gray-300 dark:border-gray-600"
-          onClick={() => handleShare("calendar")}
-        >
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          Add to Calendar
-        </Button>
-      </div>
+      <GroceryListHeader 
+        globalServings={globalServings}
+        setGlobalServings={setGlobalServings}
+      />
+      <GroceryListContent 
+        groceryItems={groceryItems}
+        calculateAmount={calculateAmount}
+      />
+      <GroceryListActions onShare={handleShare} />
     </div>
   );
 };
