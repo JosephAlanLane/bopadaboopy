@@ -23,8 +23,6 @@ export const GroceryList = ({
   const [groceryItems, setGroceryItems] = useState<{[key: string]: any}>({});
   const { toast } = useToast();
 
-  console.log('GroceryList render - customServings:', customServings);
-
   const getGroceryList = useCallback(() => {
     if (activeTab === "weekly") {
       return generateGroceryList(mealPlan, customServings);
@@ -40,9 +38,9 @@ export const GroceryList = ({
   }, [mealPlan, customMeals, activeTab, customServings]);
 
   useEffect(() => {
-    console.log('Updating grocery list - customServings:', customServings);
+    console.log('Updating grocery list with customServings:', customServings);
     const list = getGroceryList();
-    console.log('New grocery list:', list);
+    console.log('Generated grocery list:', list);
     setGroceryItems(list);
   }, [getGroceryList]);
 

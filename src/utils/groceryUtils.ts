@@ -15,8 +15,7 @@ export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: 
       ? customServings[recipe.id] / (recipe.servings || 1)
       : 1;
 
-    console.log(`Generating grocery list for recipe ${recipe.id}:`, {
-      recipeTitle: recipe.title,
+    console.log(`Processing recipe ${recipe.id} (${recipe.title}):`, {
       originalServings: recipe.servings,
       customServings: customServings[recipe.id],
       servingMultiplier
@@ -25,12 +24,19 @@ export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: 
     recipe.ingredients.forEach(({ amount, item, unit }) => {
       const key = `${item.toLowerCase()}_${unit || ''}`;
       const numericAmount = parseFloat(amount) || 0;
+      const adjustedAmount = numericAmount * servingMultiplier;
+      
+      console.log(`Calculating amount for ${item}:`, {
+        original: numericAmount,
+        multiplier: servingMultiplier,
+        adjusted: adjustedAmount
+      });
       
       if (groceries[key]) {
-        groceries[key].amount += numericAmount * servingMultiplier;
+        groceries[key].amount += adjustedAmount;
       } else {
         groceries[key] = { 
-          amount: numericAmount * servingMultiplier, 
+          amount: adjustedAmount, 
           unit,
           itemName: item,
           recipeId: recipe.id

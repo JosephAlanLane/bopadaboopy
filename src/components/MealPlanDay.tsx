@@ -25,7 +25,7 @@ const MealPlanDay = memo(({
   className = ''
 }: MealPlanDayProps) => {
   const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
-  const [customServings, setCustomServings] = useState<number | null>(null);
+  const [customServings, setCustomServings] = useState<number>(recipe?.servings || 1);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -63,8 +63,8 @@ const MealPlanDay = memo(({
   };
 
   const handleUpdateServings = () => {
-    if (customServings && onServingsChange && recipe) {
-      console.log('Updating servings for recipe:', recipe.id, 'to:', customServings);
+    console.log('Updating servings to:', customServings);
+    if (onServingsChange && recipe) {
       onServingsChange(customServings);
       setIsServingsDialogOpen(false);
     }
@@ -119,15 +119,12 @@ const MealPlanDay = memo(({
             <div className="absolute right-2 flex items-center space-x-2">
               <div className="flex items-center space-x-1">
                 <button
-                  onClick={() => {
-                    setCustomServings(recipe.servings || 1);
-                    setIsServingsDialogOpen(true);
-                  }}
+                  onClick={() => setIsServingsDialogOpen(true)}
                   className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full flex items-center gap-1"
                 >
                   <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {customServings || recipe.servings || 1}
+                    {customServings}
                   </span>
                 </button>
               </div>
@@ -151,7 +148,7 @@ const MealPlanDay = memo(({
                 type="number"
                 min="1"
                 max="99"
-                value={customServings || recipe?.servings || ''}
+                value={customServings}
                 onChange={(e) => handleServingsChange(e.target.value)}
                 className="text-center"
               />
