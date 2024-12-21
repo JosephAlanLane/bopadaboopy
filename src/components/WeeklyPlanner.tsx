@@ -34,6 +34,7 @@ export const WeeklyPlanner = ({
   setCustomMeals
 }: WeeklyPlannerProps) => {
   const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek | string, recipe: Recipe } | null>(null);
+  const [customPortions, setCustomPortions] = useState<{ [key: string]: number }>({});
 
   const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
     if (draggedMeal) {
@@ -76,6 +77,14 @@ export const WeeklyPlanner = ({
     setCustomMeals(newMeals);
   };
 
+  const handleServingsChange = (day: DayOfWeek | string, servings: number) => {
+    console.log('Updating servings for day:', day, 'to:', servings);
+    setCustomPortions(prev => ({
+      ...prev,
+      [day]: servings
+    }));
+  };
+
   return (
     <div className="h-full flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-800 w-full mt-4 md:mt-0">
       <div className="flex-1">
@@ -100,6 +109,8 @@ export const WeeklyPlanner = ({
                       onRemove={() => onRemoveMeal(day)}
                       onDrop={(recipe) => handleDrop(day, recipe)}
                       onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
+                      onServingsChange={(servings) => handleServingsChange(day, servings)}
+                      customServings={customPortions[day]}
                     />
                   ))}
                 </div>
@@ -122,6 +133,7 @@ export const WeeklyPlanner = ({
         mealPlan={mealPlan}
         customMeals={customMeals}
         activeTab={activeTab}
+        customPortions={customPortions}
       />
     </div>
   );

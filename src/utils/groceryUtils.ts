@@ -5,19 +5,19 @@ interface GroceryItemWithRecipe extends GroceryItem {
   recipeId?: string;
 }
 
-export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: string]: number } = {}) => {
+export const generateGroceryList = (mealPlan: MealPlan, customPortions: { [key: string]: number } = {}) => {
   const groceries: { [key: string]: GroceryItemWithRecipe & { itemName: string } } = {};
   
-  Object.values(mealPlan).forEach((recipe) => {
+  Object.entries(mealPlan).forEach(([day, recipe]) => {
     if (!recipe) return;
     
-    const servingMultiplier = customServings[recipe.id] 
-      ? customServings[recipe.id] / (recipe.servings || 1)
+    const servingMultiplier = customPortions[day] 
+      ? customPortions[day] / (recipe.servings || 1)
       : 1;
 
-    console.log(`Processing recipe ${recipe.id} (${recipe.title}):`, {
+    console.log(`Processing recipe ${recipe.id} (${recipe.title}) for ${day}:`, {
       originalServings: recipe.servings,
-      customServings: customServings[recipe.id],
+      customPortions: customPortions[day],
       servingMultiplier
     });
 
@@ -26,7 +26,7 @@ export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: 
       const numericAmount = parseFloat(amount) || 0;
       const adjustedAmount = numericAmount * servingMultiplier;
       
-      console.log(`Calculating amount for ${item}:`, {
+      console.log(`Calculating amount for ${item} (${day}):`, {
         original: numericAmount,
         multiplier: servingMultiplier,
         adjusted: adjustedAmount
