@@ -64,9 +64,9 @@ const MealPlanDay = memo(({
 
   const handleUpdateServings = () => {
     if (customServings && onServingsChange && recipe) {
-      console.log('Updating servings for recipe:', recipe.id, 'from:', recipe.servings, 'to:', customServings);
+      console.log('Updating servings for recipe:', recipe.id, 'to:', customServings);
       onServingsChange(customServings);
-      setIsServingsDialogOpen(false); // This ensures the dialog closes
+      setIsServingsDialogOpen(false);
     }
   };
 
