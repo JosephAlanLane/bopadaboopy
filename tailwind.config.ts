@@ -61,6 +61,10 @@ export default {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-100%)" },
         },
+        "progress": {
+          "0%": { width: "100%" },
+          "100%": { width: "0%" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.2s ease-out",

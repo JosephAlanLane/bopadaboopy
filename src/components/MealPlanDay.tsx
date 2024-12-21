@@ -31,12 +31,12 @@ const MealPlanDay = memo(({
     customServings || (recipe?.servings || 1)
   );
 
-  // Update local servings when recipe changes
+  // Reset local servings when recipe changes
   useEffect(() => {
-    if (recipe?.servings && !customServings) {
+    if (recipe?.servings) {
       setLocalServings(recipe.servings);
     }
-  }, [recipe, customServings]);
+  }, [recipe]);
 
   const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
 
@@ -79,6 +79,22 @@ const MealPlanDay = memo(({
     console.log('Updating servings to:', localServings);
     if (onServingsChange && recipe) {
       onServingsChange(localServings);
+      setIsServingsDialogOpen(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleUpdateServings();
+    }
+  };
+
+  const handleResetServings = () => {
+    if (recipe?.servings) {
+      setLocalServings(recipe.servings);
+      if (onServingsChange) {
+        onServingsChange(recipe.servings);
+      }
       setIsServingsDialogOpen(false);
     }
   };
@@ -153,7 +169,7 @@ const MealPlanDay = memo(({
       </div>
 
       <Dialog open={isServingsDialogOpen} onOpenChange={setIsServingsDialogOpen}>
-        <DialogContent className="sm:max-w-[200px]">
+        <DialogContent className="sm:max-w-[250px]">
           <div className="grid gap-4">
             <div className="space-y-2">
               <Input
@@ -163,14 +179,24 @@ const MealPlanDay = memo(({
                 max="99"
                 value={localServings}
                 onChange={(e) => handleServingsChange(e.target.value)}
+                onKeyPress={handleKeyPress}
                 className="text-center"
               />
-              <Button 
-                onClick={handleUpdateServings}
-                className="w-full bg-red-500 hover:bg-red-600 text-white"
-              >
-                Update Servings
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleUpdateServings}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white"
+                >
+                  Update
+                </Button>
+                <Button 
+                  onClick={handleResetServings}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Reset
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
