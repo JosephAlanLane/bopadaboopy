@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Recipe, MealPlan } from "@/types/recipe";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
@@ -20,14 +20,19 @@ export const GroceryList = ({
   activeTab,
   customServings = {} 
 }: GroceryListProps) => {
-  const [globalServings, setGlobalServings] = React.useState(1);
+  const [globalServings, setGlobalServings] = useState(1);
+  const [groceryItems, setGroceryItems] = useState<{[key: string]: any}>({});
   const { toast } = useToast();
+
+  useEffect(() => {
+    const list = getGroceryList();
+    setGroceryItems(list);
+  }, [mealPlan, customMeals, customServings, globalServings]);
 
   const getGroceryList = () => {
     if (activeTab === "weekly") {
       return generateGroceryList(mealPlan, customServings);
     } else {
-      // Convert custom meals to MealPlan format
       const customMealPlan: MealPlan = {};
       customMeals.forEach((meal, index) => {
         if (meal) {
@@ -39,8 +44,7 @@ export const GroceryList = ({
   };
 
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
-    const list = getGroceryList();
-    const text = Object.entries(list)
+    const text = Object.entries(groceryItems)
       .map(([item, { amount, unit, recipeId }]) => {
         const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
                       customMeals.find(r => r?.id === recipeId);
@@ -135,7 +139,7 @@ END:VCALENDAR`;
         </div>
       </div>
       <ScrollArea className="h-40 rounded border bg-gray-50 p-4 dark:bg-gray-700 dark:border-gray-600">
-        {Object.entries(getGroceryList()).map(([item, { amount, unit, recipeId }]) => {
+        {Object.entries(groceryItems).map(([item, { amount, unit, recipeId }]) => {
           const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
                         customMeals.find(r => r?.id === recipeId);
           const originalServings = recipe?.servings || 1;

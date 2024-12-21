@@ -66,8 +66,8 @@ const MealPlanDay = memo(({
     if (customServings && onServingsChange && recipe) {
       console.log('Updating servings for recipe:', recipe.id, 'from:', recipe.servings, 'to:', customServings);
       onServingsChange(customServings);
+      setIsServingsDialogOpen(false);
     }
-    setIsServingsDialogOpen(false);
   };
 
   return (
@@ -119,7 +119,10 @@ const MealPlanDay = memo(({
             <div className="absolute right-2 flex items-center space-x-2">
               <div className="flex items-center space-x-1">
                 <button
-                  onClick={() => setIsServingsDialogOpen(true)}
+                  onClick={() => {
+                    setCustomServings(recipe.servings || 1);
+                    setIsServingsDialogOpen(true);
+                  }}
                   className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full flex items-center gap-1"
                 >
                   <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
