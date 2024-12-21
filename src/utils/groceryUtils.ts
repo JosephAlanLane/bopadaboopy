@@ -15,6 +15,13 @@ export const generateGroceryList = (mealPlan: MealPlan, customServings: { [key: 
       ? customServings[recipe.id] / (recipe.servings || 1)
       : 1;
 
+    console.log(`Generating grocery list for recipe ${recipe.id}:`, {
+      recipeTitle: recipe.title,
+      originalServings: recipe.servings,
+      customServings: customServings[recipe.id],
+      servingMultiplier
+    });
+
     recipe.ingredients.forEach(({ amount, item, unit }) => {
       const key = `${item.toLowerCase()}_${unit || ''}`;
       const numericAmount = parseFloat(amount) || 0;

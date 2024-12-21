@@ -47,15 +47,15 @@ export const GroceryList = ({
   }, [getGroceryList]);
 
   const calculateAmount = useCallback((amount: number, recipeId: string | undefined) => {
-    if (!recipeId) return amount * globalServings;
+    if (!recipeId) return amount;
 
+    const customServing = customServings[recipeId];
     const recipe = Object.values(mealPlan).find(r => r?.id === recipeId) || 
                   customMeals.find(r => r?.id === recipeId);
     
-    if (!recipe) return amount * globalServings;
+    if (!recipe) return amount;
 
     const originalServings = recipe.servings || 1;
-    const customServing = customServings[recipeId];
     
     if (customServing) {
       const multiplier = customServing / originalServings;
@@ -64,14 +64,13 @@ export const GroceryList = ({
         originalServings,
         customServing,
         multiplier,
-        globalServings,
-        finalAmount: amount * multiplier * globalServings
+        finalAmount: amount * multiplier
       });
-      return amount * multiplier * globalServings;
+      return amount * multiplier;
     }
     
-    return amount * globalServings;
-  }, [mealPlan, customMeals, customServings, globalServings]);
+    return amount;
+  }, [mealPlan, customMeals, customServings]);
 
   const handleShare = (method: "sms" | "email" | "copy" | "calendar") => {
     const text = Object.entries(groceryItems)
