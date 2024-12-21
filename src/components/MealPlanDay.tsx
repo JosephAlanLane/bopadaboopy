@@ -117,18 +117,14 @@ const MealPlanDay = memo(({
           {recipe && (
             <div className="absolute right-2 flex items-center space-x-2">
               <div className="flex items-center space-x-1">
-                <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {customServings || recipe.servings || 1}
-                </span>
                 <button
                   onClick={() => setIsServingsDialogOpen(true)}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full flex items-center gap-1"
                 >
-                  <span className="sr-only">Edit servings</span>
-                  <svg className="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
+                  <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {customServings || recipe.servings || 1}
+                  </span>
                 </button>
               </div>
               <button
