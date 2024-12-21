@@ -25,6 +25,7 @@ export const GroceryList = ({
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('Updating grocery list with custom servings:', customServings);
     const list = getGroceryList();
     setGroceryItems(list);
   }, [mealPlan, customMeals, customServings, globalServings]);
