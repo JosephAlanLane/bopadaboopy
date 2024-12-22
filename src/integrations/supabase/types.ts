@@ -175,6 +175,48 @@ export type Database = {
           },
         ]
       }
+      recipe_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number | null
+          recipe_id: string
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number | null
+          recipe_id: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number | null
+          recipe_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_reviews_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipe_usage_stats: {
         Row: {
           id: string

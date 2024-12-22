@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import { RecipeSorting } from "./RecipeSorting";
+import { RecipeReviews } from "./RecipeReviews";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -135,10 +136,7 @@ export const RecipeGrid = memo(({
             ))}
           </div>
           
-          <div 
-            ref={ref} 
-            className="h-16 flex items-center justify-center mt-4"
-          >
+          <div ref={ref} className="h-16 flex items-center justify-center mt-4">
             {(isLoading || isFetchingNextPage) && (
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             )}
@@ -172,6 +170,8 @@ export const RecipeGrid = memo(({
                     ))}
                   </ol>
                 </div>
+                
+                <RecipeReviews recipeId={selectedRecipe.id} />
               </div>
             </ScrollArea>
           </DialogContent>
