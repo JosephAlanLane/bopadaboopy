@@ -1,14 +1,40 @@
 import { Recipe } from "@/types/recipe";
-import { pastaRecipes } from "./italian/pasta";
-import { saladRecipes } from "./italian/salads";
-import { mainRecipes } from "./italian/mains";
-import { dessertRecipes } from "./italian/desserts";
+import { americanRecipes } from "./recipes/american";
+import { asianRecipes } from "./recipes/asian";
+import { mediterraneanRecipes } from "./recipes/mediterranean";
+import { indianRecipes } from "./recipes/indian";
+import { mexicanRecipes } from "./recipes/mexican";
+import { chineseRecipes } from "./recipes/chinese";
 
-export const italianRecipes: Recipe[] = [
-  ...pastaRecipes,
-  ...saladRecipes,
-  ...mainRecipes,
-  ...dessertRecipes
+export const recipes: Recipe[] = [
+  ...americanRecipes,
+  ...asianRecipes,
+  ...mediterraneanRecipes,
+  ...indianRecipes,
+  ...mexicanRecipes,
+  ...chineseRecipes
+];
+
+export const cuisineTypes = [
+  'Italian',
+  'Thai',
+  'Chinese',
+  'Mediterranean',
+  'American',
+  'Japanese',
+  'Mexican',
+  'Indian'
+];
+
+export const allergens = [
+  'dairy',
+  'eggs',
+  'fish',
+  'shellfish',
+  'tree nuts',
+  'peanuts',
+  'wheat',
+  'soy'
 ];
 
 // Add these exports
