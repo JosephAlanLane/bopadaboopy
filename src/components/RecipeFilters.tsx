@@ -14,6 +14,7 @@ interface FiltersProps {
     allergens: string[];
     maxIngredients: number;
     category?: string;
+    source?: string;
     sortBy?: string;
   }) => void;
 }
@@ -24,6 +25,7 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [maxIngredients, setMaxIngredients] = useState<number>(20);
   const [category, setCategory] = useState<string>("all");
+  const [source, setSource] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("popular");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,9 +36,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
       allergens: selectedAllergens,
       maxIngredients,
       category: category === "all" ? undefined : category,
+      source: source === "all" ? undefined : source,
       sortBy,
     });
-  }, [search, selectedCuisines, selectedAllergens, maxIngredients, category, sortBy, onApplyFilters]);
+  }, [search, selectedCuisines, selectedAllergens, maxIngredients, category, source, sortBy, onApplyFilters]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -99,6 +102,20 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
               <SelectItem value="soup">Soups</SelectItem>
               <SelectItem value="sauce">Sauces</SelectItem>
               <SelectItem value="drinks">Drinks</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={source}
+            onValueChange={setSource}
+          >
+            <SelectTrigger className="flex-1 min-w-[80px] max-w-[120px] h-8 bg-white dark:bg-black text-xs">
+              <SelectValue placeholder="Source" />
+            </SelectTrigger>
+            <SelectContent className="w-[120px] bg-white dark:bg-black">
+              <SelectItem value="all">All Sources</SelectItem>
+              <SelectItem value="curated">Recipe Sites</SelectItem>
+              <SelectItem value="user">User Submitted</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -6,10 +6,11 @@ import { usePaginatedRecipes } from '@/hooks/usePaginatedRecipes';
 import { useRecipeSorting } from '@/hooks/useRecipeSorting';
 import { useToast } from './ui/use-toast';
 import { trackRecipeUsage } from '@/utils/recipeUtils';
+import { AddRecipeDialog } from './AddRecipeDialog';
 
 interface RecipeSectionProps {
   onAddRecipe: (recipe: Recipe) => void;
-  className?: string; // Added className prop
+  className?: string;
 }
 
 export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: RecipeSectionProps) => {
@@ -21,6 +22,7 @@ export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: Recipe
     allergens: [] as string[],
     maxIngredients: 20,
     category: undefined as string | undefined,
+    source: undefined as string | undefined,
   });
 
   const {
@@ -39,6 +41,7 @@ export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: Recipe
       allergens: filters.allergens,
       maxIngredients: filters.maxIngredients,
       category: filters.category,
+      source: filters.source,
     }
   );
 
@@ -60,6 +63,10 @@ export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: Recipe
 
   return (
     <div className={`flex-1 min-w-0 space-y-4 ${className}`}>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold">Recipes</h2>
+        <AddRecipeDialog />
+      </div>
       <RecipeFilters onApplyFilters={handleApplyFilters} />
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border-0">
         <RecipeGrid 

@@ -216,6 +216,7 @@ export type Database = {
           servings: number | null
           title: string
           user_id: string | null
+          user_submitted: boolean | null
         }
         Insert: {
           allergens?: string[] | null
@@ -231,6 +232,7 @@ export type Database = {
           servings?: number | null
           title: string
           user_id?: string | null
+          user_submitted?: boolean | null
         }
         Update: {
           allergens?: string[] | null
@@ -246,6 +248,7 @@ export type Database = {
           servings?: number | null
           title?: string
           user_id?: string | null
+          user_submitted?: boolean | null
         }
         Relationships: [
           {
