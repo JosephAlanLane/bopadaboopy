@@ -15,6 +15,7 @@ interface FetchRecipesParams {
     allergens: string[];
     maxIngredients: number;
     category?: string;
+    source?: string;
   };
 }
 
@@ -27,6 +28,7 @@ export const usePaginatedRecipes = (
     allergens: string[];
     maxIngredients: number;
     category?: string;
+    source?: string;
   }
 ) => {
   const fetchRecipesPage = async ({ 
@@ -68,6 +70,15 @@ export const usePaginatedRecipes = (
     // Apply category filter
     if (filters?.category && filters.category !== 'all') {
       query = query.eq('category', filters.category);
+    }
+
+    // Apply source filter
+    if (filters?.source && filters.source !== 'all') {
+      if (filters.source === 'curated') {
+        query = query.eq('user_submitted', false);
+      } else if (filters.source === 'user') {
+        query = query.eq('user_submitted', true);
+      }
     }
 
     // Handle sorting
