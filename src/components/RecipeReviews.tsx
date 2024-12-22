@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "./ui/use-toast";
@@ -42,7 +42,7 @@ export const RecipeReviews = ({ recipeId }: RecipeReviewsProps) => {
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     loadReviews();
   }, [recipeId]);
 
