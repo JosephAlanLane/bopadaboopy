@@ -7,7 +7,7 @@ import { Label } from "./ui/label";
 import { Plus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
-import { cuisineTypes, allergens } from "@/data/recipes";
+import { cuisineTypes, allergens, unitOptions, UnitOption } from "@/data/recipes";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +24,7 @@ export const AddRecipeDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [instructions, setInstructions] = useState<string[]>([""]);
   const [cookTime, setCookTime] = useState("");
   const [portions, setPortions] = useState("");
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
@@ -52,7 +52,7 @@ export const AddRecipeDialog = () => {
           title,
           image: imageUrl,
           cuisine: selectedCuisines[0], // Primary cuisine
-          instructions: instructions.split('\n').filter(line => line.trim() !== ''),
+          instructions: instructions.filter(instruction => instruction.trim() !== ''),
           ingredients: ingredients,
           status: 'pending'
         });
@@ -79,7 +79,7 @@ export const AddRecipeDialog = () => {
   const resetForm = () => {
     setTitle("");
     setImageUrl("");
-    setInstructions("");
+    setInstructions([""]);
     setCookTime("");
     setPortions("");
     setSelectedCuisines([]);
@@ -96,6 +96,23 @@ export const AddRecipeDialog = () => {
     const newIngredients = [...ingredients];
     newIngredients[index] = { ...newIngredients[index], [field]: value };
     setIngredients(newIngredients);
+  };
+
+  const addInstruction = () => {
+    setInstructions([...instructions, ""]);
+  };
+
+  const updateInstruction = (index: number, value: string) => {
+    const newInstructions = [...instructions];
+    newInstructions[index] = value;
+    setInstructions(newInstructions);
+  };
+
+  const removeInstruction = (index: number) => {
+    if (instructions.length > 1) {
+      const newInstructions = instructions.filter((_, i) => i !== index);
+      setInstructions(newInstructions);
+    }
   };
 
   return (
@@ -143,13 +160,21 @@ export const AddRecipeDialog = () => {
                   required
                   className="w-24"
                 />
-                <Input
-                  placeholder="Unit"
+                <Select
                   value={ingredient.unit}
-                  onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
-                  required
-                  className="w-24"
-                />
+                  onValueChange={(value) => updateIngredient(index, 'unit', value)}
+                >
+                  <SelectTrigger className="w-32">
+                    <SelectValue placeholder="Unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitOptions.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Input
                   placeholder="Ingredient"
                   value={ingredient.item}
@@ -165,15 +190,35 @@ export const AddRecipeDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="instructions">Instructions *</Label>
-            <Textarea
-              id="instructions"
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-              required
-              className="min-h-[100px]"
-              placeholder="Enter each instruction on a new line"
-            />
+            <Label>Instructions *</Label>
+            {instructions.map((instruction, index) => (
+              <div key={index} className="flex gap-2">
+                <div className="flex-none w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  {index + 1}
+                </div>
+                <Input
+                  value={instruction}
+                  onChange={(e) => updateInstruction(index, e.target.value)}
+                  placeholder={`Step ${index + 1}`}
+                  required
+                  className="flex-1"
+                />
+                {instructions.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => removeInstruction(index)}
+                    className="flex-none"
+                  >
+                    ×
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button type="button" variant="outline" onClick={addInstruction} className="w-full">
+              Add Step
+            </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -185,8 +230,18 @@ export const AddRecipeDialog = () => {
                 min="1"
                 max="600"
                 value={cookTime}
-                onChange={(e) => setCookTime(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setCookTime(value);
+                  }
+                }}
                 required
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
 
@@ -198,8 +253,18 @@ export const AddRecipeDialog = () => {
                 min="1"
                 max="24"
                 value={portions}
-                onChange={(e) => setPortions(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setPortions(value);
+                  }
+                }}
                 required
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
           </div>
