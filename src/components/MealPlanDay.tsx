@@ -1,9 +1,7 @@
 import React, { useCallback, memo, useState, useEffect } from "react";
-import { X, Users } from "lucide-react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
-import { Dialog, DialogContent } from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { ServingsDialog } from "./meal-plan/ServingsDialog";
+import { RecipeContent } from "./meal-plan/RecipeContent";
 
 interface MealPlanDayProps {
   day: DayOfWeek | string;
@@ -26,19 +24,16 @@ const MealPlanDay = memo(({
   customServings,
   className = ''
 }: MealPlanDayProps) => {
-  // Initialize with recipe's original serving size or custom serving size if provided
   const [localServings, setLocalServings] = useState<number>(
     customServings || (recipe?.servings || 1)
   );
+  const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
 
-  // Reset local servings when recipe changes
   useEffect(() => {
     if (recipe?.servings) {
-      setLocalServings(recipe.servings);
+      setLocalServings(customServings || recipe.servings);
     }
-  }, [recipe]);
-
-  const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
+  }, [recipe, customServings]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -76,7 +71,6 @@ const MealPlanDay = memo(({
   };
 
   const handleUpdateServings = () => {
-    console.log('Updating servings to:', localServings);
     if (onServingsChange && recipe) {
       onServingsChange(localServings);
       setIsServingsDialogOpen(false);
@@ -145,62 +139,25 @@ const MealPlanDay = memo(({
           </div>
 
           {recipe && (
-            <div className="absolute right-2 flex items-center space-x-2">
-              <div className="flex items-center space-x-1">
-                <button
-                  onClick={() => setIsServingsDialogOpen(true)}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full flex items-center gap-1"
-                >
-                  <Users className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {localServings}
-                  </span>
-                </button>
-              </div>
-              <button
-                onClick={onRemove}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full"
-              >
-                <X className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-              </button>
-            </div>
+            <RecipeContent
+              recipe={recipe}
+              localServings={localServings}
+              onOpenServingsDialog={() => setIsServingsDialogOpen(true)}
+              onRemove={onRemove}
+            />
           )}
         </div>
       </div>
 
-      <Dialog open={isServingsDialogOpen} onOpenChange={setIsServingsDialogOpen}>
-        <DialogContent className="sm:max-w-[250px]">
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <Input
-                id="servings"
-                type="number"
-                min="1"
-                max="99"
-                value={localServings}
-                onChange={(e) => handleServingsChange(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="text-center"
-              />
-              <div className="flex gap-2">
-                <Button 
-                  onClick={handleUpdateServings}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white"
-                >
-                  Update
-                </Button>
-                <Button 
-                  onClick={handleResetServings}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Reset
-                </Button>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ServingsDialog
+        isOpen={isServingsDialogOpen}
+        onOpenChange={setIsServingsDialogOpen}
+        localServings={localServings}
+        onServingsChange={handleServingsChange}
+        onUpdateServings={handleUpdateServings}
+        onResetServings={handleResetServings}
+        onKeyPress={handleKeyPress}
+      />
     </>
   );
 });
