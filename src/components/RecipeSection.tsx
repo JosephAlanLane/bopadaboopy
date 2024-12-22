@@ -63,7 +63,7 @@ export const RecipeSection = React.memo(({ onAddRecipe, className = '' }: Recipe
 
   return (
     <div className={`flex-1 min-w-0 space-y-4 ${className}`}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-8 mb-6">
         <h2 className="text-2xl font-semibold">Recipes</h2>
         <AddRecipeDialog />
       </div>
