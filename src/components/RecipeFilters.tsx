@@ -5,7 +5,7 @@ import { Checkbox } from "./ui/checkbox";
 import { cuisineTypes, allergens } from "@/data/recipes";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { Button } from "./ui/button";
-import { Filter } from "lucide-react";
+import { Filter, Plus, X } from "lucide-react";
 
 interface FiltersProps {
   onApplyFilters: (filters: {
@@ -119,8 +119,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                         setSelectedCuisines(selectedCuisines.filter((c) => c !== cuisine));
                       }
                     }}
-                    className="border-green-400 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                  />
+                    className="border-green-400 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600 flex items-center justify-center"
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Checkbox>
                   <label htmlFor={`cuisine-${cuisine}`} className="text-sm truncate">{cuisine}</label>
                 </div>
               ))}
@@ -142,8 +144,10 @@ export const RecipeFilters = ({ onApplyFilters }: FiltersProps) => {
                         setSelectedAllergens(selectedAllergens.filter((a) => a !== allergen));
                       }
                     }}
-                    className="border-red-400 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
-                  />
+                    className="border-red-400 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600 flex items-center justify-center"
+                  >
+                    <X className="h-3 w-3" />
+                  </Checkbox>
                   <label htmlFor={`allergen-${allergen}`} className="text-sm truncate">{capitalizeFirstLetter(allergen)}</label>
                 </div>
               ))}
