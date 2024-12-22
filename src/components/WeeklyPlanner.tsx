@@ -39,19 +39,44 @@ export const WeeklyPlanner = ({
   const handleDrop = (day: DayOfWeek, recipe: Recipe) => {
     if (draggedMeal) {
       const updatedMealPlan = { ...mealPlan };
+      
+      // If dragging from custom meals to weekly plan
       if (typeof draggedMeal.day === 'string' && !DAYS.includes(draggedMeal.day as DayOfWeek)) {
         updatedMealPlan[day] = draggedMeal.recipe;
         const customIndex = parseInt(draggedMeal.day.replace('Meal ', '')) - 1;
         const newCustomMeals = [...customMeals];
         newCustomMeals[customIndex] = null;
         setCustomMeals(newCustomMeals);
+        
+        // Transfer custom portion if it exists
+        if (customPortions[draggedMeal.day]) {
+          setCustomPortions(prev => ({
+            ...prev,
+            [day]: prev[draggedMeal.day],
+            [draggedMeal.day]: undefined
+          }));
+        }
       } else {
-        updatedMealPlan[draggedMeal.day as DayOfWeek] = mealPlan[day];
+        // If dragging between weekly plan days
+        const sourceDay = draggedMeal.day as DayOfWeek;
+        updatedMealPlan[sourceDay] = mealPlan[day];
         updatedMealPlan[day] = draggedMeal.recipe;
+        
+        // Swap custom portions if they exist
+        const updatedPortions = { ...customPortions };
+        if (customPortions[sourceDay] || customPortions[day]) {
+          const tempPortion = customPortions[sourceDay];
+          updatedPortions[sourceDay] = customPortions[day];
+          updatedPortions[day] = tempPortion;
+          setCustomPortions(updatedPortions);
+        }
       }
+      
+      // Clean up null values
       Object.entries(updatedMealPlan).forEach(([d, r]) => {
         if (r === null) delete updatedMealPlan[d as DayOfWeek];
       });
+      
       onUpdateMealPlan(updatedMealPlan);
     } else {
       onUpdateMealPlan({
@@ -75,6 +100,14 @@ export const WeeklyPlanner = ({
   const handleRemoveCustomMeal = (index: number) => {
     const newMeals = customMeals.filter((_, i) => i !== index);
     setCustomMeals(newMeals);
+    
+    // Clean up custom portion when removing a custom meal
+    const mealKey = `Meal ${index + 1}`;
+    if (customPortions[mealKey]) {
+      const updatedPortions = { ...customPortions };
+      delete updatedPortions[mealKey];
+      setCustomPortions(updatedPortions);
+    }
   };
 
   const handleServingsChange = (day: DayOfWeek | string, servings: number) => {
@@ -106,7 +139,15 @@ export const WeeklyPlanner = ({
                       key={day}
                       day={day}
                       recipe={mealPlan[day] || null}
-                      onRemove={() => onRemoveMeal(day)}
+                      onRemove={() => {
+                        onRemoveMeal(day);
+                        // Clear custom portion when removing a meal
+                        if (customPortions[day]) {
+                          const updatedPortions = { ...customPortions };
+                          delete updatedPortions[day];
+                          setCustomPortions(updatedPortions);
+                        }
+                      }}
                       onDrop={(recipe) => handleDrop(day, recipe)}
                       onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
                       onServingsChange={(servings) => handleServingsChange(day, servings)}
