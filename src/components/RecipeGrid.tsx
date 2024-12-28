@@ -127,7 +127,7 @@ export const RecipeGrid = memo(({
                     {recipe.rating && (
                       <div className="flex items-center gap-0.5">
                         <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                        <span>{recipe.rating}/5</span>
+                        <span>{recipe.rating}</span>
                       </div>
                     )}
                   </div>
