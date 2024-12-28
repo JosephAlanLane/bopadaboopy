@@ -124,6 +124,12 @@ export const RecipeGrid = memo(({
                         <span>{recipe.servings}</span>
                       </div>
                     )}
+                    {recipe.rating && (
+                      <div className="flex items-center gap-0.5">
+                        <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                        <span>{recipe.rating}/5</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -163,16 +169,6 @@ export const RecipeGrid = memo(({
                       <li key={index}>{instruction}</li>
                     ))}
                   </ol>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>{selectedRecipe.rating ? `${selectedRecipe.rating}/5` : 'No ratings yet'}</span>
-                    </div>
-                    <span>{selectedRecipe.rating ? `(${selectedRecipe.reviews_count || 0} reviews)` : ''}</span>
-                  </div>
                 </div>
                 
                 <RecipeReviews recipeId={selectedRecipe.id} />
