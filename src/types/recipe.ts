@@ -10,10 +10,11 @@ export interface Recipe {
   cook_time_minutes?: number;
   servings?: number;
   rating?: number;
+  reviews_count?: number;
   category?: string;
   created_at?: string;
   popularity?: number;
-  user_id?: string;  // Added this field
+  user_id?: string;
 }
 
 export interface Ingredient {

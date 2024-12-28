@@ -127,7 +127,7 @@ export const RecipeGrid = memo(({
                     {recipe.rating && (
                       <div className="flex items-center gap-0.5">
                         <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                        <span>{recipe.rating}/5</span>
+                        <span>{recipe.rating}</span>
                       </div>
                     )}
                   </div>
@@ -149,6 +149,15 @@ export const RecipeGrid = memo(({
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{selectedRecipe.title}</DialogTitle>
+              {selectedRecipe.rating !== undefined && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span>{selectedRecipe.rating}/5</span>
+                  </div>
+                  <span>({selectedRecipe.reviews_count || 0} reviews)</span>
+                </div>
+              )}
             </DialogHeader>
             <ScrollArea className="max-h-[70vh] px-1">
               <div className="space-y-4">
