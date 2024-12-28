@@ -78,7 +78,6 @@ export const GroceryList = ({
         window.location.href = `sms:?body=${encodeURIComponent(groceryText)}`;
         break;
       case "calendar":
-        // Add calendar functionality if needed
         toast({
           title: "Coming soon",
           description: "Calendar integration will be available soon",
@@ -97,7 +96,10 @@ export const GroceryList = ({
         groceryItems={groceryItems}
         calculateAmount={calculateAmount}
       />
-      <GroceryListActions onShare={handleShare} />
+      <GroceryListActions 
+        onShare={handleShare}
+        groceryItems={groceryItems}
+      />
     </div>
   );
 };

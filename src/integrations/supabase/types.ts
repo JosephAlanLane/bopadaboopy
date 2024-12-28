@@ -255,6 +255,7 @@ export type Database = {
           instructions: string[]
           originating_url: string | null
           rating: number | null
+          reviews_count: number | null
           servings: number | null
           title: string
           user_id: string | null
@@ -271,6 +272,7 @@ export type Database = {
           instructions: string[]
           originating_url?: string | null
           rating?: number | null
+          reviews_count?: number | null
           servings?: number | null
           title: string
           user_id?: string | null
@@ -287,6 +289,7 @@ export type Database = {
           instructions?: string[]
           originating_url?: string | null
           rating?: number | null
+          reviews_count?: number | null
           servings?: number | null
           title?: string
           user_id?: string | null
@@ -465,7 +468,22 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      recipe_stats: {
+        Row: {
+          avg_rating: number | null
+          recipe_id: string | null
+          reviews_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_reviews_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       airtable_fdw_handler: {
