@@ -1,33 +1,45 @@
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { useToast } from "@/components/ui/use-toast"
+import React from "react";
+import { Navbar } from "@/components/Navbar";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 
-export default function SubscriptionSuccess() {
-  const { toast } = useToast()
-  const navigate = useNavigate()
+const SubscriptionSuccess = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    toast({
-      title: "Subscription Successful!",
-      description: "Thank you for subscribing. You now have access to premium features!",
-    })
-    
-    const timer = setTimeout(() => {
-      navigate('/')
-    }, 5000)
-
-    return () => clearTimeout(timer)
-  }, [navigate, toast])
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-4xl font-bold text-green-600 mb-4">Success!</h1>
-      <p className="text-lg text-center mb-4">
-        Thank you for subscribing. You now have access to all premium features!
-      </p>
-      <p className="text-sm text-gray-500">
-        Redirecting you to the homepage...
-      </p>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <Navbar />
+      <div className="container max-w-2xl mx-auto py-8 px-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+          <div className="flex justify-center mb-6">
+            <CheckCircle className="w-16 h-16 text-green-500" />
+          </div>
+          <h1 className="text-3xl font-bold mb-4">Welcome to the Family!</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Your subscription has been successfully activated. You now have access to all premium features!
+          </p>
+          <div className="space-y-4">
+            <Button
+              onClick={() => navigate("/")}
+              className="w-full sm:w-auto"
+            >
+              Start Planning Meals
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default SubscriptionSuccess;

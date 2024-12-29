@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Settings as SettingsIcon, Save } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
 
 const Settings = () => {
   const { user } = useAuth();
@@ -87,52 +88,60 @@ const Settings = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return (
+      <div>
+        <Navbar />
+        <div className="flex justify-center items-center min-h-screen">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="container max-w-2xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-2 mb-6">
-        <SettingsIcon className="w-6 h-6" />
-        <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <Navbar />
+      <div className="container max-w-2xl mx-auto py-8 px-4">
+        <div className="flex items-center gap-2 mb-6">
+          <SettingsIcon className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Settings</h1>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="defaultServings" className="block text-sm font-medium mb-1">
+                Default Number of Servings (1-24)
+              </label>
+              <Input
+                id="defaultServings"
+                type="number"
+                min="1"
+                max="24"
+                value={defaultServings}
+                onChange={(e) => handleServingsChange(e.target.value)}
+                className="w-32"
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label htmlFor="enforceServings" className="text-sm font-medium">
+                Enforce Number of Servings for Each Recipe
+              </label>
+              <Switch
+                id="enforceServings"
+                checked={enforceServings}
+                onCheckedChange={setEnforceServings}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Button type="submit" className="flex items-center gap-2">
+              <Save className="w-4 h-4" />
+              Save Settings
+            </Button>
+          </div>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="defaultServings" className="block text-sm font-medium mb-1">
-              Default Number of Servings (1-24)
-            </label>
-            <Input
-              id="defaultServings"
-              type="number"
-              min="1"
-              max="24"
-              value={defaultServings}
-              onChange={(e) => handleServingsChange(e.target.value)}
-              className="w-32"
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label htmlFor="enforceServings" className="text-sm font-medium">
-              Enforce Number of Servings for Each Recipe
-            </label>
-            <Switch
-              id="enforceServings"
-              checked={enforceServings}
-              onCheckedChange={setEnforceServings}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end">
-          <Button type="submit" className="flex items-center gap-2">
-            <Save className="w-4 h-4" />
-            Save Settings
-          </Button>
-        </div>
-      </form>
     </div>
   );
 };

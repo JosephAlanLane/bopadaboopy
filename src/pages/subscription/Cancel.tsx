@@ -1,34 +1,23 @@
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { useToast } from "@/components/ui/use-toast"
+import React from "react";
+import { Navbar } from "@/components/Navbar";
 
-export default function SubscriptionCancel() {
-  const { toast } = useToast()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    toast({
-      title: "Subscription Cancelled",
-      description: "Your subscription process was cancelled. You can try again anytime!",
-      variant: "destructive",
-    })
-    
-    const timer = setTimeout(() => {
-      navigate('/')
-    }, 5000)
-
-    return () => clearTimeout(timer)
-  }, [navigate, toast])
-
+const SubscriptionCancel = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-4xl font-bold text-red-600 mb-4">Cancelled</h1>
-      <p className="text-lg text-center mb-4">
-        Your subscription process was cancelled. You can try again anytime!
-      </p>
-      <p className="text-sm text-gray-500">
-        Redirecting you to the homepage...
-      </p>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <Navbar />
+      <div className="container max-w-2xl mx-auto py-8 px-4">
+        <h1 className="text-2xl font-bold mb-6">Subscription Cancelled</h1>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            We're sorry to see you go! Your subscription has been cancelled successfully.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            You'll continue to have access to your subscription benefits until the end of your current billing period.
+          </p>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default SubscriptionCancel;
