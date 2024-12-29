@@ -2,6 +2,8 @@ import React, { useCallback, memo, useState, useEffect } from "react";
 import { Recipe, DayOfWeek } from "@/types/recipe";
 import { ServingsDialog } from "./meal-plan/ServingsDialog";
 import { RecipeContent } from "./meal-plan/RecipeContent";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MealPlanDayProps {
   day: DayOfWeek | string;
@@ -24,16 +26,52 @@ const MealPlanDay = memo(({
   customServings,
   className = ''
 }: MealPlanDayProps) => {
+  const { user } = useAuth();
   const [localServings, setLocalServings] = useState<number>(
     customServings || (recipe?.servings || 1)
   );
   const [isServingsDialogOpen, setIsServingsDialogOpen] = useState(false);
+  const [userSettings, setUserSettings] = useState<{
+    default_servings?: number;
+    enforce_servings?: boolean;
+  }>({});
+
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('default_servings, enforce_servings')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          setUserSettings(data);
+          if (data.enforce_servings && data.default_servings) {
+            setLocalServings(data.default_servings);
+            if (onServingsChange) {
+              onServingsChange(data.default_servings);
+            }
+          }
+        }
+      }
+    };
+
+    fetchUserSettings();
+  }, [user, onServingsChange]);
 
   useEffect(() => {
     if (recipe?.servings) {
-      setLocalServings(customServings || recipe.servings);
+      if (userSettings.enforce_servings && userSettings.default_servings) {
+        setLocalServings(userSettings.default_servings);
+        if (onServingsChange) {
+          onServingsChange(userSettings.default_servings);
+        }
+      } else {
+        setLocalServings(customServings || recipe.servings);
+      }
     }
-  }, [recipe, customServings]);
+  }, [recipe, customServings, userSettings, onServingsChange]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -85,9 +123,16 @@ const MealPlanDay = memo(({
 
   const handleResetServings = () => {
     if (recipe?.servings) {
-      setLocalServings(recipe.servings);
-      if (onServingsChange) {
-        onServingsChange(recipe.servings);
+      if (userSettings.enforce_servings && userSettings.default_servings) {
+        setLocalServings(userSettings.default_servings);
+        if (onServingsChange) {
+          onServingsChange(userSettings.default_servings);
+        }
+      } else {
+        setLocalServings(recipe.servings);
+        if (onServingsChange) {
+          onServingsChange(recipe.servings);
+        }
       }
       setIsServingsDialogOpen(false);
     }
