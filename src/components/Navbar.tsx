@@ -6,6 +6,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { SubscriptionButton } from "./SubscriptionButton";
+import { ProfileMenu } from "./ProfileMenu";
 
 // Define logo URLs as constants
 const PRIMARY_LOGO_URL = 'https://i.ibb.co/JrR24V4/nonna-logo.png';
@@ -54,13 +55,16 @@ export const Navbar = () => {
             
             <div className="w-full flex justify-between items-center absolute bottom-0">
               <ThemeToggle />
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-2">
+                {user && <ProfileMenu />}
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -91,14 +95,15 @@ export const Navbar = () => {
             <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={() => navigate("/about")}>About</Button>
           </div>
           
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
+            {user && <ProfileMenu />}
           </div>
           
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
             {user ? (
               <>
-                <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto" onClick={handleSignOut}>Sign Out</Button>
+                <Button variant="ghost" className="border border-gray-200 dark:border-gray-700 w-full md:w-auto md:hidden" onClick={handleSignOut}>Sign Out</Button>
                 <SubscriptionButton />
               </>
             ) : (
