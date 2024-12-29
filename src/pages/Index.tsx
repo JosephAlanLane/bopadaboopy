@@ -5,15 +5,44 @@ import { useToast } from "@/components/ui/use-toast";
 import { Sidebar } from "@/components/Sidebar";
 import { Link } from "react-router-dom";
 import { RecipeSection } from "@/components/RecipeSection";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const DAYS: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+interface UserSettings {
+  default_servings?: number;
+  enforce_servings?: boolean;
+}
 
 const Index = () => {
   const [mealPlan, setMealPlan] = useState<MealPlan>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState<"weekly" | "custom">("weekly");
   const [customMeals, setCustomMeals] = useState<(Recipe | null)[]>([null]);
+  const [userSettings, setUserSettings] = useState<UserSettings>({});
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Fetch user settings once when component mounts
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('default_servings, enforce_servings')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          console.log('Fetched user settings:', data);
+          setUserSettings(data);
+        }
+      }
+    };
+
+    fetchUserSettings();
+  }, [user]);
 
   useEffect(() => {
     const savedMealPlan = localStorage.getItem('selectedMealPlan');
@@ -168,6 +197,7 @@ const Index = () => {
               setActiveTab={setActiveTab}
               customMeals={customMeals}
               setCustomMeals={setCustomMeals}
+              userSettings={userSettings}
               className="[&_button]:py-1.5"
             />
             

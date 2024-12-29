@@ -4,6 +4,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 
+interface UserSettings {
+  default_servings?: number;
+  enforce_servings?: boolean;
+}
+
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
@@ -14,6 +19,7 @@ interface SidebarProps {
   setActiveTab: (tab: "weekly" | "custom") => void;
   customMeals: (Recipe | null)[];
   setCustomMeals: (meals: (Recipe | null)[]) => void;
+  userSettings: UserSettings;
   className?: string;
 }
 
@@ -27,6 +33,7 @@ export const Sidebar = ({
   setActiveTab,
   customMeals,
   setCustomMeals,
+  userSettings,
   className = ''
 }: SidebarProps) => {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -70,6 +77,7 @@ export const Sidebar = ({
             setActiveTab={setActiveTab}
             customMeals={customMeals}
             setCustomMeals={setCustomMeals}
+            userSettings={userSettings}
           />
         </div>
       </div>

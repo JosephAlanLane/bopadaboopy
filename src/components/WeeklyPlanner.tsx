@@ -14,6 +14,11 @@ const DAYS: DayOfWeek[] = [
   "Friday", "Saturday", "Sunday"
 ];
 
+interface UserSettings {
+  default_servings?: number;
+  enforce_servings?: boolean;
+}
+
 interface WeeklyPlannerProps {
   mealPlan: MealPlan;
   onRemoveMeal: (day: DayOfWeek) => void;
@@ -22,6 +27,7 @@ interface WeeklyPlannerProps {
   setActiveTab: (tab: "weekly" | "custom") => void;
   customMeals: (Recipe | null)[];
   setCustomMeals: (meals: (Recipe | null)[]) => void;
+  userSettings: UserSettings;
 }
 
 export const WeeklyPlanner = ({ 
@@ -31,7 +37,8 @@ export const WeeklyPlanner = ({
   activeTab,
   setActiveTab,
   customMeals,
-  setCustomMeals
+  setCustomMeals,
+  userSettings
 }: WeeklyPlannerProps) => {
   const [draggedMeal, setDraggedMeal] = useState<{ day: DayOfWeek | string, recipe: Recipe } | null>(null);
   const [customPortions, setCustomPortions] = useState<{ [key: string]: number }>({});
@@ -139,19 +146,13 @@ export const WeeklyPlanner = ({
                       key={day}
                       day={day}
                       recipe={mealPlan[day] || null}
-                      onRemove={() => {
-                        onRemoveMeal(day);
-                        // Clear custom portion when removing a meal
-                        if (customPortions[day]) {
-                          const updatedPortions = { ...customPortions };
-                          delete updatedPortions[day];
-                          setCustomPortions(updatedPortions);
-                        }
-                      }}
+                      onRemove={() => onRemoveMeal(day)}
                       onDrop={(recipe) => handleDrop(day, recipe)}
                       onDragStart={(day, recipe) => setDraggedMeal({ day, recipe })}
                       onServingsChange={(servings) => handleServingsChange(day, servings)}
                       customServings={customPortions[day]}
+                      defaultServings={userSettings.default_servings}
+                      enforceServings={userSettings.enforce_servings}
                     />
                   ))}
                 </div>
@@ -163,6 +164,7 @@ export const WeeklyPlanner = ({
                   onRemoveMeal={handleRemoveCustomMeal}
                   onDrop={handleCustomDrop}
                   onDragStart={(index, recipe) => setDraggedMeal({ day: `Meal ${index + 1}`, recipe })}
+                  userSettings={userSettings}
                 />
               </TabsContent>
             </div>
