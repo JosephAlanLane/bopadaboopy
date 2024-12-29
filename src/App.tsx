@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Privacy from "./pages/Privacy";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import MealPlans from "./pages/MealPlans";
 import CustomMealPlans from "./pages/CustomMealPlans";
 import SubscriptionSuccess from "./pages/subscription/Success";
@@ -112,6 +114,8 @@ const AppContent = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/about" element={<About />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
       <Route path="/meal-plans" element={<MealPlans />} />
       <Route path="/meal-plans/:slug" element={<LoadMealPlan />} />
       <Route path="/subscription/success" element={<SubscriptionSuccess />} />

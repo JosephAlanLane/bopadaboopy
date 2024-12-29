@@ -119,21 +119,27 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          default_servings: number | null
           email: string | null
+          enforce_servings: boolean | null
           first_name: string | null
           id: string
           last_name: string | null
         }
         Insert: {
           created_at?: string
+          default_servings?: number | null
           email?: string | null
+          enforce_servings?: boolean | null
           first_name?: string | null
           id: string
           last_name?: string | null
         }
         Update: {
           created_at?: string
+          default_servings?: number | null
           email?: string | null
+          enforce_servings?: boolean | null
           first_name?: string | null
           id?: string
           last_name?: string | null
