@@ -3,11 +3,17 @@ import { Recipe } from "@/types/recipe";
 import { ScrollArea } from "./ui/scroll-area";
 import MealPlanDay from "./MealPlanDay";
 
+interface UserSettings {
+  default_servings?: number;
+  enforce_servings?: boolean;
+}
+
 interface CustomMealPlanListProps {
   meals: (Recipe | null)[];
   onRemoveMeal: (index: number) => void;
   onDrop: (index: number, recipe: Recipe) => void;
   onDragStart: (index: number, recipe: Recipe) => void;
+  userSettings: UserSettings;
 }
 
 export const CustomMealPlanList = ({
@@ -15,6 +21,7 @@ export const CustomMealPlanList = ({
   onRemoveMeal,
   onDrop,
   onDragStart,
+  userSettings,
 }: CustomMealPlanListProps) => {
   return (
     <div className="h-[250px]">
@@ -36,6 +43,8 @@ export const CustomMealPlanList = ({
                 onDrop={(recipe) => onDrop(index, recipe)}
                 onDragStart={(_, recipe) => onDragStart(index, recipe)}
                 className="w-full"
+                defaultServings={userSettings.default_servings}
+                enforceServings={userSettings.enforce_servings}
               />
             );
           })}

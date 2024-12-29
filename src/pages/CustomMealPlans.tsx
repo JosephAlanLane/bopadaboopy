@@ -22,6 +22,12 @@ const CustomMealPlans = () => {
     setMealPlan(newMealPlan);
   };
 
+  // Default user settings for custom meal plans
+  const userSettings = {
+    default_servings: 4,
+    enforce_servings: false
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
       <Navbar />
@@ -38,6 +44,7 @@ const CustomMealPlans = () => {
               setActiveTab={setActiveTab}
               customMeals={customMeals}
               setCustomMeals={setCustomMeals}
+              userSettings={userSettings}
             />
             <RecipeSection onAddRecipe={(recipe) => {
               if (activeTab === "custom") {
