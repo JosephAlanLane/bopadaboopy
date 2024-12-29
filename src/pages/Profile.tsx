@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, UserEdit } from "lucide-react";
+import { User, UserPen } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -118,7 +118,7 @@ const Profile = () => {
 
         <div className="flex justify-end">
           <Button type="submit" className="flex items-center gap-2">
-            <UserEdit className="w-4 h-4" />
+            <UserPen className="w-4 h-4" />
             Update Profile
           </Button>
         </div>
