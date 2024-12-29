@@ -21,7 +21,7 @@ import { supabase } from "./integrations/supabase/client";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       retry: 1,
     },
   },
@@ -47,7 +47,6 @@ function AuthCallback() {
             console.log('On portal subdomain, preparing redirect to main domain...');
             
             if (session) {
-              // Store full session data
               const sessionData = {
                 access_token: session.access_token,
                 refresh_token: session.refresh_token,
@@ -105,32 +104,36 @@ function AuthCallback() {
   return null;
 }
 
+const AppContent = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/custom" element={<CustomMealPlans />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/meal-plans" element={<MealPlans />} />
+      <Route path="/meal-plans/:slug" element={<LoadMealPlan />} />
+      <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+      <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
+    </Routes>
+  );
+};
+
 const App = () => {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <AuthCallback />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/custom" element={<CustomMealPlans />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/meal-plans" element={<MealPlans />} />
-                <Route path="/meal-plans/:slug" element={<LoadMealPlan />} />
-                <Route path="/subscription/success" element={<SubscriptionSuccess />} />
-                <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
-              </Routes>
-            </TooltipProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AuthCallback />
+            <AppContent />
+          </TooltipProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
