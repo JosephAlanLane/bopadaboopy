@@ -18,7 +18,7 @@ export const GroceryListActions = ({ onShare, groceryItems }: GroceryListActions
         className="w-full bg-[#CD212A] hover:bg-[#B91C1C] text-gray-200 border border-gray-300"
         onClick={() => setIsDeliveryDialogOpen(true)}
       >
-        Luigi Delivery
+        Luigi's Delivery
       </Button>
       <DeliveryOptionsDialog
         groceryItems={groceryItems}
