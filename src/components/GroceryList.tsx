@@ -21,6 +21,7 @@ export const GroceryList = ({
 }: GroceryListProps) => {
   const [globalServings, setGlobalServings] = useState(1);
   const [groceryItems, setGroceryItems] = useState<{[key: string]: any}>({});
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const getGroceryList = useCallback(() => {
@@ -52,6 +53,8 @@ export const GroceryList = ({
     });
     
     setGroceryItems(adjustedList);
+    // Initialize all items as selected
+    setSelectedItems(new Set(Object.keys(adjustedList)));
   }, [getGroceryList, globalServings]);
 
   const calculateAmount = useCallback((amount: number) => {
@@ -60,6 +63,7 @@ export const GroceryList = ({
 
   const handleShare = async (method: "sms" | "email" | "copy" | "calendar") => {
     const groceryText = Object.entries(groceryItems)
+      .filter(([item]) => selectedItems.has(item))
       .map(([item, details]) => `${item}: ${details.amount}${details.unit ? ` ${details.unit}` : ''}`)
       .join('\n');
 
@@ -68,7 +72,7 @@ export const GroceryList = ({
         await navigator.clipboard.writeText(groceryText);
         toast({
           title: "Copied to clipboard",
-          description: "Your grocery list has been copied to your clipboard",
+          description: "Your selected grocery items have been copied to your clipboard",
         });
         break;
       case "email":
@@ -86,6 +90,18 @@ export const GroceryList = ({
     }
   };
 
+  const handleItemToggle = (item: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(item)) {
+        newSet.delete(item);
+      } else {
+        newSet.add(item);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="mt-4 px-3 pb-3">
       <GroceryListHeader 
@@ -95,6 +111,8 @@ export const GroceryList = ({
       <GroceryListContent 
         groceryItems={groceryItems}
         calculateAmount={calculateAmount}
+        selectedItems={selectedItems}
+        onItemToggle={handleItemToggle}
       />
       <GroceryListActions 
         onShare={handleShare}
